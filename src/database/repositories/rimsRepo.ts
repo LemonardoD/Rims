@@ -2,7 +2,7 @@ import { db } from "../db";
 import { eq, and } from "drizzle-orm";
 import { rimConfig } from "../schemas/rimConfigSchema";
 import { tableRims } from "../schemas/rimsSchema";
-import { nameConnector, photoPath, priceToUAH, stringConverter, PHOTO_PATH } from "../../helpers/lilHelpers";
+import { nameConnector, photoPath, priceToUAH, stringConverter, photoArrPath } from "../../helpers/lilHelpers";
 import {
 	MainPgReturnRimDTO,
 	RimById,
@@ -29,38 +29,40 @@ class Rims {
 		};
 		return unique;
 	}
-	async getAllRims(): Promise<RimsByBrand[]> {
+
+	async getAllRims() {
 		const result = await db
-			.select({
+			.selectDistinct({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
 				rimName: tableRims.rimShortName,
-				images: tableRims.rimImg,
+				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
 			})
 			.from(tableRims)
 			.leftJoin(rimConfig, eq(rimConfig.rimId, tableRims.RimsId));
+
 		let finalResult = [];
 		for (let i = 0; i < result.length; i++) {
 			finalResult.push({
 				rimId: stringConverter(result[i].rimId),
 				name: nameConnector(result[i].rimBrand, result[i].rimName),
-				images: photoPath(result[i].images),
+				image: photoPath(result[i].image),
 				diameter: result[i].diameter,
 				price: priceToUAH(result[i].price),
 			});
 		}
-		return finalResult;
+		return finalResult.filter(rim => rim.rimId !== null);
 	}
 
 	async getRimsByBrand(reqRinBrand: string): Promise<RimsByBrand[]> {
 		const result = await db
-			.select({
+			.selectDistinct({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
 				rimName: tableRims.rimShortName,
-				images: tableRims.rimImg,
+				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
 			})
@@ -72,16 +74,16 @@ class Rims {
 			finalResult.push({
 				rimId: stringConverter(result[i].rimId),
 				name: nameConnector(result[i].rimBrand, result[i].rimName),
-				images: photoPath(result[i].images),
+				image: photoPath(result[i].image),
 				diameter: result[i].diameter,
 				price: priceToUAH(result[i].price),
 			});
 		}
-		return finalResult;
+		return finalResult.filter(rim => rim.rimId !== null);
 	}
 
 	async getRimById(reqRimID: number): Promise<RimById> {
-		const [{ rimDiameter, rimWidth, mountingHoles, priceUSD, rimBrand, rimName, images }] = await db
+		const result = await db
 			.select({
 				rimDiameter: rimConfig.rimDiameter,
 				rimWidth: rimConfig.rimWidth,
@@ -94,13 +96,24 @@ class Rims {
 			.from(tableRims)
 			.where(eq(tableRims.RimsId, reqRimID))
 			.leftJoin(rimConfig, eq(rimConfig.rimId, reqRimID));
+		const [{ mountingHoles, priceUSD, rimBrand, rimName, images }] = result;
+		let width: string[] = [];
+		let diameter: string[] = [];
+		result.map(el => {
+			if (el.rimWidth && !width.includes(el.rimWidth)) {
+				width.push(el.rimWidth);
+			}
+			if (el.rimDiameter && !diameter.includes(el.rimDiameter)) {
+				diameter.push(el.rimDiameter);
+			}
+		});
 		return {
 			name: nameConnector(rimBrand, rimName),
-			width: `${rimWidth}`,
-			diameter: `${rimDiameter}`,
+			width,
+			diameter,
 			mountingHoles: mountingHoles,
 			price: priceToUAH(priceUSD),
-			image: photoPath(images),
+			images: photoArrPath(images),
 		};
 	}
 
@@ -112,7 +125,7 @@ class Rims {
 				rimName: rimItems.rimName,
 				rimDiameter: rimConfig.rimDiameter,
 				priceUSD: rimConfig.priceUSD,
-				images: rimItems.imgName,
+				image: rimItems.imgName,
 			})
 			.from(rimItems)
 			.limit(20)
@@ -123,21 +136,21 @@ class Rims {
 			finalResult.push({
 				rimId: stringConverter(result[i].rimId),
 				name: nameConnector(result[i].rimBrand, result[i].rimName),
-				images: `${PHOTO_PATH + result[i].images}`,
+				image: photoPath(result[i].image),
 				diameter: result[i].rimDiameter,
 				price: priceToUAH(result[i].priceUSD),
 			});
 		}
-		return finalResult;
+		return finalResult.filter(rim => rim.rimId !== null);
 	}
 
 	async RimsByConfigFromCar(config: SrchRimByConfCarDto): Promise<MainPgReturnRimDTO[] | null> {
 		const rims = await db
-			.select({
+			.selectDistinct({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
 				rimName: tableRims.rimShortName,
-				images: tableRims.rimImg,
+				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				width: rimConfig.rimWidth,
 				price: rimConfig.priceUSD,
@@ -153,7 +166,7 @@ class Rims {
 						rimRespArr.push({
 							rimId: stringConverter(dbEl.rimId),
 							name: nameConnector(dbEl.rimBrand, dbEl.rimName),
-							images: photoPath(dbEl.images),
+							image: photoPath(dbEl.image),
 							diameter: dbEl.diameter,
 							price: priceToUAH(dbEl.price),
 						});
@@ -171,7 +184,7 @@ class Rims {
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
 				rimName: tableRims.rimShortName,
-				images: tableRims.rimImg,
+				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
 			})
@@ -191,13 +204,14 @@ class Rims {
 				finalResult.push({
 					rimId: stringConverter(rims[i].rimId),
 					name: nameConnector(rims[i].rimBrand, rims[i].rimName),
-					images: photoPath(rims[i].images),
+					image: photoPath(rims[i].image),
 					diameter: rims[i].diameter,
 					price: priceToUAH(rims[i].price),
 				});
 			}
 			return finalResult;
 		}
+
 		return null;
 	}
 
@@ -210,9 +224,13 @@ class Rims {
 	}
 
 	async updateVisits(id: number) {
+		let [{ visitsCount }] = await db.select({ visitsCount: rimItems.visits }).from(rimItems).where(eq(rimItems.rimId, id));
+		if (!visitsCount) {
+			visitsCount = 0;
+		}
 		return await db
 			.update(rimItems)
-			.set({ visits: Number(rimItems.visits) + 1 })
+			.set({ visits: visitsCount + 1 })
 			.where(eq(rimItems.rimId, id));
 	}
 

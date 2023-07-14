@@ -1,4 +1,4 @@
-import { doublePrecision, integer, varchar, bigint, pgTable } from "drizzle-orm/pg-core";
+import { doublePrecision, varchar, bigint, pgTable } from "drizzle-orm/pg-core";
 
 export const rimOffers = pgTable("rim_offers", {
 	rimOfferId: bigint("id", <{ mode: "number" | "bigint" }>{}).notNull(),

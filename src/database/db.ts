@@ -1,15 +1,11 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { neon, neonConfig } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
-const pool = new Pool({
-	host: PGHOST,
-	database: PGDATABASE,
-	user: PGUSER,
-	password: PGPASSWORD,
-	ssl: true,
-});
+const { DRIZZLE_DATABASE_URL } = <{ DRIZZLE_DATABASE_URL: string }>process.env;
 
-export const db = drizzle(pool);
+neonConfig.fetchConnectionCache = true;
+
+const sql = neon(DRIZZLE_DATABASE_URL);
+export const db = drizzle(sql);

@@ -7,7 +7,7 @@ import RimsRepo from "../database/repositories/rimsRepo";
 export class RimsInfoMid extends Controller {
 	rimsBrandVal = async (req: RimBrandsReqDto, res: Response, next: NextFunction) => {
 		const { rimBrand } = req.body;
-		if (!(await RimsRepo.IfRimBrandExist(rimBrand))) {
+		if (!(await RimsRepo.IfRimBrandExist(rimBrand)) && rimBrand !== "all") {
 			throw new CustomError("We don't have that rims brand.", 406);
 		}
 		next();

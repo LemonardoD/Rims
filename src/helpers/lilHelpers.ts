@@ -10,9 +10,16 @@ export function priceToUAH(usd: number | null) {
 	return null;
 }
 
-export function photoPath(imgs: string[] | null) {
+export function photoArrPath(imgs: string[] | null) {
 	if (imgs) {
 		return imgs.map(el => `${PHOTO_PATH + el}`);
+	}
+	return null;
+}
+
+export function photoPath(img: string | null) {
+	if (img) {
+		return `${PHOTO_PATH + img}`;
 	}
 	return null;
 }
@@ -21,6 +28,10 @@ export function nameConnector(nm1: string | null, nm2: string | null) {
 	if (nm1 && nm2) {
 		return `${nm1} - ${nm2}`;
 	}
+	if (!nm2) {
+		return nm1;
+	}
+	return null;
 }
 
 export function stringConverter(number: number | bigint | null) {

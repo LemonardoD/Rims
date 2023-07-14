@@ -1,7 +1,7 @@
 export interface RimsByBrand {
 	rimId: string | null;
-	name: string | undefined;
-	images: string[] | null;
+	name: string | null;
+	image: string | null;
 	diameter: string | null;
 	price: number | null;
 }
@@ -12,12 +12,12 @@ export interface ModelYear {
 }
 
 export interface RimById {
-	name: string | undefined;
-	width: string;
-	diameter: string;
+	name: string | null;
+	width: string[];
+	diameter: string[];
 	mountingHoles: string | null;
 	price: number | null;
-	image: string[] | null;
+	images: string[] | null;
 }
 
 export interface RimConfig {
@@ -49,8 +49,8 @@ export interface SearchRimByConfDto {
 
 export interface MainPgReturnRimDTO {
 	rimId: string | null;
-	name: string | undefined;
-	images: string[] | string | null;
+	name: string | null;
+	image: string | null;
 	diameter: string | null;
 	price: number | null;
 }

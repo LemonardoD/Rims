@@ -7,19 +7,9 @@ class RimInfo extends RimsInfoMid {
 	rimsByBrands = async (req: RimBrandsReqDto, res: Response) => {
 		const { rimBrand } = req.body;
 		if (rimBrand === "all") {
-			const response = await RimRepo.getAllRims();
-			return this.response(
-				200,
-				response.filter(rim => rim.rimId !== null),
-				res,
-			);
+			return this.response(200, await RimRepo.getAllRims(), res);
 		}
-		const response = await RimRepo.getRimsByBrand(rimBrand);
-		return this.response(
-			200,
-			response.filter(rim => rim.rimId !== null),
-			res,
-		);
+		return this.response(200, await RimRepo.getRimsByBrand(rimBrand), res);
 	};
 
 	rimByConfig = async (req: RimByConfigDto, res: Response) => {
