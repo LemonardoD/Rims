@@ -36,3 +36,7 @@ export interface OrderCallReqDTO {
 export interface OrderQuestionReqDTO {
 	body: { question: string; phone: string; email?: string };
 }
+
+export interface SearchReqDTO {
+	body: { searchText: string };
+}

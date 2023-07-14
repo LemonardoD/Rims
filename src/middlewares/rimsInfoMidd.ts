@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { RimBrandsReqDto, RimByConfigDto, RimIdReqDto } from "../DTOs/middlewareDTOs";
+import { RimBrandsReqDto, RimByConfigDto, RimIdReqDto, SearchReqDTO } from "../DTOs/middlewareDTOs";
 import { CustomError } from "../helpers/errThrower";
 import { Controller } from "../helpers/basicContrClass";
 import RimsRepo from "../database/repositories/rimsRepo";
@@ -21,10 +21,10 @@ export class RimsInfoMid extends Controller {
 		next();
 	};
 
-	rimConfigVal = async (req: RimByConfigDto, res: Response, next: NextFunction) => {
-		const { diameter, width, mountHoles } = req.body;
-		if (!diameter || !width || !mountHoles) {
-			throw new CustomError("Body with, diameter, width, mountHoles, required!", 406);
+	rimNameVal = async (req: SearchReqDTO, res: Response, next: NextFunction) => {
+		const { searchText } = req.body;
+		if (!searchText) {
+			throw new CustomError("SearchText, required!", 406);
 		}
 		next();
 	};

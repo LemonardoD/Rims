@@ -1,6 +1,15 @@
-export interface RimsByBrand {
+export interface RimsMainSortedBrand {
 	rimId: string | null;
 	name: string | null;
+	image: string | null;
+	diameter: string | null;
+	price: number | null;
+}
+
+export interface RimsFromDB {
+	rimId: number | bigint | null;
+	rimBrand: string | null;
+	rimName: string | null;
 	image: string | null;
 	diameter: string | null;
 	price: number | null;
@@ -17,6 +26,16 @@ export interface RimById {
 	diameter: string[];
 	mountingHoles: string | null;
 	price: number | null;
+	images: string[] | null;
+}
+
+export interface RimByIdFromDB {
+	rimDiameter: string | null;
+	rimWidth: string | null;
+	mountingHoles: string | null;
+	priceUSD: number | null;
+	rimBrand: string | null;
+	rimName: string | null;
 	images: string[] | null;
 }
 
