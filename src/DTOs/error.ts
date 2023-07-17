@@ -1,4 +1,4 @@
-export interface MyCustomError {
+export interface MyCustomErrorDTO {
 	message: string;
 	statusCode: number;
 }

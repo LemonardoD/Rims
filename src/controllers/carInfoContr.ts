@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CarInfoMid } from "../middlewares/carInfoMidd";
-import { CarBrandReqDto, ResCarSearchDto, SearchByCarReqDto } from "../DTOs/middlewareDTOs";
+import { CarBrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
 import CarRepo from "../database/repositories/carsRepo";
 import RimRepo from "../database/repositories/rimsRepo";
 
@@ -9,12 +9,12 @@ class CarInfo extends CarInfoMid {
 		return this.response(200, await CarRepo.getAllCarBrands(), res);
 	};
 
-	carModelsAndYears = async (req: CarBrandReqDto, res: Response) => {
+	carModelsAndYears = async (req: CarBrandReqDTO, res: Response) => {
 		const { brand } = req.params;
-		return this.response(200, await CarRepo.getCarModelByBrands(brand), res);
+		return this.response(200, await CarRepo.getCarModelsByBrand(brand), res);
 	};
 
-	searchByCar = async (req: SearchByCarReqDto, res: ResCarSearchDto) => {
+	searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => {
 		return this.response(200, await RimRepo.RimsByCar(res.locals), res);
 	};
 }

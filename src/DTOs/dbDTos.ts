@@ -1,4 +1,4 @@
-export interface RimsMainSortedBrand {
+export interface RimsMainSortedBrandDTO {
 	rimId: string | null;
 	name: string | null;
 	image: string | null;
@@ -6,7 +6,7 @@ export interface RimsMainSortedBrand {
 	price: number | null;
 }
 
-export interface RimsFromDB {
+export interface RimsFromDBDTO {
 	rimId: number | bigint | null;
 	rimBrand: string | null;
 	rimName: string | null;
@@ -15,12 +15,12 @@ export interface RimsFromDB {
 	price: number | null;
 }
 
-export interface ModelYear {
+export interface ModelYearDTO {
 	model: string | null;
 	years: number[] | undefined;
 }
 
-export interface RimById {
+export interface RimByIdDTO {
 	name: string | null;
 	width: string[];
 	diameter: string[];
@@ -29,7 +29,7 @@ export interface RimById {
 	images: string[] | null;
 }
 
-export interface RimByIdFromDB {
+export interface RimByIdFromDBDTO {
 	rimDiameter: string | null;
 	rimWidth: string | null;
 	mountingHoles: string | null;
@@ -39,7 +39,7 @@ export interface RimByIdFromDB {
 	images: string[] | null;
 }
 
-export interface RimConfig {
+export interface RimConfigDTO {
 	pcd: string;
 	rims: [
 		{
@@ -49,18 +49,18 @@ export interface RimConfig {
 	];
 }
 
-export interface SearchByCarDto {
+export interface SearchByCarDTO {
 	brand: string;
 	model: string;
 	year: number;
 }
 
-export interface SrchRimByConfCarDto {
+export interface SrchRimByConfCarDTO {
 	pcd: string;
 	rims: [{ width: string; diameter: string }];
 }
 
-export interface SearchRimByConfDto {
+export interface SearchRimByConfDTO {
 	width: string;
 	diameter: string;
 	mountHoles: string;
@@ -78,4 +78,25 @@ export interface RimConfigDTO {
 	diameter: string[];
 	width: string[];
 	mountHoles: string[];
+}
+
+export interface OffersDTO {
+	et: number;
+	count: number;
+	width: string;
+	vendor: string;
+	diameter: string;
+	centerBore: number;
+	priceInUsd: number;
+	boltPattern: string;
+}
+
+export interface CarModelsDTO {
+	years: null | { value: number; configs: [{ pcd: string; rims: [{ width: string; diameter: string }] }]; engines: string[] }[];
+}
+
+export interface ItemsAttributesDTO {
+	type: string;
+	color: null | string;
+	name_suffix: null | string;
 }

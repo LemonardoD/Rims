@@ -7,6 +7,6 @@ usOrders.use(cookieParser());
 
 usOrders.get("/order", UsOrders.tryCatch(UsOrders.CusVal), UsOrders.tryCatch(UsOrders.order));
 usOrders.get("/order-phcall", UsOrders.tryCatch(UsOrders.CusPhVal), UsOrders.tryCatch(UsOrders.orderAPhoneCall));
-usOrders.get("/order-question", UsOrders.tryCatch(UsOrders.CusQuestVal), UsOrders.tryCatch(UsOrders.orderQuestion));
+usOrders.get("/order-question", UsOrders.tryCatch(UsOrders.CusQuestVal), UsOrders.tryCatch(UsOrders.orderAQuestion));
 
 export default usOrders;

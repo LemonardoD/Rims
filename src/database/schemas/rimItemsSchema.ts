@@ -1,4 +1,5 @@
 import { jsonb, integer, varchar, bigint, pgTable } from "drizzle-orm/pg-core";
+import { ItemsAttributesDTO } from "../../DTOs/dbDTos";
 
 export const rimItems = pgTable("items", {
 	type: varchar("dtype", { length: 31 }).notNull(),
@@ -9,5 +10,5 @@ export const rimItems = pgTable("items", {
 	rimName: varchar("name", { length: 255 }),
 	imgName: varchar("thumbnail", { length: 255 }),
 	visits: integer("visits_count"),
-	rimAttrs: jsonb("attrs").$type<{ type: string; color: null | string; name_suffix: null | string }>(),
+	rimAttrs: jsonb("attrs").$type<ItemsAttributesDTO>(),
 });

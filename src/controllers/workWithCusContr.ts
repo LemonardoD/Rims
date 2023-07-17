@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { CusInfoMid } from "../middlewares/workWithCusMidd";
-import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/middlewareDTOs";
+import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
 import EmSender from "../services/emailSender";
 
 class WorkWithCustomer extends CusInfoMid {
@@ -17,7 +17,7 @@ class WorkWithCustomer extends CusInfoMid {
 		return this.response(200, "Phone call in processing.", res);
 	};
 
-	orderQuestion = async (req: OrderQuestionReqDTO, res: Response) => {
+	orderAQuestion = async (req: OrderQuestionReqDTO, res: Response) => {
 		const { question, phone, email } = req.body;
 		if (email) {
 			await EmSender.sendEmailToCusOrderAnswerQuestion(email);

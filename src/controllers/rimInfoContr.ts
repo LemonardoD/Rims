@@ -1,12 +1,12 @@
 import { Response, Request } from "express";
 import { RimsInfoMid } from "../middlewares/rimsInfoMidd";
-import { RimBrandsReqDto, RimByConfigDto, RimIdReqDto, SearchReqDTO } from "../DTOs/middlewareDTOs";
+import { RimBrandsReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
 import RimRepo from "../database/repositories/rimsRepo";
 import RimByConfRepo from "../database/repositories/rimsByConfRepo";
 import { CustomError } from "../helpers/errThrower";
 
 class RimInfo extends RimsInfoMid {
-	rimsByBrands = async (req: RimBrandsReqDto, res: Response) => {
+	rimsByBrands = async (req: RimBrandsReqDTO, res: Response) => {
 		const { rimBrand } = req.body;
 		if (rimBrand === "all") {
 			return this.response(200, await RimRepo.getAllRims(), res);
@@ -18,7 +18,7 @@ class RimInfo extends RimsInfoMid {
 		return this.response(200, await RimRepo.getRimConfigs(), res);
 	};
 
-	rimById = async (req: RimIdReqDto, res: Response) => {
+	rimById = async (req: RimIdReqDTO, res: Response) => {
 		const { id } = req.body;
 		await RimRepo.updateVisits(Number(id));
 		return this.response(200, await RimRepo.getRimById(Number(id)), res);
@@ -33,7 +33,7 @@ class RimInfo extends RimsInfoMid {
 		return this.response(200, await RimRepo.RimsByName(searchText), res);
 	};
 
-	rimByConfig = async (req: RimByConfigDto, res: Response) => {
+	rimByConfig = async (req: RimByConfigDTO, res: Response) => {
 		const { mountHoles, width, diameter } = req.body;
 		if (mountHoles && width && diameter) {
 			return this.response(200, await RimByConfRepo.RimsByAllConfig(req.body), res);

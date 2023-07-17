@@ -1,27 +1,27 @@
 import { Response } from "express";
-import { SrchRimByConfCarDto } from "./dbDTos";
+import { SrchRimByConfCarDTO } from "./dbDTos";
 
-export interface ResCarSearchDto extends Response {
-	locals: SrchRimByConfCarDto;
+export interface ResCarSearchDTO extends Response {
+	locals: SrchRimByConfCarDTO;
 }
 
-export interface CarBrandReqDto {
+export interface CarBrandReqDTO {
 	params: { brand: string };
 }
 
-export interface SearchByCarReqDto {
+export interface SearchByCarReqDTO {
 	body: { brand: string; model: string; year: number };
 }
 
-export interface RimBrandsReqDto {
+export interface RimBrandsReqDTO {
 	body: { rimBrand: string };
 }
 
-export interface RimIdReqDto {
+export interface RimIdReqDTO {
 	body: { id: string };
 }
 
-export interface RimByConfigDto {
+export interface RimByConfigDTO {
 	body: { diameter: string; width: string; mountHoles: string };
 }
 

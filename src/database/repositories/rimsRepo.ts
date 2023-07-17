@@ -11,14 +11,14 @@ class Rims {
 		const result = await db
 			.selectDistinct({
 				rimId: rimConfig.rimId,
-				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
-				image: tableRims.rimThumbnail,
+				rimBrand: rimItems.rimBrand,
+				rimName: rimItems.rimName,
+				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
 			})
-			.from(tableRims)
-			.leftJoin(rimConfig, eq(rimConfig.rimId, tableRims.RimsId));
+			.from(rimItems)
+			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
 		const finalResult = dbSorter(result);
 		return finalResult;
 	}
@@ -45,15 +45,15 @@ class Rims {
 		const result = await db
 			.selectDistinct({
 				rimId: rimConfig.rimId,
-				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
-				image: tableRims.rimThumbnail,
+				rimBrand: rimItems.rimBrand,
+				rimName: rimItems.rimName,
+				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
 			})
-			.from(tableRims)
-			.where(eq(tableRims.rimBrandName, reqRinBrand))
-			.leftJoin(rimConfig, eq(rimConfig.rimId, tableRims.RimsId));
+			.from(rimItems)
+			.where(eq(rimItems.rimBrand, reqRinBrand))
+			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
 		const finalResult = dbSorter(result);
 		return finalResult;
 	}
@@ -65,12 +65,12 @@ class Rims {
 				rimWidth: rimConfig.rimWidth,
 				mountingHoles: rimConfig.mountingHoles,
 				priceUSD: rimConfig.priceUSD,
-				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
-				images: tableRims.rimImg,
+				rimBrand: rimItems.rimBrand,
+				rimName: rimItems.rimName,
+				images: rimItems.arrImgNames,
 			})
-			.from(tableRims)
-			.where(eq(tableRims.RimsId, reqRimID))
+			.from(rimItems)
+			.where(eq(rimItems.rimId, reqRimID))
 			.leftJoin(rimConfig, eq(rimConfig.rimId, reqRimID));
 		return dbSorterRimById(result);
 	}
@@ -95,15 +95,15 @@ class Rims {
 		const rims = await db
 			.selectDistinct({
 				rimId: rimConfig.rimId,
-				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
-				image: tableRims.rimThumbnail,
+				rimBrand: rimItems.rimBrand,
+				rimName: rimItems.rimName,
+				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				width: rimConfig.rimWidth,
 				price: rimConfig.priceUSD,
 			})
-			.from(tableRims)
-			.where(eq(tableRims.RimsId, rimConfig.rimId))
+			.from(rimItems)
+			.where(eq(rimItems.rimId, rimConfig.rimId))
 			.leftJoin(rimConfig, eq(rimConfig.mountingHoles, config.pcd));
 		let rimRespArr: MainPgReturnRimDTO[] = [];
 		if (rims.length) {
@@ -129,15 +129,16 @@ class Rims {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
-				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
-				image: tableRims.rimThumbnail,
+				rimBrand: rimItems.rimBrand,
+				rimName: rimItems.rimName,
+				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
 			})
-			.from(tableRims)
-			.where(or(ilike(tableRims.rimShortName, `%${name}%`), ilike(tableRims.rimBrandName, `%${name}%`)))
-			.leftJoin(rimConfig, eq(rimConfig.rimId, tableRims.RimsId));
+			.from(rimItems)
+			.where(or(ilike(rimItems.rimName, `%${name}%`), ilike(rimItems.rimBrand, `%${name}%`)))
+			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
+		rims.map(el => console.log(el.rimName));
 		if (rims.length) {
 			return dbSorter(rims);
 		}
@@ -146,15 +147,15 @@ class Rims {
 	}
 
 	async IfRimBrandExist(brand: string) {
-		const result = await db.select().from(tableRims).where(eq(tableRims.rimBrandName, brand));
+		const result = await db.select().from(rimItems).where(eq(rimItems.rimBrand, brand));
 		if (result.length) {
 			return true;
 		}
 		return false;
 	}
 
-	async IfRimsExist(id: number) {
-		const result = await db.select().from(tableRims).where(eq(tableRims.RimsId, id));
+	async IfRimExist(id: number) {
+		const result = await db.select().from(rimItems).where(eq(rimItems.rimId, id));
 		if (result.length) {
 			return true;
 		}

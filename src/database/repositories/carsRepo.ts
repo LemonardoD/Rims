@@ -20,7 +20,7 @@ class CarBrands {
 		return false;
 	}
 
-	async getCarModelByBrands(brand: string): Promise<ModelYear[]> {
+	async getCarModelsByBrand(brand: string): Promise<ModelYear[]> {
 		const result = await db
 			.select({
 				model: carModels.carModel,
