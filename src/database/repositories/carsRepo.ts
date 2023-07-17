@@ -2,7 +2,7 @@ import { eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { carBrands } from "../schemas/carBrandsSchema";
 import { carModels } from "../schemas/carModelsSchema";
-import { ModelYear, RimConfig, SearchByCarDto, SrchRimByConfCarDto } from "../../DTOs/dbDTos";
+import { RimConfigInfoDTO, SearchByCarDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 
 class CarBrands {
 	async getAllCarBrands() {
@@ -20,23 +20,41 @@ class CarBrands {
 		return false;
 	}
 
-	async getCarModelsByBrand(brand: string): Promise<ModelYear[]> {
+	async IfCarModelExist(model: string) {
+		const result = await db.select().from(carModels).where(eq(carModels.carModel, model));
+		if (result.length) {
+			return true;
+		}
+		return false;
+	}
+
+	async getCarModelsByBrand(brand: string): Promise<(string | null)[]> {
 		const result = await db
 			.select({
 				model: carModels.carModel,
-				modelInfo: carModels.modelInfo,
 			})
 			.from(carBrands)
 			.where(eq(carBrands.carBrand, brand))
 			.leftJoin(carModels, eq(carModels.carBrandId, carBrands.id));
-		let finalArr = [];
-		for (let i = 0; i < result.length; i++) {
-			finalArr.push({ model: result[i].model, years: result[i].modelInfo?.years?.map(el => el.value) });
-		}
-		return finalArr;
+		return result.map(el => el.model);
 	}
 
-	async carInfoForRim(info: SearchByCarDto): Promise<SrchRimByConfCarDto> {
+	async getCarYearsByModel(brand: string, model: string) {
+		const [{ modelInfo }] = await db
+			.select({
+				modelInfo: carModels.modelInfo,
+			})
+			.from(carBrands)
+			.where(eq(carBrands.carBrand, brand))
+			.leftJoin(carModels, and(eq(carModels.carBrandId, carBrands.id), eq(carModels.carModel, model)));
+		const response = modelInfo?.years?.map(el => el.value);
+		if (response === undefined) {
+			return null;
+		}
+		return response;
+	}
+
+	async carInfoForRim(info: SearchByCarDTO): Promise<SrchRimByConfCarDTO> {
 		const { brand, model, year } = info;
 		const [{ modelInfo }] = await db
 			.select({
@@ -45,7 +63,7 @@ class CarBrands {
 			.from(carBrands)
 			.where(eq(carBrands.carBrand, brand))
 			.leftJoin(carModels, and(eq(carModels.carBrandId, carBrands.id), eq(carModels.carModel, model)));
-		let respArr: [RimConfig][] = [];
+		let respArr: [RimConfigInfoDTO][] = [];
 		if (modelInfo) {
 			modelInfo?.years?.forEach(el => {
 				if (el.value === year) respArr.push(el.configs);

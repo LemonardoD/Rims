@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { CarBrandReqDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
+import { CarBrandAndModelReqDTO, CarBrandReqDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
 import { CustomError } from "../helpers/errThrower";
 import { Controller } from "../helpers/basicContrClass";
 import CarRepo from "../database/repositories/carsRepo";
@@ -9,6 +9,17 @@ export class CarInfoMid extends Controller {
 		const { brand } = req.params;
 		if (!(await CarRepo.IfCarBrandExist(brand))) {
 			throw new CustomError("We don't have that car brand.", 406);
+		}
+		next();
+	};
+
+	carBrandAndModelVal = async (req: CarBrandAndModelReqDTO, res: Response, next: NextFunction) => {
+		const { brand, model } = req.params;
+		if (!(await CarRepo.IfCarBrandExist(brand))) {
+			throw new CustomError("We don't have that car brand.", 406);
+		}
+		if (!(await CarRepo.IfCarModelExist(model))) {
+			throw new CustomError(`We don't have model of the ${brand} brand.`, 406);
 		}
 		next();
 	};

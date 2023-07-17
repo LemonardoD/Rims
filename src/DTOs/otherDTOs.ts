@@ -9,6 +9,10 @@ export interface CarBrandReqDTO {
 	params: { brand: string };
 }
 
+export interface CarBrandAndModelReqDTO {
+	params: { brand: string; model: string };
+}
+
 export interface SearchByCarReqDTO {
 	body: { brand: string; model: string; year: number };
 }

@@ -15,11 +15,6 @@ export interface RimsFromDBDTO {
 	price: number | null;
 }
 
-export interface ModelYearDTO {
-	model: string | null;
-	years: number[] | undefined;
-}
-
 export interface RimByIdDTO {
 	name: string | null;
 	width: string[];
@@ -39,7 +34,7 @@ export interface RimByIdFromDBDTO {
 	images: string[] | null;
 }
 
-export interface RimConfigDTO {
+export interface RimConfigInfoDTO {
 	pcd: string;
 	rims: [
 		{

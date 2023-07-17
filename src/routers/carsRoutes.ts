@@ -6,6 +6,6 @@ const carRtr = Router();
 carRtr.use(cookieParser());
 
 carRtr.get("/car-brands", CarInfo.tryCatch(CarInfo.allCarBrands));
-carRtr.get("/car-models/:brand", CarInfo.tryCatch(CarInfo.carBrandVal), CarInfo.tryCatch(CarInfo.carModelsAndYears));
-
+carRtr.get("/car-models/:brand", CarInfo.tryCatch(CarInfo.carBrandVal), CarInfo.tryCatch(CarInfo.carModels));
+carRtr.get("/car-years/:brand/:model", CarInfo.tryCatch(CarInfo.carBrandAndModelVal), CarInfo.tryCatch(CarInfo.carYears));
 export default carRtr;

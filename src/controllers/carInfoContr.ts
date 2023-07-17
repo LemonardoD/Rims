@@ -9,13 +9,18 @@ class CarInfo extends CarInfoMid {
 		return this.response(200, await CarRepo.getAllCarBrands(), res);
 	};
 
-	carModelsAndYears = async (req: CarBrandReqDTO, res: Response) => {
+	carModels = async (req: CarBrandReqDTO, res: Response) => {
 		const { brand } = req.params;
 		return this.response(200, await CarRepo.getCarModelsByBrand(brand), res);
 	};
 
 	searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => {
 		return this.response(200, await RimRepo.RimsByCar(res.locals), res);
+	};
+
+	carYears = async (req: any, res: ResCarSearchDTO) => {
+		const { brand, model } = req.params;
+		return this.response(200, await CarRepo.getCarYearsByModel(brand, model), res);
 	};
 }
 
