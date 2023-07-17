@@ -13,14 +13,14 @@ export function priceToUAH(usd: number | null) {
 
 export function photoArrPath(imgs: string[] | null) {
 	if (imgs) {
-		return imgs.map(el => `${PHOTO_PATH + el}`);
+		return imgs.map(el => `${PHOTO_PATH + el.replaceAll(" ", "_").replaceAll("%2", "")}`);
 	}
 	return null;
 }
 
 export function photoPath(img: string | null) {
 	if (img) {
-		return `${PHOTO_PATH + img}`;
+		return `${PHOTO_PATH + img.replaceAll(" ", "_").replaceAll("%2", "")}`;
 	}
 	return null;
 }
