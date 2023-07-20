@@ -23,7 +23,6 @@ const autoUrls = [
 ];
 
 const allFeedUrls = [
-	"https://tsn.ua/rss/all-xml",
 	"https://sundries.com.ua/feed",
 	"https://static.censor.net/censornet/rss/rss_uk_news.xml",
 	"https://bigkyiv.com.ua/feed",
