@@ -50,11 +50,8 @@ export interface SearchReqDTO {
 }
 
 export interface FeedArrayDTO {
-	date: Date;
+	pubDate: Date;
 	link: string;
-	artTitle: string;
-}
-
-export interface FetchRssFeedDTO {
-	items: { [key: string]: string }[];
+	title: string;
+	sourceName: string;
 }

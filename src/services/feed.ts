@@ -1,5 +1,5 @@
 import Parser from "rss-parser";
-import { FeedArrayDTO, FetchRssFeedDTO } from "../DTOs/otherDTOs";
+import { FeedArrayDTO } from "../DTOs/otherDTOs";
 import cron from "node-cron";
 
 const parser = new Parser({
@@ -68,30 +68,36 @@ const feedSearchWords = [
 async function fetchRssFeed() {
 	let newsArr: FeedArrayDTO[] = [];
 	for (let el of autoUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL(el);
-		feed.items.map(item => {
-			if (item !== undefined) {
-				newsArr.push({
-					date: new Date(item.pubDate),
-					link: item.link,
-					artTitle: item.title,
-				});
-			}
+		await parser.parseURL(el, (err: Error, feed: any) => {
+			if (err) throw err;
+			feed.items.forEach((item: FeedArrayDTO) => {
+				if (feedSearchWords.some(substring => item.title.includes(substring))) {
+					newsArr.push({
+						pubDate: new Date(item.pubDate),
+						link: item.link,
+						title: item.title,
+						sourceName: feed.title,
+					});
+				}
+			});
 		});
 	}
 	for (let el of allFeedUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL(el);
-		feed.items.map(item => {
-			if (item !== undefined && feedSearchWords.some(substring => item.title.includes(substring))) {
-				newsArr.push({
-					date: new Date(item.pubDate),
-					link: item.link,
-					artTitle: item.title,
-				});
-			}
+		await parser.parseURL(el, (err: Error, feed: any) => {
+			feed.items.forEach((item: FeedArrayDTO) => {
+				if (err) throw err;
+				if (feedSearchWords.some(substring => item.title.includes(substring))) {
+					newsArr.push({
+						pubDate: new Date(item.pubDate),
+						link: item.link,
+						title: item.title,
+						sourceName: feed.title,
+					});
+				}
+			});
 		});
 	}
-	const finalArr = newsArr.sort((a, b) => b.date.getTime() - a.date.getTime());
+	const finalArr = newsArr.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 	return finalArr;
 }
 
