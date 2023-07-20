@@ -61,35 +61,39 @@ const feedSearchWords = [
 async function fetchRssFeed() {
 	let newsArr: FeedArrayDTO[] = [];
 	for (let el of autoUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL(el);
-		feed.items.map(item => {
-			if (item !== undefined) {
-				newsArr.push({
-					date: new Date(item.pubDate),
-					link: item.link,
-					artTitle: item.title,
-				});
+		await parser.parseURL(el, (err: Error, feed: FetchRssFeedDTO) => {
+			if (err) {
+				console.log("file: feed.ts:66 ~ err:", err);
 			}
+			feed.items.map(item => {
+				if (item !== undefined) {
+					newsArr.push({
+						date: new Date(item.pubDate),
+						link: item.link,
+						artTitle: item.title,
+					});
+				}
+			});
 		});
 	}
 	for (let el of allFeedUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL(el);
-		feed.items.map(item => {
-			if (item !== undefined && feedSearchWords.some(substring => item.title.includes(substring))) {
-				newsArr.push({
-					date: new Date(item.pubDate),
-					link: item.link,
-					artTitle: item.title,
-				});
+		await parser.parseURL(el, (err: Error, feed: FetchRssFeedDTO) => {
+			if (err) {
+				console.log("file: feed.ts:66 ~ err:", err);
 			}
+			feed.items.map(item => {
+				if (item !== undefined && feedSearchWords.some(substring => item.title.includes(substring))) {
+					newsArr.push({
+						date: new Date(item.pubDate),
+						link: item.link,
+						artTitle: item.title,
+					});
+				}
+			});
 		});
+		const finalArr = newsArr.sort((a, b) => b.date.getTime() - a.date.getTime());
+		return finalArr;
 	}
-	const finalArr = newsArr.sort((a, b) => b.date.getTime() - a.date.getTime());
-	return finalArr;
 }
 
 export let news = await fetchRssFeed();
-
-cron.schedule("0 */6 * * *", async () => {
-	news = await fetchRssFeed();
-});
