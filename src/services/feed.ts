@@ -2,7 +2,12 @@ import Parser from "rss-parser";
 import { FeedArrayDTO, FetchRssFeedDTO } from "../DTOs/otherDTOs";
 import cron from "node-cron";
 
-const parser = new Parser();
+const parser = new Parser({
+	requestOptions: {
+		rejectUnauthorized: false,
+	},
+	headers: { "User-Agent": "Chrome" },
+});
 const autoUrls = [
 	"https://www.autocentre.ua/ua/feed",
 	"https://ampercar.com/feed",
@@ -14,9 +19,11 @@ const autoUrls = [
 	"https://motorcar.com.ua/feed/",
 	"https://avtodream.org/rss.xml",
 	"https://ukrautoprom.com.ua/feed",
+	"https://www.autoconsulting.com.ua/rss.html",
 ];
 
 const allFeedUrls = [
+	"https://tsn.ua/rss/all-xml",
 	"https://sundries.com.ua/feed",
 	"https://static.censor.net/censornet/rss/rss_uk_news.xml",
 	"https://bigkyiv.com.ua/feed",
@@ -61,39 +68,35 @@ const feedSearchWords = [
 async function fetchRssFeed() {
 	let newsArr: FeedArrayDTO[] = [];
 	for (let el of autoUrls) {
-		await parser.parseURL(el, (err: Error, feed: FetchRssFeedDTO) => {
-			if (err) {
-				console.log("file: feed.ts:66 ~ err:", err);
+		const feed: FetchRssFeedDTO = await parser.parseURL(el);
+		feed.items.map(item => {
+			if (item !== undefined) {
+				newsArr.push({
+					date: new Date(item.pubDate),
+					link: item.link,
+					artTitle: item.title,
+				});
 			}
-			feed.items.map(item => {
-				if (item !== undefined) {
-					newsArr.push({
-						date: new Date(item.pubDate),
-						link: item.link,
-						artTitle: item.title,
-					});
-				}
-			});
 		});
 	}
 	for (let el of allFeedUrls) {
-		await parser.parseURL(el, (err: Error, feed: FetchRssFeedDTO) => {
-			if (err) {
-				console.log("file: feed.ts:66 ~ err:", err);
+		const feed: FetchRssFeedDTO = await parser.parseURL(el);
+		feed.items.map(item => {
+			if (item !== undefined && feedSearchWords.some(substring => item.title.includes(substring))) {
+				newsArr.push({
+					date: new Date(item.pubDate),
+					link: item.link,
+					artTitle: item.title,
+				});
 			}
-			feed.items.map(item => {
-				if (item !== undefined && feedSearchWords.some(substring => item.title.includes(substring))) {
-					newsArr.push({
-						date: new Date(item.pubDate),
-						link: item.link,
-						artTitle: item.title,
-					});
-				}
-			});
 		});
-		const finalArr = newsArr.sort((a, b) => b.date.getTime() - a.date.getTime());
-		return finalArr;
 	}
+	const finalArr = newsArr.sort((a, b) => b.date.getTime() - a.date.getTime());
+	return finalArr;
 }
 
 export let news = await fetchRssFeed();
+
+// cron.schedule("0 */6 * * *", async () => { // did'n work with render(work only in payed  version), but needed 4 app
+// 	news = await fetchRssFeed();
+// });
