@@ -17,7 +17,6 @@ const autoUrls = [
 ];
 
 const allFeedUrls = [
-	"https://tsn.ua/rss/all-xml",
 	"https://sundries.com.ua/feed",
 	"https://static.censor.net/censornet/rss/rss_uk_news.xml",
 	"https://bigkyiv.com.ua/feed",
@@ -62,7 +61,7 @@ const feedSearchWords = [
 async function fetchRssFeed() {
 	let newsArr: FeedArrayDTO[] = [];
 	for (let el of autoUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL("https://cors-anywhere.herokuapp.com/corsdemo" + el);
+		const feed: FetchRssFeedDTO = await parser.parseURL(el);
 		feed.items.map(item => {
 			if (item !== undefined) {
 				newsArr.push({
@@ -74,7 +73,7 @@ async function fetchRssFeed() {
 		});
 	}
 	for (let el of allFeedUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL("https://cors-anywhere.herokuapp.com/corsdemo" + el);
+		const feed: FetchRssFeedDTO = await parser.parseURL(el);
 		feed.items.map(item => {
 			if (item !== undefined && feedSearchWords.some(substring => item.title.includes(substring))) {
 				newsArr.push({
