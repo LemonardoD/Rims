@@ -53,5 +53,10 @@ export interface FeedArrayDTO {
 	pubDate: Date;
 	link: string;
 	title: string;
-	sourceName: string;
+	sourceName: string | undefined;
+}
+
+export interface FeedsDTO {
+	items: { [key: string]: string }[];
+	title?: string;
 }

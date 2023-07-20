@@ -1,5 +1,5 @@
 import Parser from "rss-parser";
-import { FeedArrayDTO } from "../DTOs/otherDTOs";
+import { FeedArrayDTO, FeedsDTO } from "../DTOs/otherDTOs";
 import cron from "node-cron";
 
 const parser = new Parser({
@@ -68,9 +68,9 @@ const feedSearchWords = [
 async function fetchRssFeed() {
 	let newsArr: FeedArrayDTO[] = [];
 	for (let el of autoUrls) {
-		await parser.parseURL(el, (err: Error, feed: any) => {
+		await parser.parseURL(el, (err: Error, feed: FeedsDTO) => {
 			if (err) throw err;
-			feed.items.forEach((item: FeedArrayDTO) => {
+			feed.items.forEach(item => {
 				if (feedSearchWords.some(substring => item.title.includes(substring))) {
 					newsArr.push({
 						pubDate: new Date(item.pubDate),
@@ -83,8 +83,8 @@ async function fetchRssFeed() {
 		});
 	}
 	for (let el of allFeedUrls) {
-		await parser.parseURL(el, (err: Error, feed: any) => {
-			feed.items.forEach((item: FeedArrayDTO) => {
+		await parser.parseURL(el, (err: Error, feed: FeedsDTO) => {
+			feed.items.forEach(item => {
 				if (err) throw err;
 				if (feedSearchWords.some(substring => item.title.includes(substring))) {
 					newsArr.push({
