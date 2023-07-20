@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { CarInfoMid } from "../middlewares/carInfoMidd";
-import { CarBrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
+import { CarBrandAndModelReqDTO, CarBrandReqDTO, CarNewsReqDTO, ResCarSearchDTO } from "../DTOs/otherDTOs";
 import CarRepo from "../database/repositories/carsRepo";
 import RimRepo from "../database/repositories/rimsRepo";
+import { news } from "../services/feed";
 
 class CarInfo extends CarInfoMid {
 	allCarBrands = async (req: Request, res: Response) => {
@@ -14,13 +15,18 @@ class CarInfo extends CarInfoMid {
 		return this.response(200, await CarRepo.getCarModelsByBrand(brand), res);
 	};
 
-	searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => {
+	carYears = async (req: CarBrandAndModelReqDTO, res: ResCarSearchDTO) => {
+		const { brand, model } = req.params;
+		return this.response(200, await CarRepo.getCarYearsByModel(brand, model), res);
+	};
+
+	searchRimsByCar = async (req: Request, res: ResCarSearchDTO) => {
 		return this.response(200, await RimRepo.RimsByCar(res.locals), res);
 	};
 
-	carYears = async (req: any, res: ResCarSearchDTO) => {
-		const { brand, model } = req.params;
-		return this.response(200, await CarRepo.getCarYearsByModel(brand, model), res);
+	carNews = async (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
+		const offset = Number(req.params.offset);
+		return this.response(200, news.slice(offset, offset + 20), res);
 	};
 }
 

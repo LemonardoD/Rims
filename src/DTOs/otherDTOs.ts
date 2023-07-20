@@ -13,6 +13,10 @@ export interface CarBrandAndModelReqDTO {
 	params: { brand: string; model: string };
 }
 
+export interface CarNewsReqDTO {
+	params: { offset: string };
+}
+
 export interface SearchByCarReqDTO {
 	body: { brand: string; model: string; year: number };
 }
@@ -43,4 +47,14 @@ export interface OrderQuestionReqDTO {
 
 export interface SearchReqDTO {
 	body: { searchText: string };
+}
+
+export interface FeedArrayDTO {
+	date: Date;
+	link: string;
+	artTitle: string;
+}
+
+export interface FetchRssFeedDTO {
+	items: { [key: string]: string }[];
 }

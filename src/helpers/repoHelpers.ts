@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
-import { RimById, RimByIdFromDB, RimsFromDB, RimsMainSortedBrand } from "../DTOs/dbDTos";
 dotenv.config();
+import { RimByIdDTO, RimByIdFromDBDTO, RimsFromDBDTO, RimsMainSortedBrandDTO } from "../DTOs/dbDTos";
 
 export const { EXCHANGE_RATE, PHOTO_PATH } = <{ EXCHANGE_RATE: string; PHOTO_PATH: string }>process.env;
 
@@ -41,7 +41,7 @@ export function stringConverter(number: number | bigint | null) {
 	}
 	return null;
 }
-export function dbSorter(array: RimsFromDB[]): RimsMainSortedBrand[] {
+export function dbSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
 	let result = [];
 	for (let i = 0; i < array.length; i++) {
 		result.push({
@@ -55,7 +55,7 @@ export function dbSorter(array: RimsFromDB[]): RimsMainSortedBrand[] {
 	return result.filter(rim => rim.rimId !== null);
 }
 
-export function dbSorterRimById(array: RimByIdFromDB[]): RimById {
+export function dbSorterRimById(array: RimByIdFromDBDTO[]): RimByIdDTO {
 	const [{ mountingHoles, priceUSD, rimBrand, rimName, images }] = array;
 	let width: string[] = [];
 	let diameter: string[] = [];
