@@ -2,9 +2,7 @@ import Parser from "rss-parser";
 import { FeedArrayDTO, FetchRssFeedDTO } from "../DTOs/otherDTOs";
 import cron from "node-cron";
 
-const parser = new Parser({
-	headers: { "User-Agent": "Chrome" },
-});
+const parser = new Parser();
 const autoUrls = [
 	"https://www.autocentre.ua/ua/feed",
 	"https://ampercar.com/feed",
@@ -16,7 +14,6 @@ const autoUrls = [
 	"https://motorcar.com.ua/feed/",
 	"https://avtodream.org/rss.xml",
 	"https://ukrautoprom.com.ua/feed",
-	"https://www.autoconsulting.com.ua/rss.html",
 ];
 
 const allFeedUrls = [
@@ -65,7 +62,7 @@ const feedSearchWords = [
 async function fetchRssFeed() {
 	let newsArr: FeedArrayDTO[] = [];
 	for (let el of autoUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL(el);
+		const feed: FetchRssFeedDTO = await parser.parseURL("https://cors-anywhere.herokuapp.com/corsdemo" + el);
 		feed.items.map(item => {
 			if (item !== undefined) {
 				newsArr.push({
