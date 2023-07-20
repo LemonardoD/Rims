@@ -74,7 +74,7 @@ async function fetchRssFeed() {
 		});
 	}
 	for (let el of allFeedUrls) {
-		const feed: FetchRssFeedDTO = await parser.parseURL(el);
+		const feed: FetchRssFeedDTO = await parser.parseURL("https://cors-anywhere.herokuapp.com/corsdemo" + el);
 		feed.items.map(item => {
 			if (item !== undefined && feedSearchWords.some(substring => item.title.includes(substring))) {
 				newsArr.push({
