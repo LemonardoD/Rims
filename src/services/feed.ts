@@ -2,12 +2,7 @@ import Parser from "rss-parser";
 import { FeedArrayDTO, FeedsDTO } from "../DTOs/otherDTOs";
 import cron from "node-cron";
 
-const parser = new Parser({
-	requestOptions: {
-		rejectUnauthorized: false,
-	},
-	headers: { "User-Agent": "Chrome" },
-});
+const parser = new Parser();
 const autoUrls = [
 	"https://www.autocentre.ua/ua/feed",
 	"https://ampercar.com/feed",
@@ -23,6 +18,7 @@ const autoUrls = [
 ];
 
 const allFeedUrls = [
+	"https://tsn.ua/rss/all-xml",
 	"https://sundries.com.ua/feed",
 	"https://static.censor.net/censornet/rss/rss_uk_news.xml",
 	"https://bigkyiv.com.ua/feed",
