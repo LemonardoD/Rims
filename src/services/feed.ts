@@ -14,85 +14,31 @@ const autoUrls = [
 	"https://motorcar.com.ua/feed/",
 	"https://avtodream.org/rss.xml",
 	"https://ukrautoprom.com.ua/feed",
-	"https://www.autoconsulting.com.ua/rss.html",
+	"https://auto.ria.com/rss",
+	"https://autonews.autoua.net/rss/",
+	"https://auto.bigmir.net/rss",
 ];
-
-const allFeedUrls = [
-	"https://tsn.ua/rss/all-xml",
-	"https://sundries.com.ua/feed",
-	"https://static.censor.net/censornet/rss/rss_uk_news.xml",
-	"https://bigkyiv.com.ua/feed",
-	"https://newformat.info/feed",
-	"https://vikna.tv/feed/",
-	"https://hvylya.net/feed/rss2.xml",
-	"https://agropravda.com/feed/",
-	"https://hromadske.ua/feed/",
-	"https://24tv.ua/rss/all.xml",
-	"https://vsviti.com.ua/feed",
-	"https://life.fakty.com.ua/ua/feed/",
-	"https://nnews.com.ua/feed",
-];
-
-const feedSearchWords = [
-	"Уживані авто",
-	"водител",
-	"пальне",
-	"водії",
-	"Tesla",
-	"пливо",
-	"автомобілістам",
-	"АЗС",
-	"автомобилистам",
-	"автомобиль",
-	"дизель",
-	"бензин",
-	"автомобили",
-	"кросовер",
-	"седан",
-	"Toyota",
-	"Volvo",
-	"Mazda",
-	"Nissan",
-	"Cybertruck",
-	"Ford",
-	"Skoda",
-	"автогаз",
-	"розмитнення авто",
-];
+// "https://news.infocar.ua/rss/",
+// 	"https://www.autoconsulting.com.ua/rss.html",
 
 async function fetchRssFeed() {
 	let newsArr: FeedArrayDTO[] = [];
 	for (let el of autoUrls) {
 		const feed: FeedsDTO = await parser.parseURL(el);
 		feed.items.forEach(item => {
-			if (feedSearchWords.some(substring => item.title.includes(substring))) {
-				newsArr.push({
-					pubDate: new Date(item.pubDate),
-					link: item.link,
-					title: item.title,
-					sourceName: feed.title,
-				});
-			}
-		});
-	}
-	for (let el of allFeedUrls) {
-		const feed: FeedsDTO = await parser.parseURL(el);
-		feed.items.forEach(item => {
-			if (feedSearchWords.some(substring => item.title.includes(substring))) {
-				newsArr.push({
-					pubDate: new Date(item.pubDate),
-					link: item.link,
-					title: item.title,
-					sourceName: feed.title,
-				});
-			}
+			newsArr.push({
+				pubDate: new Date(item.pubDate),
+				link: item.link,
+				title: item.title,
+				sourceName: feed.title,
+			});
 		});
 	}
 	const finalArr = newsArr.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 	return finalArr;
 }
 
-export let news = await fetchRssFeed();
+// export let news = await fetchRssFeed();
 
 // cron.schedule("0 */6 * * *", async () => { // did'n work with render(work only in payed  version), but needed 4 app
 // 	news = await fetchRssFeed();
