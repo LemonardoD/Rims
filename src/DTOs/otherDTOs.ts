@@ -9,8 +9,12 @@ export interface CarBrandReqDTO {
 	params: { brand: string };
 }
 
-export interface CarBrandAndModelReqDTO {
+export interface CarBrandAndModelReqDTO extends CarBrandReqDTO {
 	params: { brand: string; model: string };
+}
+
+export interface CarBrModYrReqDTO extends CarBrandAndModelReqDTO {
+	params: { brand: string; model: string; year: string };
 }
 
 export interface CarNewsReqDTO {
