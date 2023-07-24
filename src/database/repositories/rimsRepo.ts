@@ -24,7 +24,7 @@ class Rims {
 
 	async getPopularRims(): Promise<MainPgReturnRimDTO[]> {
 		const result = await db
-			.selectDistinct({
+			.select({
 				rimId: rimItems.rimId,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
@@ -33,11 +33,15 @@ class Rims {
 				image: rimItems.imgName,
 			})
 			.from(rimItems)
-			.limit(20)
+			.limit(30)
 			.orderBy(rimItems.visits)
 			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
 		const finalResult = dbSorter(result);
-		return finalResult;
+		console.log(
+			"file: rimsRepo.ts:41 ~ finalResult:",
+			finalResult.filter((obj, index) => finalResult.findIndex(item => item.rimId === obj.rimId) === index).splice(0, 20).length,
+		);
+		return finalResult.filter((obj, index) => finalResult.findIndex(item => item.rimId === obj.rimId) === index).splice(0, 20);
 	}
 
 	async getRimsByBrand(reqRinBrand: string) {

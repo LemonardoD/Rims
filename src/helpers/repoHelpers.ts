@@ -52,7 +52,7 @@ export function dbSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
 			price: priceToUAH(array[i].price),
 		});
 	}
-	return result.filter(rim => rim.rimId !== null);
+	return result.filter(rim => rim.rimId !== null && rim.price !== null);
 }
 
 export function dbSorterRimById(array: RimByIdFromDBDTO[]): RimByIdDTO {
