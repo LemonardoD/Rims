@@ -1,7 +1,15 @@
 import { db } from "../db";
 import { eq, or, ilike } from "drizzle-orm";
 import { rimConfig } from "../schemas/rimConfigSchema";
-import { nameConnector, photoPath, priceToUAH, stringConverter, dbSorter, dbSorterRimById } from "../../helpers/repoHelpers";
+import {
+	nameConnector,
+	photoPath,
+	priceToUAH,
+	idConvert,
+	dbRimRespSorter,
+	dbSorterRimById,
+	resultMerger,
+} from "../../helpers/repoHelpers";
 import { MainPgReturnRimDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 import { rimItems } from "../schemas/rimItemsSchema";
 
@@ -18,7 +26,7 @@ class Rims {
 			})
 			.from(rimItems)
 			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-		const finalResult = dbSorter(result);
+		const finalResult = resultMerger(result);
 		return finalResult;
 	}
 
@@ -36,12 +44,10 @@ class Rims {
 			.limit(30)
 			.orderBy(rimItems.visits)
 			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-		const finalResult = dbSorter(result);
-		console.log(
-			"file: rimsRepo.ts:41 ~ finalResult:",
-			finalResult.filter((obj, index) => finalResult.findIndex(item => item.rimId === obj.rimId) === index).splice(0, 20).length,
-		);
-		return finalResult.filter((obj, index) => finalResult.findIndex(item => item.rimId === obj.rimId) === index).splice(0, 20);
+		const finalResult = dbRimRespSorter(result);
+		return finalResult
+			.filter((obj, index) => finalResult.findIndex(item => item.diameter === obj.diameter) === index)
+			.splice(0, 20);
 	}
 
 	async getRimsByBrand(reqRinBrand: string) {
@@ -57,7 +63,7 @@ class Rims {
 			.from(rimItems)
 			.where(eq(rimItems.rimBrand, reqRinBrand))
 			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-		const finalResult = dbSorter(result);
+		const finalResult = dbRimRespSorter(result);
 		return finalResult;
 	}
 
@@ -114,11 +120,11 @@ class Rims {
 				config.rims.forEach(reqEl => {
 					if (dbEl.diameter === reqEl.diameter && dbEl.width === reqEl.width) {
 						rimRespArr.push({
-							rimId: stringConverter(dbEl.rimId),
+							rimId: idConvert(dbEl.rimId),
 							name: nameConnector(dbEl.rimBrand, dbEl.rimName),
 							image: photoPath(dbEl.image),
-							diameter: dbEl.diameter,
-							price: priceToUAH(dbEl.price),
+							diameter: [dbEl.diameter],
+							price: [priceToUAH(dbEl.price)],
 						});
 					}
 				});
@@ -128,7 +134,7 @@ class Rims {
 		return null;
 	}
 
-	async RimsByName(name: string): Promise<RimsMainSortedBrandDTO[] | null> {
+	async RimsByName(name: string): Promise<RimsMainSortedBrandDTO[] | {}> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
@@ -141,12 +147,10 @@ class Rims {
 			.from(rimItems)
 			.where(or(ilike(rimItems.rimName, `%${name}%`), ilike(rimItems.rimBrand, `%${name}%`)))
 			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-		rims.map(el => console.log(el.rimName));
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
-		console.log(name);
-		return null;
+		return {};
 	}
 
 	async IfRimBrandExist(brand: string) {

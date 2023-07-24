@@ -35,24 +35,40 @@ export function nameConnector(nm1: string | null, nm2: string | null) {
 	return null;
 }
 
-export function stringConverter(number: number | bigint | null) {
+export function idConvert(number: number | bigint | null) {
 	if (number) {
 		return number.toString();
 	}
 	return null;
 }
-export function dbSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
+
+export function resultMerger(array: RimsFromDBDTO[]) {
+	const sortedArr = dbRimRespSorter(array);
+	const mergedRes = sortedArr.reduce((previous: RimsMainSortedBrandDTO[], next: RimsMainSortedBrandDTO) => {
+		const match = previous.find(el => el.rimId === next.rimId);
+		if (!match) {
+			previous.push(next);
+		}
+		if (match) {
+			match.diameter[match.diameter.length] = next.diameter[0];
+			match.price[match.price.length] = next.price[0];
+		}
+		return previous;
+	}, []);
+	return mergedRes;
+}
+export function dbRimRespSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
 	let result: RimsMainSortedBrandDTO[] = [];
 	for (let i = 0; i < array.length; i++) {
 		result.push({
-			rimId: stringConverter(array[i].rimId),
+			rimId: idConvert(array[i].rimId),
 			name: nameConnector(array[i].rimBrand, array[i].rimName),
 			image: photoPath(array[i].image),
-			diameter: array[i].diameter,
-			price: priceToUAH(array[i].price),
+			diameter: [array[i].diameter],
+			price: [priceToUAH(array[i].price)],
 		});
 	}
-	return result.filter(rim => rim.rimId !== null && rim.price !== null);
+	return result.filter(rim => rim.rimId !== null && rim.price[0] !== null);
 }
 
 export function dbSorterRimById(array: RimByIdFromDBDTO[]): RimByIdDTO {

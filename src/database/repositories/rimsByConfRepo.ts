@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
 import { rimConfig } from "../schemas/rimConfigSchema";
-import { dbSorter } from "../../helpers/repoHelpers";
+import { resultMerger } from "../../helpers/repoHelpers";
 import { tableRims } from "../schemas/rimsSchema";
 import { RimsMainSortedBrandDTO, SearchRimByConfDTO } from "../../DTOs/dbDTos";
 
@@ -27,7 +27,7 @@ class RimByConfig {
 				),
 			);
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
 		return null;
 	}
@@ -46,7 +46,7 @@ class RimByConfig {
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
 			.leftJoin(rimConfig, and(eq(rimConfig.mountingHoles, config.mountHoles), eq(rimConfig.rimWidth, config.width)));
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
 		return null;
 	}
@@ -65,7 +65,7 @@ class RimByConfig {
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
 			.leftJoin(rimConfig, and(eq(rimConfig.rimWidth, config.width), eq(rimConfig.rimDiameter, config.diameter)));
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
 		return null;
 	}
@@ -84,7 +84,7 @@ class RimByConfig {
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
 			.leftJoin(rimConfig, and(eq(rimConfig.mountingHoles, config.mountHoles), eq(rimConfig.rimDiameter, config.diameter)));
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
 		return null;
 	}
@@ -103,7 +103,7 @@ class RimByConfig {
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
 			.leftJoin(rimConfig, eq(rimConfig.rimWidth, config.width));
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
 		return null;
 	}
@@ -122,7 +122,7 @@ class RimByConfig {
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
 			.leftJoin(rimConfig, eq(rimConfig.rimDiameter, config.diameter));
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
 		return null;
 	}
@@ -141,7 +141,7 @@ class RimByConfig {
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
 			.leftJoin(rimConfig, eq(rimConfig.mountingHoles, config.mountHoles));
 		if (rims.length) {
-			return dbSorter(rims);
+			return resultMerger(rims);
 		}
 		return null;
 	}

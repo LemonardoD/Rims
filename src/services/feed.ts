@@ -39,8 +39,7 @@ export async function fetchRssFeed() {
 			});
 		});
 	}
-	const finalArr = newsArr.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
-	return finalArr;
+	return newsArr.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 }
 export const news = await fetchRssFeed();
 // cron.schedule("0 */6 * * *", async () => { // did'n work with render(work only in payed  version), but needed 4 app
