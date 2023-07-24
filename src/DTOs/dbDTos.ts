@@ -2,7 +2,7 @@ export interface RimsMainSortedBrandDTO {
 	rimId: string | null;
 	name: string | null;
 	image: string | null;
-	diameter: string | null;
+	diameter: string | null | string[];
 	price: number | null;
 }
 
@@ -11,7 +11,7 @@ export interface RimsFromDBDTO {
 	rimBrand: string | null;
 	rimName: string | null;
 	image: string | null;
-	diameter: string | null;
+	diameter: string | null | string[];
 	price: number | null;
 }
 
@@ -65,7 +65,7 @@ export interface MainPgReturnRimDTO {
 	rimId: string | null;
 	name: string | null;
 	image: string | null;
-	diameter: string | null;
+	diameter: string | null | string[];
 	price: number | null;
 }
 

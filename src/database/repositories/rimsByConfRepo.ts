@@ -3,10 +3,10 @@ import { eq, and } from "drizzle-orm";
 import { rimConfig } from "../schemas/rimConfigSchema";
 import { dbSorter } from "../../helpers/repoHelpers";
 import { tableRims } from "../schemas/rimsSchema";
-import { RimsMainSortedBrand, SearchRimByConfDto } from "../../DTOs/dbDTos";
+import { RimsMainSortedBrandDTO, SearchRimByConfDTO } from "../../DTOs/dbDTos";
 
 class RimByConfig {
-	async RimsByAllConfig(config: SearchRimByConfDto): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByAllConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
@@ -32,7 +32,7 @@ class RimByConfig {
 		return null;
 	}
 
-	async RimsByMHWConfig(config: SearchRimByConfDto): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByMHWConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
@@ -51,7 +51,7 @@ class RimByConfig {
 		return null;
 	}
 
-	async RimsByWDConfig(config: SearchRimByConfDto): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByWDConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
@@ -70,7 +70,7 @@ class RimByConfig {
 		return null;
 	}
 
-	async RimsByMHDConfig(config: SearchRimByConfDto): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByMHDConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
@@ -89,7 +89,7 @@ class RimByConfig {
 		return null;
 	}
 
-	async RimsByWidthConfig(config: SearchRimByConfDto): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByWidthConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
@@ -108,7 +108,7 @@ class RimByConfig {
 		return null;
 	}
 
-	async RimsByDiameterConfig(config: SearchRimByConfDto): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByDiameterConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,
@@ -127,7 +127,7 @@ class RimByConfig {
 		return null;
 	}
 
-	async RimsByMHConfig(config: SearchRimByConfDto): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByMHConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,

@@ -1,9 +1,8 @@
 import { db } from "../db";
 import { eq, or, ilike } from "drizzle-orm";
 import { rimConfig } from "../schemas/rimConfigSchema";
-import { tableRims } from "../schemas/rimsSchema";
 import { nameConnector, photoPath, priceToUAH, stringConverter, dbSorter, dbSorterRimById } from "../../helpers/repoHelpers";
-import { MainPgReturnRimDTO, RimConfigDTO, RimsMainSortedBrand, SrchRimByConfCarDto } from "../../DTOs/dbDTos";
+import { MainPgReturnRimDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 import { rimItems } from "../schemas/rimItemsSchema";
 
 class Rims {
@@ -25,7 +24,7 @@ class Rims {
 
 	async getPopularRims(): Promise<MainPgReturnRimDTO[]> {
 		const result = await db
-			.select({
+			.selectDistinct({
 				rimId: rimItems.rimId,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
@@ -91,7 +90,7 @@ class Rims {
 		return unique;
 	}
 
-	async RimsByCar(config: SrchRimByConfCarDto): Promise<MainPgReturnRimDTO[] | null> {
+	async RimsByCar(config: SrchRimByConfCarDTO): Promise<MainPgReturnRimDTO[] | null> {
 		const rims = await db
 			.selectDistinct({
 				rimId: rimConfig.rimId,
@@ -125,7 +124,7 @@ class Rims {
 		return null;
 	}
 
-	async RimsByName(name: string): Promise<RimsMainSortedBrand[] | null> {
+	async RimsByName(name: string): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
 				rimId: rimConfig.rimId,

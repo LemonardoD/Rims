@@ -42,7 +42,7 @@ export function stringConverter(number: number | bigint | null) {
 	return null;
 }
 export function dbSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
-	let result = [];
+	let result: RimsMainSortedBrandDTO[] = [];
 	for (let i = 0; i < array.length; i++) {
 		result.push({
 			rimId: stringConverter(array[i].rimId),
