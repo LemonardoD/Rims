@@ -32,6 +32,9 @@ class CarInfo extends CarInfoMid {
 
 	carNews = async (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
 		const offset = Number(req.params.offset);
+		if (!news) {
+			return this.response(503, [], res);
+		}
 		return this.response(200, news.slice(offset, offset + 20), res);
 	};
 }

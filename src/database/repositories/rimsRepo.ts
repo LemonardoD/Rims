@@ -63,7 +63,7 @@ class Rims {
 			.from(rimItems)
 			.where(eq(rimItems.rimBrand, reqRinBrand))
 			.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-		const finalResult = dbRimRespSorter(result);
+		const finalResult = resultMerger(result);
 		return finalResult;
 	}
 
@@ -131,7 +131,7 @@ class Rims {
 			});
 			return rimRespArr;
 		}
-		return null;
+		return [];
 	}
 
 	async RimsByName(name: string): Promise<RimsMainSortedBrandDTO[] | {}> {
@@ -150,7 +150,7 @@ class Rims {
 		if (rims.length) {
 			return resultMerger(rims);
 		}
-		return {};
+		return [];
 	}
 
 	async IfRimBrandExist(brand: string) {

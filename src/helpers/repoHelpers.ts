@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { RimByIdDTO, RimByIdFromDBDTO, RimsFromDBDTO, RimsMainSortedBrandDTO } from "../DTOs/dbDTos";
+import { RimByIdDTO, RimByIdFromDBDTO, RimVariationsDTO, RimsFromDBDTO, RimsMainSortedBrandDTO } from "../DTOs/dbDTos";
 
 export const { EXCHANGE_RATE, PHOTO_PATH } = <{ EXCHANGE_RATE: string; PHOTO_PATH: string }>process.env;
 
@@ -8,14 +8,14 @@ export function priceToUAH(usd: number | null) {
 	if (usd) {
 		return Math.floor(usd * Number(EXCHANGE_RATE));
 	}
-	return null;
+	return 0;
 }
 
 export function photoArrPath(imgs: string[] | null) {
 	if (imgs) {
 		return imgs.map(el => `${PHOTO_PATH + el.replaceAll(" ", "_").replaceAll("%2", "")}`);
 	}
-	return null;
+	return [];
 }
 
 export function photoPath(img: string | null) {
@@ -72,23 +72,21 @@ export function dbRimRespSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[
 }
 
 export function dbSorterRimById(array: RimByIdFromDBDTO[]): RimByIdDTO {
-	const [{ mountingHoles, priceUSD, rimBrand, rimName, images }] = array;
-	let width: string[] = [];
-	let diameter: string[] = [];
+	const [{ rimBrand, rimName, images }] = array;
+	let rimVariations: RimVariationsDTO[] = [];
 	array.map(el => {
-		if (el.rimWidth && !width.includes(el.rimWidth)) {
-			width.push(el.rimWidth);
-		}
-		if (el.rimDiameter && !diameter.includes(el.rimDiameter)) {
-			diameter.push(el.rimDiameter);
+		if (el.rimWidth && el.rimDiameter && el.mountingHoles) {
+			rimVariations.push({
+				width: el.rimWidth,
+				diameter: el.rimDiameter,
+				mountingHoles: el.mountingHoles,
+				price: priceToUAH(el.priceUSD),
+			});
 		}
 	});
 	return {
 		name: nameConnector(rimBrand, rimName),
-		width,
-		diameter,
-		mountingHoles: mountingHoles,
-		price: priceToUAH(priceUSD),
 		images: photoArrPath(images),
+		rimVariations,
 	};
 }

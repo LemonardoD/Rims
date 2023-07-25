@@ -3,7 +3,7 @@ export interface RimsMainSortedBrandDTO {
 	name: string | null;
 	image: string | null;
 	diameter: (string | null)[];
-	price: (number | null)[];
+	price: number[];
 }
 
 export interface RimsFromDBDTO {
@@ -15,13 +15,17 @@ export interface RimsFromDBDTO {
 	price: number | null;
 }
 
+export interface RimVariationsDTO {
+	width: string;
+	diameter: string;
+	mountingHoles: string;
+	price: number;
+}
+
 export interface RimByIdDTO {
 	name: string | null;
-	width: string[];
-	diameter: string[];
-	mountingHoles: string | null;
-	price: number | null;
-	images: string[] | null;
+	images: string[];
+	rimVariations: RimVariationsDTO[];
 }
 
 export interface RimByIdFromDBDTO {
