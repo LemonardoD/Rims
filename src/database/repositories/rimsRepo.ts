@@ -7,11 +7,13 @@ import {
 	priceToUAH,
 	idConvert,
 	dbRimRespSorter,
-	dbSorterRimById,
+	dbSortConfigRimById,
 	resultMerger,
+	dbSortOfferRimById,
 } from "../../helpers/repoHelpers";
-import { MainPgReturnRimDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
+import { MainPgReturnRimDTO, RimByIdDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 import { rimItems } from "../schemas/rimItemsSchema";
+import { offers } from "../schemas/ofersSchema";
 
 class Rims {
 	async getAllRims() {
@@ -67,7 +69,7 @@ class Rims {
 		return finalResult;
 	}
 
-	async getRimById(reqRimID: number) {
+	async getConfigRimById(reqRimID: number) {
 		const result = await db
 			.select({
 				rimDiameter: rimConfig.rimDiameter,
@@ -81,7 +83,21 @@ class Rims {
 			.from(rimItems)
 			.where(eq(rimItems.rimId, reqRimID))
 			.leftJoin(rimConfig, eq(rimConfig.rimId, reqRimID));
-		return dbSorterRimById(result);
+		return dbSortConfigRimById(result);
+	}
+
+	async getRimByIdOffer(reqRimID: number): Promise<RimByIdDTO> {
+		const result = await db
+			.select({
+				rimAtr: offers.rimAttrs,
+				rimBrand: rimItems.rimBrand,
+				rimName: rimItems.rimName,
+				images: rimItems.arrImgNames,
+			})
+			.from(rimItems)
+			.where(eq(rimItems.rimId, reqRimID))
+			.leftJoin(offers, eq(offers.itemId, reqRimID));
+		return dbSortOfferRimById(result);
 	}
 
 	async getRimConfigs(): Promise<RimConfigDTO> {

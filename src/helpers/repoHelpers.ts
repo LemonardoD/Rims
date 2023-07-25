@@ -1,6 +1,13 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { RimByIdDTO, RimByIdFromDBDTO, RimVariationsDTO, RimsFromDBDTO, RimsMainSortedBrandDTO } from "../DTOs/dbDTos";
+import {
+	RimByIdDTO,
+	RimByIdConfigFromDBDTO,
+	RimByIdOfferFromDBDTO,
+	RimVariationsDTO,
+	RimsFromDBDTO,
+	RimsMainSortedBrandDTO,
+} from "../DTOs/dbDTos";
 
 export const { EXCHANGE_RATE, PHOTO_PATH } = <{ EXCHANGE_RATE: string; PHOTO_PATH: string }>process.env;
 
@@ -71,7 +78,7 @@ export function dbRimRespSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[
 	return result.filter(rim => rim.rimId !== null && rim.price[0] !== null);
 }
 
-export function dbSorterRimById(array: RimByIdFromDBDTO[]): RimByIdDTO {
+export function dbSortConfigRimById(array: RimByIdConfigFromDBDTO[]): RimByIdDTO {
 	const [{ rimBrand, rimName, images }] = array;
 	let rimVariations: RimVariationsDTO[] = [];
 	array.map(el => {
@@ -81,6 +88,26 @@ export function dbSorterRimById(array: RimByIdFromDBDTO[]): RimByIdDTO {
 				diameter: el.rimDiameter,
 				mountingHoles: el.mountingHoles,
 				price: priceToUAH(el.priceUSD),
+			});
+		}
+	});
+	return {
+		name: nameConnector(rimBrand, rimName),
+		images: photoArrPath(images),
+		rimVariations,
+	};
+}
+
+export function dbSortOfferRimById(array: RimByIdOfferFromDBDTO[]): RimByIdDTO {
+	const [{ rimBrand, rimName, images }] = array;
+	let rimVariations: RimVariationsDTO[] = [];
+	array.map(el => {
+		if (el.rimAtr) {
+			rimVariations.push({
+				width: el.rimAtr.width,
+				diameter: el.rimAtr.diameter,
+				mountingHoles: el.rimAtr.boltPattern,
+				price: priceToUAH(el.rimAtr.priceInUsd),
 			});
 		}
 	});

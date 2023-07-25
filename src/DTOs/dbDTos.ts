@@ -28,11 +28,18 @@ export interface RimByIdDTO {
 	rimVariations: RimVariationsDTO[];
 }
 
-export interface RimByIdFromDBDTO {
+export interface RimByIdConfigFromDBDTO {
 	rimDiameter: string | null;
 	rimWidth: string | null;
 	mountingHoles: string | null;
 	priceUSD: number | null;
+	rimBrand: string | null;
+	rimName: string | null;
+	images: string[] | null;
+}
+
+export interface RimByIdOfferFromDBDTO {
+	rimAtr: OffersDTO | null;
 	rimBrand: string | null;
 	rimName: string | null;
 	images: string[] | null;
