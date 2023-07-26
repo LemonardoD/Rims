@@ -42,8 +42,8 @@ export class CarInfoMid extends Controller {
 
 	rimByCarVal = async (req: SearchByCarReqDTO, res: Response, next: NextFunction) => {
 		const { brand, model, year } = req.body;
-		if (!brand || !model || !year) {
-			throw new CustomError("Body with, brand, model, year,  required ", 406);
+		if (!brand || !model || !year || typeof year === "string") {
+			throw new CustomError("Body with, brand: string, model: string, year: number,  required ", 406);
 		}
 		const requestedConfig = await CarRepo.carInfoForRim(req.body);
 		if (requestedConfig) {
