@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, or } from "drizzle-orm";
 import { rimConfig } from "../schemas/rimConfigSchema";
 import { resultMerger } from "../../helpers/repoHelpers";
 import { tableRims } from "../schemas/rimsSchema";
@@ -20,10 +20,17 @@ class RimByConfig {
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
 			.leftJoin(
 				rimConfig,
-				and(
-					eq(rimConfig.mountingHoles, config.mountHoles),
-					eq(rimConfig.rimWidth, config.width),
-					eq(rimConfig.rimDiameter, config.diameter),
+				or(
+					and(
+						eq(rimConfig.mountingHoles, config.mountingHoles),
+						eq(rimConfig.rimWidth, config.width),
+						eq(rimConfig.rimDiameter, config.diameter),
+					),
+					and(
+						eq(rimConfig.mountingHoles, config.mountingHoles),
+						eq(rimConfig.rimWidth, `${config.width}.0`),
+						eq(rimConfig.rimDiameter, config.diameter),
+					),
 				),
 			);
 		if (rims.length) {
@@ -44,7 +51,13 @@ class RimByConfig {
 			})
 			.from(tableRims)
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
-			.leftJoin(rimConfig, and(eq(rimConfig.mountingHoles, config.mountHoles), eq(rimConfig.rimWidth, config.width)));
+			.leftJoin(
+				rimConfig,
+				or(
+					and(eq(rimConfig.mountingHoles, config.mountingHoles), eq(rimConfig.rimWidth, config.width)),
+					and(eq(rimConfig.mountingHoles, config.mountingHoles), eq(rimConfig.rimWidth, `${config.width}.0`)),
+				),
+			);
 		if (rims.length) {
 			return resultMerger(rims);
 		}
@@ -63,7 +76,13 @@ class RimByConfig {
 			})
 			.from(tableRims)
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
-			.leftJoin(rimConfig, and(eq(rimConfig.rimWidth, config.width), eq(rimConfig.rimDiameter, config.diameter)));
+			.leftJoin(
+				rimConfig,
+				or(
+					and(eq(rimConfig.rimWidth, config.width), eq(rimConfig.rimDiameter, config.diameter)),
+					and(eq(rimConfig.rimWidth, `${config.width}.0`), eq(rimConfig.rimDiameter, config.diameter)),
+				),
+			);
 		if (rims.length) {
 			return resultMerger(rims);
 		}
@@ -82,7 +101,7 @@ class RimByConfig {
 			})
 			.from(tableRims)
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
-			.leftJoin(rimConfig, and(eq(rimConfig.mountingHoles, config.mountHoles), eq(rimConfig.rimDiameter, config.diameter)));
+			.leftJoin(rimConfig, and(eq(rimConfig.mountingHoles, config.mountingHoles), eq(rimConfig.rimDiameter, config.diameter)));
 		if (rims.length) {
 			return resultMerger(rims);
 		}
@@ -101,7 +120,7 @@ class RimByConfig {
 			})
 			.from(tableRims)
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
-			.leftJoin(rimConfig, eq(rimConfig.rimWidth, config.width));
+			.leftJoin(rimConfig, or(eq(rimConfig.rimWidth, `${config.width}.0`), eq(rimConfig.rimWidth, config.width)));
 		if (rims.length) {
 			return resultMerger(rims);
 		}
@@ -139,7 +158,7 @@ class RimByConfig {
 			})
 			.from(tableRims)
 			.where(eq(tableRims.RimsId, rimConfig.rimId))
-			.leftJoin(rimConfig, eq(rimConfig.mountingHoles, config.mountHoles));
+			.leftJoin(rimConfig, eq(rimConfig.mountingHoles, config.mountingHoles));
 		if (rims.length) {
 			return resultMerger(rims);
 		}

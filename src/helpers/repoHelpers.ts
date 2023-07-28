@@ -64,6 +64,7 @@ export function resultMerger(array: RimsFromDBDTO[]) {
 	}, []);
 	return mergedRes;
 }
+
 export function dbRimRespSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
 	let result: RimsMainSortedBrandDTO[] = [];
 	for (let i = 0; i < array.length; i++) {

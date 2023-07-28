@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { OrderConfigDTO } from "../DTOs/otherDTOs";
 dotenv.config();
 
 const { ADMINS_EMAIL_FOR_ORDERS, EMAIL, EMAIL_PASSWORD } = process.env;
@@ -40,12 +41,13 @@ class EmailSender {
 		});
 	};
 
-	sendEmailToAdminOrder = async (customerPhone: string, customerName: string) => {
+	sendEmailToAdminOrder = async (customerPhone: string, customerName: string, orderConfig: OrderConfigDTO) => {
 		const mailOptions = {
 			from: EMAIL,
 			to: ADMINS_EMAIL_FOR_ORDERS,
 			subject: Subject.AdminOrder,
-			text: `${Text.AdminOrder} His phone: ${customerPhone}, his name is: ${customerName}.`,
+			text: `${Text.AdminOrder} His phone: ${customerPhone}, his name is: ${customerName}. Ordered ${orderConfig.rimId} with parameters diameter:${orderConfig.diameter},  
+			width:${orderConfig.width} & pcd:${orderConfig.mountingHoles}`,
 		};
 		return transporter.sendMail(mailOptions, async function (err: Error | null) {
 			if (err) {

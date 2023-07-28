@@ -69,7 +69,7 @@ export interface SrchRimByConfCarDTO {
 export interface SearchRimByConfDTO {
 	width: string;
 	diameter: string;
-	mountHoles: string;
+	mountingHoles: string;
 }
 
 export interface MainPgReturnRimDTO {

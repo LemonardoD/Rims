@@ -34,11 +34,23 @@ export interface RimIdReqDTO {
 }
 
 export interface RimByConfigDTO {
-	body: { diameter: string; width: string; mountHoles: string };
+	body: { diameter: string; width: string; mountingHoles: string };
+}
+
+export interface OrderConfigDTO {
+	mountingHoles: string;
+	diameter: string;
+	width: string;
+	rimId: string;
 }
 
 export interface OrderReqDTO {
-	body: { name: string; phone: string; email: string };
+	body: {
+		name: string;
+		phone: string;
+		email: string;
+		orderConfig: OrderConfigDTO;
+	};
 }
 
 export interface OrderCallReqDTO {

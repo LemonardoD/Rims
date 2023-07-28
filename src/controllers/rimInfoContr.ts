@@ -19,11 +19,11 @@ class RimInfo extends RimsInfoMid {
 	};
 
 	rimById = async (req: RimIdReqDTO, res: Response) => {
-		const { id } = req.body;
-		await RimRepo.updateVisits(Number(id));
-		let response = await RimRepo.getConfigRimById(Number(id));
+		const id = Number(req.body.id);
+		await RimRepo.updateVisits(id);
+		let response = await RimRepo.getConfigRimById(id);
 		if (!response.rimVariations.length) {
-			return this.response(200, await RimRepo.getRimByIdOffer(Number(id)), res);
+			return this.response(200, await RimRepo.getRimByIdOffer(id), res);
 		}
 		return this.response(200, response, res);
 	};
@@ -38,29 +38,29 @@ class RimInfo extends RimsInfoMid {
 	};
 
 	rimByConfig = async (req: RimByConfigDTO, res: Response) => {
-		const { mountHoles, width, diameter } = req.body;
-		if (mountHoles && width && diameter) {
+		const { mountingHoles, width, diameter } = req.body;
+		if (mountingHoles && width && diameter) {
 			return this.response(200, await RimByConfRepo.RimsByAllConfig(req.body), res);
 		}
-		if (!mountHoles && !width && diameter) {
+		if (!mountingHoles && !width && diameter) {
 			return this.response(200, await RimByConfRepo.RimsByDiameterConfig(req.body), res);
 		}
-		if (!mountHoles && !diameter && width) {
+		if (!mountingHoles && !diameter && width) {
 			return this.response(200, await RimByConfRepo.RimsByWidthConfig(req.body), res);
 		}
-		if (!width && !diameter && mountHoles) {
+		if (!width && !diameter && mountingHoles) {
 			return this.response(200, await RimByConfRepo.RimsByMHConfig(req.body), res);
 		}
-		if (!mountHoles && width && diameter) {
+		if (!mountingHoles && width && diameter) {
 			return this.response(200, await RimByConfRepo.RimsByWDConfig(req.body), res);
 		}
-		if (!width && mountHoles && diameter) {
+		if (!width && mountingHoles && diameter) {
 			return this.response(200, await RimByConfRepo.RimsByMHDConfig(req.body), res);
 		}
-		if (!diameter && width && mountHoles) {
+		if (!diameter && width && mountingHoles) {
 			return this.response(200, await RimByConfRepo.RimsByMHWConfig(req.body), res);
 		}
-		throw new CustomError("Body with, diameter, width, mountHoles, required!", 406);
+		throw new CustomError("Body with, diameter or width or mountingHoles, required!", 406);
 	};
 }
 

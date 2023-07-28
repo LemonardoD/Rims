@@ -5,15 +5,14 @@ import EmSender from "../services/emailSender";
 
 class WorkWithCustomer extends CusInfoMid {
 	order = async (req: OrderReqDTO, res: Response) => {
-		const { name, phone, email } = req.body;
+		const { name, phone, email, orderConfig } = req.body;
 		await EmSender.sendEmailToCusOrder(email);
-		await EmSender.sendEmailToAdminOrder(phone, name);
+		await EmSender.sendEmailToAdminOrder(phone, name, orderConfig);
 		return this.response(200, "Order in processing.", res);
 	};
 
 	orderAPhoneCall = async (req: OrderCallReqDTO, res: Response) => {
-		const { phone } = req.body;
-		await EmSender.sendEmailToAdminPhCall(phone);
+		await EmSender.sendEmailToAdminPhCall(req.body.phone);
 		return this.response(200, "Phone call in processing.", res);
 	};
 
