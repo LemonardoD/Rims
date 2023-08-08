@@ -20,7 +20,7 @@ enum Subject {
 
 enum Text {
 	Customer = "We get your order, it may takes few hours till we contact with you. And concretizes some details.",
-	CustomerQuestion = "We get your question, it may takes few hours till we contact with you. And give you full info about if.",
+	CustomerQuestion = "We get your question, it may takes few hours till we contact with you. And we will satisfy your interest.",
 	AdminOrder = "Here is customer info, please, contact him and talk through details! ",
 	AdminPhCall = "Customer requested a phone call, please, contact him.",
 	AdminQuestion = "Customer need some help, this is his question, please study the question and contact him. ",
