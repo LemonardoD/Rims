@@ -143,7 +143,7 @@ class Rims {
 					if (dbEl.diameter === reqEl.diameter && dbEl.width === reqEl.width) {
 						rimRespArr.push({
 							rimId: idConvert(dbEl.rimId),
-							name: nameConnector(dbEl.rimBrand, dbEl.rimName),
+							name: nameConnector(dbEl.rimBrand, dbEl.rimName, dbEl.rimAttrs?.name_suffix),
 							image: photoPath(dbEl.image),
 							diameter: [dbEl.diameter],
 							price: [priceToUAH(dbEl.price)],
