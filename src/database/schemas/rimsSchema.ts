@@ -6,7 +6,7 @@ export const tableRims = pgTable("rims", {
 	rimColor: varchar("color", { length: 255 }),
 	rimImg: jsonb("images").$type<string[]>(),
 	rimName: varchar("name", { length: 255 }),
-	rimShortName: varchar("name_suffix", { length: 255 }),
+	rimSuffixName: varchar("name_suffix", { length: 255 }),
 	rimThumbnail: varchar("thumbnail", { length: 255 }),
 	rimType: varchar("type", { length: 255 }),
 });

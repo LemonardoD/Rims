@@ -156,6 +156,7 @@ class Rims {
 				rimId: rimConfig.rimId,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
+				rimAttrs: rimItems.rimAttrs,
 				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,

@@ -10,6 +10,8 @@ export interface RimsFromDBDTO {
 	rimId: number | bigint | null;
 	rimBrand: string | null;
 	rimName: string | null;
+	rimAttrs?: ItemsAttributesDTO | null;
+	rimSuffixName?: string | null;
 	image: string | null;
 	diameter: string | null;
 	price: number | null;

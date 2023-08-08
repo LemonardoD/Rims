@@ -32,8 +32,11 @@ export function photoPath(img: string | null) {
 	return null;
 }
 
-export function nameConnector(nm1: string | null, nm2: string | null) {
-	if (nm1 && nm2) {
+export function nameConnector(nm1: string | null, nm2: string | null, nm3?: string | null) {
+	if (nm1 && nm2 && nm3) {
+		return `${nm1} - ${nm2} ${nm3}`;
+	}
+	if (!nm3) {
 		return `${nm1} - ${nm2}`;
 	}
 	if (!nm2) {
@@ -68,9 +71,18 @@ export function resultMerger(array: RimsFromDBDTO[]) {
 export function dbRimRespSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
 	let result: RimsMainSortedBrandDTO[] = [];
 	for (let i = 0; i < array.length; i++) {
+		if (array[i].rimSuffixName) {
+			result.push({
+				rimId: idConvert(array[i].rimId),
+				name: nameConnector(array[i].rimBrand, array[i].rimName, array[i].rimSuffixName),
+				image: photoPath(array[i].image),
+				diameter: [array[i].diameter],
+				price: [priceToUAH(array[i].price)],
+			});
+		}
 		result.push({
 			rimId: idConvert(array[i].rimId),
-			name: nameConnector(array[i].rimBrand, array[i].rimName),
+			name: nameConnector(array[i].rimBrand, array[i].rimName, array[i].rimAttrs?.name_suffix),
 			image: photoPath(array[i].image),
 			diameter: [array[i].diameter],
 			price: [priceToUAH(array[i].price)],

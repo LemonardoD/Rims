@@ -11,7 +11,8 @@ class RimByConfig {
 			.select({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
+				rimName: tableRims.rimName,
+				rimSuffixName: tableRims.rimSuffixName,
 				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -44,7 +45,8 @@ class RimByConfig {
 			.select({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
+				rimName: tableRims.rimName,
+				rimSuffixName: tableRims.rimSuffixName,
 				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -69,7 +71,8 @@ class RimByConfig {
 			.select({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
+				rimName: tableRims.rimName,
+				rimSuffixName: tableRims.rimSuffixName,
 				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -94,7 +97,8 @@ class RimByConfig {
 			.select({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
+				rimName: tableRims.rimName,
+				rimSuffixName: tableRims.rimSuffixName,
 				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -113,7 +117,8 @@ class RimByConfig {
 			.select({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
+				rimName: tableRims.rimName,
+				rimSuffixName: tableRims.rimSuffixName,
 				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -132,7 +137,8 @@ class RimByConfig {
 			.select({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
+				rimName: tableRims.rimName,
+				rimSuffixName: tableRims.rimSuffixName,
 				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -151,7 +157,8 @@ class RimByConfig {
 			.select({
 				rimId: rimConfig.rimId,
 				rimBrand: tableRims.rimBrandName,
-				rimName: tableRims.rimShortName,
+				rimName: tableRims.rimName,
+				rimSuffixName: tableRims.rimSuffixName,
 				image: tableRims.rimThumbnail,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
