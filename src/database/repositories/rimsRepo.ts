@@ -22,6 +22,7 @@ class Rims {
 				rimId: rimConfig.rimId,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
+				rimAttrs: rimItems.rimAttrs,
 				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -38,6 +39,7 @@ class Rims {
 				rimId: rimItems.rimId,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
+				rimAttrs: rimItems.rimAttrs,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
 				image: rimItems.imgName,
@@ -58,6 +60,7 @@ class Rims {
 				rimId: rimConfig.rimId,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
+				rimAttrs: rimItems.rimAttrs,
 				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				price: rimConfig.priceUSD,
@@ -78,6 +81,7 @@ class Rims {
 				priceUSD: rimConfig.priceUSD,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
+				rimAttrs: rimItems.rimAttrs,
 				images: rimItems.arrImgNames,
 			})
 			.from(rimItems)
@@ -92,6 +96,7 @@ class Rims {
 				rimAtr: offers.rimAttrs,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
+				rimAttrs: rimItems.rimAttrs,
 				images: rimItems.arrImgNames,
 			})
 			.from(rimItems)
@@ -122,6 +127,7 @@ class Rims {
 				rimId: rimConfig.rimId,
 				rimBrand: rimItems.rimBrand,
 				rimName: rimItems.rimName,
+				rimAttrs: rimItems.rimAttrs,
 				image: rimItems.imgName,
 				diameter: rimConfig.rimDiameter,
 				width: rimConfig.rimWidth,

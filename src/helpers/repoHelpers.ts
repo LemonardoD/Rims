@@ -92,7 +92,7 @@ export function dbRimRespSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[
 }
 
 export function dbSortConfigRimById(array: RimByIdConfigFromDBDTO[]): RimByIdDTO {
-	const [{ rimBrand, rimName, images }] = array;
+	const [{ rimBrand, rimName, images, rimAttrs }] = array;
 	let rimVariations: RimVariationsDTO[] = [];
 	array.map(el => {
 		if (el.rimWidth && el.rimDiameter && el.mountingHoles) {
@@ -105,14 +105,14 @@ export function dbSortConfigRimById(array: RimByIdConfigFromDBDTO[]): RimByIdDTO
 		}
 	});
 	return {
-		name: nameConnector(rimBrand, rimName),
+		name: nameConnector(rimBrand, rimName, rimAttrs?.name_suffix),
 		images: photoArrPath(images),
 		rimVariations,
 	};
 }
 
 export function dbSortOfferRimById(array: RimByIdOfferFromDBDTO[]): RimByIdDTO {
-	const [{ rimBrand, rimName, images }] = array;
+	const [{ rimBrand, rimName, images, rimAttrs }] = array;
 	let rimVariations: RimVariationsDTO[] = [];
 	array.map(el => {
 		if (el.rimAtr) {
@@ -125,7 +125,7 @@ export function dbSortOfferRimById(array: RimByIdOfferFromDBDTO[]): RimByIdDTO {
 		}
 	});
 	return {
-		name: nameConnector(rimBrand, rimName),
+		name: nameConnector(rimBrand, rimName, rimAttrs?.name_suffix),
 		images: photoArrPath(images),
 		rimVariations,
 	};

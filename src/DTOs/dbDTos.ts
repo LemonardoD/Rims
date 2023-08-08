@@ -32,6 +32,7 @@ export interface RimByIdDTO {
 
 export interface RimByIdConfigFromDBDTO {
 	rimDiameter: string | null;
+	rimAttrs: ItemsAttributesDTO | null;
 	rimWidth: string | null;
 	mountingHoles: string | null;
 	priceUSD: number | null;
@@ -41,6 +42,7 @@ export interface RimByIdConfigFromDBDTO {
 }
 
 export interface RimByIdOfferFromDBDTO {
+	rimAttrs: ItemsAttributesDTO | null;
 	rimAtr: OffersDTO | null;
 	rimBrand: string | null;
 	rimName: string | null;
