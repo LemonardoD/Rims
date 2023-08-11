@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { ArrayBeforeHelperDTO, MainPgReturnRimDTO, RimsMainSortedBrandDTO } from "../DTOs/dbDTos";
+import { ArrayBeforeHelperDTO, MainPgReturnRimDTO, RimByIdDTO, RimVariationsDTO, RimsMainSortedBrandDTO } from "../DTOs/dbDTos";
 import { Rim } from "../database/schemas/newRimConfig";
 
 export const { EXCHANGE_RATE, PHOTO_PATH } = <{ EXCHANGE_RATE: string; PHOTO_PATH: string }>process.env;
@@ -31,6 +31,25 @@ export function idConvert(number: number | bigint | null) {
 		return number.toString();
 	}
 	return null;
+}
+
+export function newResultIdMerger(rimByIdObject: RimByIdDTO): RimByIdDTO {
+	let configResp: RimVariationsDTO[] = [];
+	if (rimByIdObject.rimVariations) {
+		for (let i = 0; i < rimByIdObject.rimVariations.length; i++) {
+			configResp.push({
+				price: priceToUAH(rimByIdObject.rimVariations[i].price),
+				width: rimByIdObject.rimVariations[i].width,
+				diameter: rimByIdObject.rimVariations[i].diameter,
+				mountingHoles: rimByIdObject.rimVariations[i].mountingHoles,
+			});
+		}
+	}
+	return {
+		name: rimByIdObject.name,
+		images: photoArrPath(rimByIdObject.images),
+		rimVariations: configResp,
+	};
 }
 
 export function newResultMerger(array: Rim[]) {

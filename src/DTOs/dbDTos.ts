@@ -23,8 +23,8 @@ export interface RimVariationsDTO {
 
 export interface RimByIdDTO {
 	name: string | null;
-	images: string[];
-	rimVariations: RimVariationsDTO[];
+	images: string[] | null;
+	rimVariations: RimVariationsDTO[] | null;
 }
 
 export interface RimConfigInfoDTO {
