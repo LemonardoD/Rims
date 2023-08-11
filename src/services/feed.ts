@@ -40,8 +40,9 @@ export async function fetchRssFeed() {
 		console.log("Got an error with car news");
 	}
 }
-// export const news = await fetchRssFeed();
-export const news = [];
+
+export const news = await fetchRssFeed();
+
 // cron.schedule("0 */6 * * *", async () => { // did'n work with render(work only in payed version), but needed 4 app
 // 	news = await fetchRssFeed();
 // });
