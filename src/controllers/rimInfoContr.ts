@@ -9,32 +9,28 @@ class RimInfo extends RimsInfoMid {
 	rimsByBrands = async (req: RimBrandsReqDTO, res: Response) => {
 		const { rimBrand } = req.body;
 		if (rimBrand === "all") {
-			return this.response(200, await RimRepo.getAllRims(), res);
+			return this.response(200, await RimRepo.getNewAllRims(), res);
 		}
-		return this.response(200, await RimRepo.getRimsByBrand(rimBrand), res);
+		return this.response(200, await RimRepo.getNewRimsByBrand(rimBrand), res);
 	};
 
 	rimConfigs = async (req: Request, res: Response) => {
-		return this.response(200, await RimRepo.getRimConfigs(), res);
+		return this.response(200, await RimRepo.getNewRimConfigs(), res);
 	};
 
 	rimById = async (req: RimIdReqDTO, res: Response) => {
 		const id = Number(req.body.id);
-		await RimRepo.updateVisits(id);
-		let response = await RimRepo.getConfigRimById(id);
-		if (!response.rimVariations.length) {
-			return this.response(200, await RimRepo.getRimByIdOffer(id), res);
-		}
-		return this.response(200, response, res);
+		await RimRepo.newUpdateVisits(id);
+		return this.response(200, await RimRepo.getNewRimById(id), res);
 	};
 
 	rimsPopular = async (req: Request, res: Response) => {
-		return this.response(200, await RimRepo.getPopularRims(), res);
+		return this.response(200, await RimRepo.getNewPopularRims(), res);
 	};
 
 	rimsByName = async (req: SearchReqDTO, res: Response) => {
 		const { searchText } = req.body;
-		return this.response(200, await RimRepo.RimsByName(searchText), res);
+		return this.response(200, await RimRepo.getNewRimsByName(searchText), res);
 	};
 
 	rimByConfig = async (req: RimByConfigDTO, res: Response) => {

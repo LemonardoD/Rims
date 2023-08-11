@@ -20,8 +20,6 @@ const autoUrls = [
 	"https://autonews.autoua.net/rss",
 	"https://auto.bigmir.net/rss",
 ];
-// "https://news.infocar.ua/rss/",
-// 	"https://www.autoconsulting.com.ua/rss.html",
 
 export async function fetchRssFeed() {
 	try {
@@ -42,7 +40,8 @@ export async function fetchRssFeed() {
 		console.log("Got an error with car news");
 	}
 }
-export const news = await fetchRssFeed();
-// cron.schedule("0 */6 * * *", async () => { // did'n work with render(work only in payed  version), but needed 4 app
+// export const news = await fetchRssFeed();
+export const news = [];
+// cron.schedule("0 */6 * * *", async () => { // did'n work with render(work only in payed version), but needed 4 app
 // 	news = await fetchRssFeed();
 // });

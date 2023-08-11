@@ -6,47 +6,25 @@ export interface RimsMainSortedBrandDTO {
 	price: number[];
 }
 
-export interface RimsFromDBDTO {
+export interface ArrayBeforeHelperDTO {
 	rimId: number | bigint | null;
-	rimBrand: string | null;
-	rimName: string | null;
-	rimAttrs?: ItemsAttributesDTO | null;
-	rimSuffixName?: string | null;
+	name: string | null;
 	image: string | null;
 	diameter: string | null;
 	price: number | null;
 }
 
 export interface RimVariationsDTO {
-	width: string;
-	diameter: string;
-	mountingHoles: string;
 	price: number;
+	width: string | null;
+	diameter: string | null;
+	mountingHoles: string | null;
 }
 
 export interface RimByIdDTO {
 	name: string | null;
 	images: string[];
 	rimVariations: RimVariationsDTO[];
-}
-
-export interface RimByIdConfigFromDBDTO {
-	rimDiameter: string | null;
-	rimAttrs: ItemsAttributesDTO | null;
-	rimWidth: string | null;
-	mountingHoles: string | null;
-	priceUSD: number | null;
-	rimBrand: string | null;
-	rimName: string | null;
-	images: string[] | null;
-}
-
-export interface RimByIdOfferFromDBDTO {
-	rimAttrs: ItemsAttributesDTO | null;
-	rimAtr: OffersDTO | null;
-	rimBrand: string | null;
-	rimName: string | null;
-	images: string[] | null;
 }
 
 export interface RimConfigInfoDTO {
@@ -80,8 +58,8 @@ export interface MainPgReturnRimDTO {
 	rimId: string | null;
 	name: string | null;
 	image: string | null;
-	diameter: (null | string)[];
-	price: (number | null)[];
+	diameter?: (null | string)[];
+	price?: (number | null)[];
 }
 
 export interface RimConfigDTO {
@@ -90,23 +68,55 @@ export interface RimConfigDTO {
 	mountHoles: string[];
 }
 
-export interface OffersDTO {
-	et: number;
-	count: number;
-	width: string;
-	vendor: string;
-	diameter: string;
-	centerBore: number;
-	priceInUsd: number;
-	boltPattern: string;
-}
-
 export interface CarModelsDTO {
 	years: null | { value: number; configs: [{ pcd: string; rims: [{ width: string; diameter: string }] }]; engines: string[] }[];
 }
 
-export interface ItemsAttributesDTO {
-	type: string;
-	color: null | string;
-	name_suffix: null | string;
-}
+// If we use old DB TABLES than uncomment this
+
+// export interface RimsFromDBDTO {
+// 	rimId: number | bigint | null;
+// 	rimBrand: string | null;
+// 	rimName: string | null;
+// 	rimAttrs?: ItemsAttributesDTO | null;
+// 	rimSuffixName?: string | null;
+// 	image: string | null;
+// 	diameter: string | null;
+// 	price: number | null;
+// }
+
+// export interface RimByIdConfigFromDBDTO {
+// 	rimDiameter: string | null;
+// 	rimAttrs: ItemsAttributesDTO | null;
+// 	rimWidth: string | null;
+// 	mountingHoles: string | null;
+// 	priceUSD: number | null;
+// 	rimBrand: string | null;
+// 	rimName: string | null;
+// 	images: string[] | null;
+// }
+
+// export interface RimByIdOfferFromDBDTO {
+// 	rimAttrs: ItemsAttributesDTO | null;
+// 	rimAtr: OffersDTO | null;
+// 	rimBrand: string | null;
+// 	rimName: string | null;
+// 	images: string[] | null;
+// }
+
+// export interface OffersDTO {
+// 	et: number;
+// 	count: number;
+// 	width: string;
+// 	vendor: string;
+// 	diameter: string;
+// 	centerBore: number;
+// 	priceInUsd: number;
+// 	boltPattern: string;
+// }
+
+// export interface ItemsAttributesDTO {
+// 	type: string;
+// 	color: null | string;
+// 	name_suffix: null | string;
+// }
