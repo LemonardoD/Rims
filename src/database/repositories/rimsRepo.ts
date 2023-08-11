@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { eq, ilike } from "drizzle-orm";
-import { idConvert, newResultMerger, photoPath, priceToUAH } from "../../helpers/repoHelpers";
+import { idConvert, newResultMerger, photoArrPath, photoPath, priceToUAH } from "../../helpers/repoHelpers";
 import { MainPgReturnRimDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 import { newRim } from "../schemas/newRimConfig";
 import { newRimConfig } from "../schemas/newConfig";
@@ -23,7 +23,8 @@ class Rims {
 			.select({ name: newRim.pageName, images: newRim.allImgs, rimVariations: newRim.rimConfigs })
 			.from(newRim)
 			.where(eq(newRim.rimId, reqRimID));
-		return result[0];
+		const imgs = photoArrPath(result[0].images);
+		return { name: result[0].name, images: imgs, rimVariations: result[0].rimVariations };
 	}
 
 	async getNewRimsByName(name: string): Promise<RimsMainSortedBrandDTO[] | {}> {

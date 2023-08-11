@@ -40,7 +40,7 @@ export function newResultMerger(array: Rim[]) {
 			finalRes.push({
 				rimId: idConvert(array[i].rimId),
 				name: array[i].pageName,
-				image: array[i].miniImg,
+				image: photoPath(array[i].miniImg),
 				diameter: array[i].rimConfigs?.map(el => el.diameter),
 				price: array[i].rimConfigs?.map(el => priceToUAH(el.price)),
 			});
