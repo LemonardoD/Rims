@@ -20,17 +20,11 @@ export function photoArrPath(imgs: string[] | null) {
 }
 
 export function photoPath(img: string | null) {
-	if (img) {
-		return `${PHOTO_PATH + img}`;
-	}
-	return null;
+	return `${PHOTO_PATH + img}`;
 }
 
-export function idConvert(number: number | bigint | null) {
-	if (number) {
-		return number.toString();
-	}
-	return null;
+export function idConvert(number: number | bigint) {
+	return number.toString();
 }
 
 export function newResultIdMerger(rimByIdObject: RimByIdDTO): RimByIdDTO {

@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { eq, ilike } from "drizzle-orm";
 import { idConvert, newResultIdMerger, newResultMerger, photoArrPath, photoPath, priceToUAH } from "../../helpers/repoHelpers";
-import { MainPgReturnRimDTO, RimByIdDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
+import { MainPgReturnRimDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 import { newRim } from "../schemas/newRimConfig";
 import { newRimConfig } from "../schemas/newConfig";
 

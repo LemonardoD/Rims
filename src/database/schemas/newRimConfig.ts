@@ -6,12 +6,12 @@ export type Rim = InferModel<typeof newRim>;
 export type NewRim = InferModel<typeof newRim, "insert">;
 
 export const newRim = pgTable("new_rim_config", {
-	rimId: bigint("rimId", <{ mode: "number" | "bigint" }>{}),
-	rimBrand: varchar("rimBrand", { length: 255 }),
-	rimName: varchar("rimName", { length: 255 }),
+	rimId: bigint("rimId", <{ mode: "number" | "bigint" }>{}).notNull(),
+	rimBrand: varchar("rimBrand", { length: 255 }).notNull(),
+	rimName: varchar("rimName", { length: 255 }).notNull(),
 	rimConfigs: jsonb("rimConfigs").$type<RimVariationsDTO[]>(),
-	pageName: varchar("pageName", { length: 255 }),
-	pageVisits: integer("pageVisits"),
-	miniImg: varchar("miniImg"),
-	allImgs: jsonb("allImgs").$type<string[]>(),
+	pageName: varchar("pageName", { length: 255 }).notNull(),
+	pageVisits: integer("pageVisits").notNull(),
+	miniImg: varchar("miniImg").notNull(),
+	allImgs: jsonb("allImgs").$type<string[]>().notNull(),
 });

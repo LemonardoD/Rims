@@ -7,9 +7,9 @@ export interface RimsMainSortedBrandDTO {
 }
 
 export interface ArrayBeforeHelperDTO {
-	rimId: number | bigint | null;
+	rimId: number | bigint;
 	name: string | null;
-	image: string | null;
+	image: string;
 	diameter: string | null;
 	price: number | null;
 }
@@ -55,9 +55,9 @@ export interface SearchRimByConfDTO {
 }
 
 export interface MainPgReturnRimDTO {
-	rimId: string | null;
+	rimId: string;
 	name: string | null;
-	image: string | null;
+	image: string;
 	diameter?: (null | string)[];
 	price?: (number | null)[];
 }

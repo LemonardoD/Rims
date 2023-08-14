@@ -9,7 +9,7 @@ class RimByConfig {
 	async RimsByAllConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
-				rimId: newRimConfig.rimId,
+				rimId: newRim.rimId,
 				name: newRim.pageName,
 				image: newRim.miniImg,
 				diameter: newRimConfig.rimDiameter,
@@ -41,7 +41,7 @@ class RimByConfig {
 	async RimsByMHWConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
-				rimId: newRimConfig.rimId,
+				rimId: newRim.rimId,
 				name: newRim.pageName,
 				image: newRim.miniImg,
 				diameter: newRimConfig.rimDiameter,
@@ -65,7 +65,7 @@ class RimByConfig {
 	async RimsByWDConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
-				rimId: newRimConfig.rimId,
+				rimId: newRim.rimId,
 				name: newRim.pageName,
 				image: newRim.miniImg,
 				diameter: newRimConfig.rimDiameter,
@@ -89,7 +89,7 @@ class RimByConfig {
 	async RimsByMHDConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
-				rimId: newRimConfig.rimId,
+				rimId: newRim.rimId,
 				name: newRim.pageName,
 				image: newRim.miniImg,
 				diameter: newRimConfig.rimDiameter,
@@ -110,7 +110,7 @@ class RimByConfig {
 	async RimsByWidthConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
-				rimId: newRimConfig.rimId,
+				rimId: newRim.rimId,
 				name: newRim.pageName,
 				image: newRim.miniImg,
 				diameter: newRimConfig.rimDiameter,
@@ -128,7 +128,7 @@ class RimByConfig {
 	async RimsByDiameterConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
-				rimId: newRimConfig.rimId,
+				rimId: newRim.rimId,
 				name: newRim.pageName,
 				image: newRim.miniImg,
 				diameter: newRimConfig.rimDiameter,
@@ -146,7 +146,7 @@ class RimByConfig {
 	async RimsByMHConfig(config: SearchRimByConfDTO): Promise<RimsMainSortedBrandDTO[] | null> {
 		const rims = await db
 			.select({
-				rimId: newRimConfig.rimId,
+				rimId: newRim.rimId,
 				name: newRim.pageName,
 				image: newRim.miniImg,
 				diameter: newRimConfig.rimDiameter,
