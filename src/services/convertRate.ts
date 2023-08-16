@@ -1,7 +1,8 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { monoCurrencyDTO } from "../DTOs/otherDTOs";
 import cron from "node-cron";
+import { monoCurrencyDTO } from "../DTOs/otherDTOs";
+import { updateUsdExchange } from "../database/repositories/exchangeRepo";
 dotenv.config();
 
 const { CURRENCY_CODE } = process.env;
@@ -29,8 +30,10 @@ async function getUsdRate() {
 	}
 }
 
-export let changeRate = await getUsdRate();
-
-// cron.schedule("0 0 0 * * *", async () => { // did'n work with render(work only in payed version), but needed 4 app runs once a day
-// 	changeRate = await getUsdRate();
+// cron.schedule("0 0 0 * * *", async () => {
+// 	// did'n work with render(work only in payed version), but needed 4 app runs once a day
+// 	const changeRate = await getUsdRate();
+// 	if (changeRate) {
+// 		await updateUsdExchange(changeRate);
+// 	}
 // });

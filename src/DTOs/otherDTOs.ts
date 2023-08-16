@@ -22,7 +22,7 @@ export interface CarNewsReqDTO {
 }
 
 export interface SearchByCarReqDTO {
-	body: { brand: string; model: string; year: number };
+	body: { brand: string; model: string; year: number; rimBrand: string };
 }
 
 export interface RimBrandsReqDTO {

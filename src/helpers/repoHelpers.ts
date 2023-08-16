@@ -2,12 +2,13 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO } from "../DTOs/dbDTos";
 import { ConfigDTO } from "../DTOs/otherDTOs";
-import { changeRate } from "../services/convertRate";
+import { getUsdExchange } from "../database/repositories/exchangeRepo";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
 
-export function priceToUAH(usd: number) {
-	return Math.floor(usd * changeRate);
+export async function priceToUAH(usd: number) {
+	const rate = await getUsdExchange();
+	return Math.floor(usd * rate);
 }
 
 export function photoArrPath(imgs: string[] | null | undefined) {
@@ -35,12 +36,12 @@ export function idConvert(number: number | bigint | null) {
 	return number?.toString() as string;
 }
 
-export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
+export async function respSorter(array: RimInfoFromDBDTO[]): Promise<SortedRimInfoDTO[]> {
 	let result: SortedRimInfoDTO[] = [];
 	for (let i = 0; i < array.length; i++) {
 		let newConfig = array[i].rimConfigs;
 		if (newConfig) {
-			newConfig.price = priceToUAH(array[i].price as number);
+			newConfig.price = await priceToUAH(array[i].price as number);
 			if (array[i].images) {
 				result.push({
 					rimId: idConvert(array[i].rimId),
@@ -129,9 +130,9 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 	return resultMerger(finalArray.filter(rim => rim));
 }
 
-export function resultMerger(array: RimInfoFromDBDTO[]) {
+export async function resultMerger(array: RimInfoFromDBDTO[]) {
 	const sortedArr = respSorter(array);
-	var mergedObj = sortedArr.reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
+	var mergedObj = (await sortedArr).reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
 		const match = previous.find(el => el.rimId === next.rimId);
 		if (!match) {
 			previous.push(next);

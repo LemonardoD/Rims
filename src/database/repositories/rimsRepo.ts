@@ -58,7 +58,7 @@ class Rims {
 	}
 
 	async getRimById(reqRimID: number) {
-		const result = resultMerger(
+		const result = await resultMerger(
 			await db
 				.select({
 					rimId: rims.rimId,
@@ -80,7 +80,7 @@ class Rims {
 	}
 
 	async getPopularRims() {
-		const result = resultMerger(
+		const result = await resultMerger(
 			await db
 				.select({
 					rimId: rims.rimId,
@@ -157,7 +157,7 @@ class Rims {
 			.where(eq(rims.rimId, id));
 	}
 
-	async rimsByCar(config: SrchRimByConfCarDTO) {
+	async allRimsByCar(config: SrchRimByConfCarDTO) {
 		const result = await db
 			.select({
 				rimId: rims.rimId,
@@ -176,7 +176,7 @@ class Rims {
 
 		let rimRespArr: any[] = [];
 		result.forEach(dbEl => {
-			config.rims.forEach(reqEl => {
+			config.rims.forEach(async reqEl => {
 				if (
 					(dbEl.rimConfigs?.boltPattern === config.pcd &&
 						dbEl.rimConfigs?.diameter === reqEl.diameter &&
@@ -186,7 +186,53 @@ class Rims {
 						dbEl.rimConfigs.width === `${reqEl.width}.0`)
 				) {
 					let newConfig = dbEl.rimConfigs;
-					newConfig.price = priceToUAH(dbEl.price);
+					newConfig.price = await priceToUAH(dbEl.price);
+					rimRespArr.push({
+						rimId: idConvert(dbEl.rimId),
+						brand: dbEl.brand,
+						name: nameConn(dbEl.name, dbEl.nameSuff),
+						image: photoPath(dbEl.image),
+						config: [newConfig],
+					});
+				}
+			});
+		});
+		if (rimRespArr.length) {
+			return rimRespArr;
+		}
+		return [];
+	}
+
+	async specificRimsByCar(config: SrchRimByConfCarDTO, brand: string) {
+		const result = await db
+			.select({
+				rimId: rims.rimId,
+				brand: rims.brand,
+				name: rims.rimName,
+				nameSuff: rims.rimNameSuffix,
+				image: images.miniImg,
+				rimConfigs: rimConfigs.configurations,
+				price: vendors.price,
+			})
+			.from(vendors)
+			.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+			.leftJoin(rims, and(eq(rims.rimId, vendors.rimId), eq(rims.brand, brand)))
+			.leftJoin(images, eq(images.rimId, rims.rimId))
+			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
+
+		let rimRespArr: any[] = [];
+		result.forEach(dbEl => {
+			config.rims.forEach(async reqEl => {
+				if (
+					(dbEl.rimConfigs?.boltPattern === config.pcd &&
+						dbEl.rimConfigs?.diameter === reqEl.diameter &&
+						dbEl.rimConfigs.width === reqEl.width) ||
+					(dbEl.rimConfigs?.boltPattern === config.pcd &&
+						dbEl.rimConfigs?.diameter === reqEl.diameter &&
+						dbEl.rimConfigs.width === `${reqEl.width}.0`)
+				) {
+					let newConfig = dbEl.rimConfigs;
+					newConfig.price = await priceToUAH(dbEl.price);
 					rimRespArr.push({
 						rimId: idConvert(dbEl.rimId),
 						brand: dbEl.brand,

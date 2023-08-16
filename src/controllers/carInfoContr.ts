@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
 import { CarInfoMid } from "../middlewares/carInfoMidd";
-import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, CarBrandReqDTO, CarNewsReqDTO, ResCarSearchDTO } from "../DTOs/otherDTOs";
+import {
+	CarBrModYrReqDTO,
+	CarBrandAndModelReqDTO,
+	CarBrandReqDTO,
+	CarNewsReqDTO,
+	ResCarSearchDTO,
+	SearchByCarReqDTO,
+} from "../DTOs/otherDTOs";
 import CarRepo from "../database/repositories/carsRepo";
 import RimRepo from "../database/repositories/rimsRepo";
 import { news } from "../services/feed";
@@ -26,8 +33,11 @@ class CarInfo extends CarInfoMid {
 		return this.response(200, await CarRepo.carInfoForRim({ brand, model, year }), res);
 	};
 
-	searchRimsByCar = async (req: Request, res: ResCarSearchDTO) => {
-		return this.response(200, await RimRepo.rimsByCar(res.locals), res);
+	searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => {
+		if (!req.body.rimBrand || req.body.rimBrand === "all") {
+			return this.response(200, await RimRepo.allRimsByCar(res.locals), res);
+		}
+		return this.response(200, await RimRepo.specificRimsByCar(res.locals, req.body.rimBrand), res);
 	};
 
 	carNews = async (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
