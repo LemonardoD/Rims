@@ -1,107 +1,190 @@
 import { db } from "../db";
-import { eq, ilike } from "drizzle-orm";
-import { idConvert, newResultIdMerger, newResultMerger, photoArrPath, photoPath, priceToUAH } from "../../helpers/repoHelpers";
-import { MainPgReturnRimDTO, RimConfigDTO, RimsMainSortedBrandDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
-import { newRim } from "../schemas/newRimConfig";
-import { newRimConfig } from "../schemas/newConfig";
+import { eq, ilike, gt, and, or, desc } from "drizzle-orm";
+import {
+	getConfigParams,
+	idConvert,
+	nameConn,
+	photoPath,
+	priceToUAH,
+	resultMerger,
+	resultMergerConfig,
+} from "../../helpers/repoHelpers";
+import { SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
+import { vendors } from "../schemas/vendorSchema";
+import { rims } from "../schemas/rimsSchema";
+import { images } from "../schemas/imagesSchema";
+import { rimConfigs } from "../schemas/rimConfigsSchema";
+import { ConfigDTO } from "../../DTOs/otherDTOs";
 
 class Rims {
-	async getNewAllRims(): Promise<MainPgReturnRimDTO[]> {
-		return newResultMerger(await db.select().from(newRim));
+	async getAllRims() {
+		return resultMerger(
+			await db
+				.select({
+					rimId: rims.rimId,
+					brand: rims.brand,
+					name: rims.rimName,
+					nameSuff: rims.rimNameSuffix,
+					image: images.miniImg,
+					rimConfigs: rimConfigs.configurations,
+					price: vendors.price,
+				})
+				.from(vendors)
+				.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+				.leftJoin(rims, eq(rims.rimId, vendors.rimId))
+				.leftJoin(images, eq(images.rimId, rims.rimId))
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId)),
+		);
 	}
 
-	async getNewRimsByBrand(reqRinBrand: string): Promise<MainPgReturnRimDTO[]> {
-		return newResultMerger(await db.select().from(newRim).where(eq(newRim.rimBrand, reqRinBrand)));
+	async getRimsByBrand(reqRinBrand: string) {
+		return resultMerger(
+			await db
+				.select({
+					rimId: rims.rimId,
+					brand: rims.brand,
+					name: rims.rimName,
+					nameSuff: rims.rimNameSuffix,
+					image: images.miniImg,
+					rimConfigs: rimConfigs.configurations,
+					price: vendors.price,
+				})
+				.from(rims)
+				.where(ilike(rims.brand, reqRinBrand))
+				.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+				.leftJoin(images, eq(images.rimId, rims.rimId))
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId)),
+		);
 	}
 
-	async getNewPopularRims(): Promise<MainPgReturnRimDTO[]> {
-		return newResultMerger(await db.select().from(newRim).limit(20).orderBy(newRim.pageVisits));
+	async getRimById(reqRimID: number) {
+		const result = resultMerger(
+			await db
+				.select({
+					rimId: rims.rimId,
+					brand: rims.brand,
+					name: rims.rimName,
+					nameSuff: rims.rimNameSuffix,
+					images: images.arrImg,
+					rimConfigs: rimConfigs.configurations,
+					price: vendors.price,
+				})
+				.from(rims)
+				.where(eq(rims.rimId, reqRimID))
+				.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+				.leftJoin(images, eq(images.rimId, rims.rimId))
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId)),
+		);
+
+		return result[0];
 	}
 
-	async getNewRimById(reqRimID: number) {
+	async getPopularRims() {
+		const result = resultMerger(
+			await db
+				.select({
+					rimId: rims.rimId,
+					brand: rims.brand,
+					name: rims.rimName,
+					nameSuff: rims.rimNameSuffix,
+					rimConfigs: rimConfigs.configurations,
+					price: vendors.price,
+					image: images.miniImg,
+				})
+				.from(vendors)
+				.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+				.leftJoin(rims, eq(rims.rimId, vendors.rimId))
+				.leftJoin(images, eq(images.rimId, vendors.rimId))
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
+				.orderBy(desc(images.quality), desc(vendors.unitsLeft))
+				.limit(20),
+		);
+		return result.slice(0, 8);
+	}
+
+	async getRimsByName(name: string) {
 		const result = await db
-			.select({ name: newRim.pageName, images: newRim.allImgs, rimVariations: newRim.rimConfigs })
-			.from(newRim)
-			.where(eq(newRim.rimId, reqRimID));
-		return newResultIdMerger(result[0]);
-	}
-
-	async getNewRimsByName(name: string): Promise<RimsMainSortedBrandDTO[] | {}> {
-		const rims = await db
-			.select()
-			.from(newRim)
-			.where(ilike(newRim.pageName, `%${name}%`));
-		if (rims.length) {
-			return newResultMerger(rims);
+			.select({
+				rimId: rims.rimId,
+				brand: rims.brand,
+				name: rims.rimName,
+				nameSuff: rims.rimNameSuffix,
+				image: images.miniImg,
+				rimConfigs: rimConfigs.configurations,
+				price: vendors.price,
+			})
+			.from(rims)
+			.where(or(ilike(rims.brand, `%${name}%`), ilike(rims.rimName, `%${name}%`), ilike(rims.rimNameSuffix, `%${name}%`)))
+			.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+			.leftJoin(images, eq(images.rimId, rims.rimId))
+			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
+		if (result.length) {
+			return resultMerger(result);
 		}
 		return [];
 	}
 
-	async getNewRimConfigs(): Promise<RimConfigDTO> {
-		const result = await db
-			.select({
-				diameter: newRimConfig.rimDiameter,
-				width: newRimConfig.rimWidth,
-				mountHoles: newRimConfig.mountingHoles,
-			})
-			.from(newRimConfig);
-		const unique = {
-			diameter: [...new Set(result.map(item => item.diameter))].sort(),
-			width: [...new Set(result.map(item => item.width))].sort(),
-			mountHoles: [...new Set(result.map(item => item.mountHoles))].sort(),
-		};
-		return unique;
+	async getRimConfigs() {
+		const result = await db.select({ rimConfigs: rimConfigs.configurations }).from(rimConfigs);
+		return getConfigParams(result);
 	}
 
-	async IfNewRimBrandExist(brand: string) {
-		const result = await db.select().from(newRim).where(eq(newRim.rimBrand, brand));
+	async IfRimBrandExist(brand: string) {
+		const result = await db.select().from(rims).where(eq(rims.brand, brand));
 		if (result.length) {
 			return true;
 		}
 		return false;
 	}
 
-	async IfNewRimExist(id: number) {
-		const result = await db.select().from(newRim).where(eq(newRim.rimId, id));
+	async IfRimExist(id: number) {
+		const result = await db.select().from(rims).where(eq(rims.rimId, id));
 		if (result.length) {
 			return true;
 		}
 		return false;
 	}
 
-	async newUpdateVisits(id: number) {
-		let [{ oldPageVisits }] = await db.select({ oldPageVisits: newRim.pageVisits }).from(newRim).where(eq(newRim.rimId, id));
+	async updateVisits(id: number) {
+		let [{ oldPageVisits }] = await db.select({ oldPageVisits: rims.visits }).from(rims).where(eq(rims.rimId, id));
 		if (!oldPageVisits) {
 			oldPageVisits = 0;
 		}
 		return await db
-			.update(newRim)
-			.set({ pageVisits: oldPageVisits + 1 })
-			.where(eq(newRim.rimId, id));
+			.update(rims)
+			.set({ visits: oldPageVisits + 1 })
+			.where(eq(rims.rimId, id));
 	}
 
-	async newRimsByCar(config: SrchRimByConfCarDTO): Promise<MainPgReturnRimDTO[] | null> {
-		const rims = await db
+	async rimsByCar(config: SrchRimByConfCarDTO) {
+		const result = await db
 			.select({
-				rimId: newRimConfig.rimId,
-				diameter: newRimConfig.rimDiameter,
-				width: newRimConfig.rimWidth,
-				price: newRimConfig.price,
-				name: newRim.pageName,
-				image: newRim.miniImg,
+				rimId: rims.rimId,
+				brand: rims.brand,
+				name: rims.rimName,
+				nameSuff: rims.rimNameSuffix,
+				image: images.miniImg,
+				rimConfigs: rimConfigs.configurations,
+				price: vendors.price,
 			})
-			.from(newRimConfig)
-			.leftJoin(newRim, eq(newRim.rimId, newRimConfig.rimId));
-		let rimRespArr: MainPgReturnRimDTO[] = [];
-		rims.forEach(dbEl => {
+			.from(vendors)
+			.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+			.leftJoin(rims, eq(rims.rimId, vendors.rimId))
+			.leftJoin(images, eq(images.rimId, rims.rimId))
+			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
+
+		let rimRespArr: any[] = [];
+		result.forEach(dbEl => {
 			config.rims.forEach(reqEl => {
-				if (dbEl.diameter === reqEl.diameter && dbEl.width === reqEl.width) {
+				if (dbEl.rimConfigs?.diameter === reqEl.diameter && dbEl.rimConfigs.width === reqEl.width) {
+					let newConfig = dbEl.rimConfigs;
+					newConfig.price = priceToUAH(dbEl.price);
 					rimRespArr.push({
 						rimId: idConvert(dbEl.rimId),
-						name: dbEl.name,
+						brand: dbEl.brand,
+						name: nameConn(dbEl.name, dbEl.nameSuff),
 						image: photoPath(dbEl.image),
-						diameter: [dbEl.diameter],
-						price: [priceToUAH(dbEl.price)],
+						config: [newConfig],
 					});
 				}
 			});
@@ -112,193 +195,25 @@ class Rims {
 		return [];
 	}
 
-	// If we not using New table then We need to rename all of class funk W/O 'new'
-
-	// async getAllRims() {
-	// 	const result = await db
-	// 		.selectDistinct({
-	// 			rimId: rimConfig.rimId,
-	// 			rimBrand: rimItems.rimBrand,
-	// 			rimName: rimItems.rimName,
-	// 			rimAttrs: rimItems.rimAttrs,
-	// 			image: rimItems.imgName,
-	// 			diameter: rimConfig.rimDiameter,
-	// 			price: rimConfig.priceUSD,
-	// 		})
-	// 		.from(rimItems)
-	// 		.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-	// 	const finalResult = resultMerger(result);
-	// 	return finalResult;
-	// }
-
-	// async getRimConfigs(): Promise<RimConfigDTO> {
-	// 	const result = await db
-	// 		.select({
-	// 			diameter: rimConfig.rimDiameter,
-	// 			width: rimConfig.rimWidth,
-	// 			mountHoles: rimConfig.mountingHoles,
-	// 		})
-	// 		.from(rimConfig);
-	// 	const unique = {
-	// 		diameter: [...new Set(result.map(item => item.diameter))].sort(),
-	// 		width: [...new Set(result.map(item => item.width))].sort(),
-	// 		mountHoles: [...new Set(result.map(item => item.mountHoles))].sort(),
-	// 	};
-	// 	return unique;
-	// }
-
-	// async getPopularRims(): Promise<MainPgReturnRimDTO[]> {
-	// 	const result = await db
-	// 		.select({
-	// 			rimId: rimItems.rimId,
-	// 			rimBrand: rimItems.rimBrand,
-	// 			rimName: rimItems.rimName,
-	// 			rimAttrs: rimItems.rimAttrs,
-	// 			diameter: rimConfig.rimDiameter,
-	// 			price: rimConfig.priceUSD,
-	// 			image: rimItems.imgName,
-	// 		})
-	// 		.from(rimItems)
-	// 		.limit(30)
-	// 		.orderBy(rimItems.visits)
-	// 		.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-	// 	const finalResult = dbRimRespSorter(result);
-	// 	return finalResult
-	// 		.filter((obj, index) => finalResult.findIndex(item => item.diameter === obj.diameter) === index)
-	// 		.splice(0, 20);
-	// }
-
-	// async getRimsByBrand(reqRinBrand: string) {
-	// 	const result = await db
-	// 		.selectDistinct({
-	// 			rimId: rimConfig.rimId,
-	// 			rimBrand: rimItems.rimBrand,
-	// 			rimName: rimItems.rimName,
-	// 			rimAttrs: rimItems.rimAttrs,
-	// 			image: rimItems.imgName,
-	// 			diameter: rimConfig.rimDiameter,
-	// 			price: rimConfig.priceUSD,
-	// 		})
-	// 		.from(rimItems)
-	// 		.where(eq(rimItems.rimBrand, reqRinBrand))
-	// 		.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-	// 	const finalResult = resultMerger(result);
-	// 	return finalResult;
-	// }
-
-	// async getConfigRimById(reqRimID: number) {
-	// 	const result = await db
-	// 		.select({
-	// 			rimDiameter: rimConfig.rimDiameter,
-	// 			rimWidth: rimConfig.rimWidth,
-	// 			mountingHoles: rimConfig.mountingHoles,
-	// 			priceUSD: rimConfig.priceUSD,
-	// 			rimBrand: rimItems.rimBrand,
-	// 			rimName: rimItems.rimName,
-	// 			rimAttrs: rimItems.rimAttrs,
-	// 			images: rimItems.arrImgNames,
-	// 		})
-	// 		.from(rimItems)
-	// 		.where(eq(rimItems.rimId, reqRimID))
-	// 		.leftJoin(rimConfig, eq(rimConfig.rimId, reqRimID));
-	// 	return dbSortConfigRimById(result);
-	// }
-
-	// async getRimByIdOffer(reqRimID: number): Promise<RimByIdDTO> {
-	// 	const result = await db
-	// 		.select({
-	// 			rimAtr: offers.rimAttrs,
-	// 			rimBrand: rimItems.rimBrand,
-	// 			rimName: rimItems.rimName,
-	// 			rimAttrs: rimItems.rimAttrs,
-	// 			images: rimItems.arrImgNames,
-	// 		})
-	// 		.from(rimItems)
-	// 		.where(eq(rimItems.rimId, reqRimID))
-	// 		.leftJoin(offers, eq(offers.itemId, reqRimID));
-	// 	return dbSortOfferRimById(result);
-	// }
-
-	// async RimsByCar(config: SrchRimByConfCarDTO): Promise<MainPgReturnRimDTO[] | null> {
-	// 	const rims = await db
-	// 		.selectDistinct({
-	// 			rimId: rimConfig.rimId,
-	// 			rimBrand: rimItems.rimBrand,
-	// 			rimName: rimItems.rimName,
-	// 			rimAttrs: rimItems.rimAttrs,
-	// 			image: rimItems.imgName,
-	// 			diameter: rimConfig.rimDiameter,
-	// 			width: rimConfig.rimWidth,
-	// 			price: rimConfig.priceUSD,
-	// 		})
-	// 		.from(rimItems)
-	// 		.where(eq(rimItems.rimId, rimConfig.rimId))
-	// 		.leftJoin(rimConfig, eq(rimConfig.mountingHoles, config.pcd));
-	// 	let rimRespArr: MainPgReturnRimDTO[] = [];
-	// 	if (rims.length) {
-	// 		rims.forEach(dbEl => {
-	// 			config.rims.forEach(reqEl => {
-	// 				if (dbEl.diameter === reqEl.diameter && dbEl.width === reqEl.width) {
-	// 					rimRespArr.push({
-	// 						rimId: idConvert(dbEl.rimId),
-	// 						name: nameConnector(dbEl.rimBrand, dbEl.rimName, dbEl.rimAttrs?.name_suffix),
-	// 						image: photoPath(dbEl.image),
-	// 						diameter: [dbEl.diameter],
-	// 						price: [priceToUAH(dbEl.price)],
-	// 					});
-	// 				}
-	// 			});
-	// 		});
-	// 		return rimRespArr;
-	// 	}
-	// 	return [];
-	// }
-
-	// async RimsByName(name: string): Promise<RimsMainSortedBrandDTO[] | {}> {
-	// 	const rims = await db
-	// 		.select({
-	// 			rimId: rimConfig.rimId,
-	// 			rimBrand: rimItems.rimBrand,
-	// 			rimName: rimItems.rimName,
-	// 			rimAttrs: rimItems.rimAttrs,
-	// 			image: rimItems.imgName,
-	// 			diameter: rimConfig.rimDiameter,
-	// 			price: rimConfig.priceUSD,
-	// 		})
-	// 		.from(rimItems)
-	// 		.where(or(ilike(rimItems.rimName, `%${name}%`), ilike(rimItems.rimBrand, `%${name}%`)))
-	// 		.leftJoin(rimConfig, eq(rimConfig.rimId, rimItems.rimId));
-	// 	if (rims.length) {
-	// 		return resultMerger(rims);
-	// 	}
-	// 	return [];
-	// }
-
-	// async IfRimBrandExist(brand: string) {
-	// 	const result = await db.select().from(rimItems).where(eq(rimItems.rimBrand, brand));
-	// 	if (result.length) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
-	// async IfRimExist(id: number) {
-	// 	const result = await db.select().from(rimItems).where(eq(rimItems.rimId, id));
-	// 	if (result.length) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
-	// async updateVisits(id: number) {
-	// 	let [{ visitsCount }] = await db.select({ visitsCount: rimItems.visits }).from(rimItems).where(eq(rimItems.rimId, id));
-	// 	if (!visitsCount) {
-	// 		visitsCount = 0;
-	// 	}
-	// 	return await db
-	// 		.update(rimItems)
-	// 		.set({ visits: visitsCount + 1 })
-	// 		.where(eq(rimItems.rimId, id));
-	// }
+	async RimsByAllConfig(config: ConfigDTO) {
+		return resultMergerConfig(
+			await db
+				.select({
+					rimId: rims.rimId,
+					brand: rims.brand,
+					name: rims.rimName,
+					nameSuff: rims.rimNameSuffix,
+					image: images.miniImg,
+					rimConfigs: rimConfigs.configurations,
+					price: vendors.price,
+				})
+				.from(vendors)
+				.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+				.leftJoin(rims, eq(rims.rimId, vendors.rimId))
+				.leftJoin(images, eq(images.rimId, rims.rimId))
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId)),
+			config,
+		);
+	}
 }
 export default new Rims();

@@ -2,7 +2,7 @@ import { eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { carBrands } from "../schemas/carBrandsSchema";
 import { carModels } from "../schemas/carModelsSchema";
-import { RimConfigInfoDTO, SearchByCarDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
+import { SearchByCarDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 
 class CarBrands {
 	async getAllCarBrands() {
@@ -63,7 +63,7 @@ class CarBrands {
 			.from(carBrands)
 			.where(eq(carBrands.carBrand, brand))
 			.leftJoin(carModels, and(eq(carModels.carBrandId, carBrands.id), eq(carModels.carModel, model)));
-		let respArr: [RimConfigInfoDTO][] = [];
+		let respArr: [SrchRimByConfCarDTO][] = [];
 		if (modelInfo) {
 			modelInfo?.years?.forEach(el => {
 				if (el.value === year) respArr.push(el.configs);

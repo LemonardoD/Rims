@@ -1,173 +1,166 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { ArrayBeforeHelperDTO, MainPgReturnRimDTO, RimByIdDTO, RimVariationsDTO, RimsMainSortedBrandDTO } from "../DTOs/dbDTos";
-import { Rim } from "../database/schemas/newRimConfig";
+import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO } from "../DTOs/dbDTos";
+import { ConfigDTO } from "../DTOs/otherDTOs";
 
 export const { EXCHANGE_RATE, PHOTO_PATH } = <{ EXCHANGE_RATE: string; PHOTO_PATH: string }>process.env;
 
-export function priceToUAH(usd: number | null) {
-	if (usd) {
-		return Math.floor(usd * Number(EXCHANGE_RATE));
-	}
-	return 0;
+export function priceToUAH(usd: number) {
+	return Math.floor(usd * Number(EXCHANGE_RATE));
 }
 
-export function photoArrPath(imgs: string[] | null) {
+export function photoArrPath(imgs: string[] | null | undefined) {
 	if (imgs) {
 		return imgs.map(el => `${PHOTO_PATH + el}`);
 	}
-	return null;
+	return [];
 }
 
-export function photoPath(img: string | null) {
+export function photoPath(img: string | null | undefined) {
 	return `${PHOTO_PATH + img}`;
 }
 
-export function idConvert(number: number | bigint) {
-	return number.toString();
+export function nameConn(str1: string | null, str2: string | null) {
+	if (str1 && str2) {
+		return `${str1} ${str2}`;
+	}
+	if (str1 && !str2) {
+		return `${str1}`;
+	}
+	return str1 as string;
 }
 
-export function newResultIdMerger(rimByIdObject: RimByIdDTO): RimByIdDTO {
-	let configResp: RimVariationsDTO[] = [];
-	if (rimByIdObject.rimVariations) {
-		for (let i = 0; i < rimByIdObject.rimVariations.length; i++) {
-			configResp.push({
-				price: priceToUAH(rimByIdObject.rimVariations[i].price),
-				width: rimByIdObject.rimVariations[i].width,
-				diameter: rimByIdObject.rimVariations[i].diameter,
-				mountingHoles: rimByIdObject.rimVariations[i].mountingHoles,
-			});
+export function idConvert(number: number | bigint | null) {
+	return number?.toString() as string;
+}
+
+export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
+	let result: SortedRimInfoDTO[] = [];
+	for (let i = 0; i < array.length; i++) {
+		let newConfig = array[i].rimConfigs;
+		if (newConfig) {
+			newConfig.price = priceToUAH(array[i].price as number);
+			if (array[i].images) {
+				result.push({
+					rimId: idConvert(array[i].rimId),
+					brand: array[i].brand,
+					name: nameConn(array[i].name, array[i].nameSuff),
+					images: photoArrPath(array[i].images),
+					config: [newConfig],
+				});
+			}
+			if (array[i].image) {
+				result.push({
+					rimId: idConvert(array[i].rimId),
+					brand: array[i].brand,
+					name: nameConn(array[i].name, array[i].nameSuff),
+					image: photoPath(array[i].image),
+					config: [newConfig],
+				});
+			}
 		}
 	}
-	return {
-		name: rimByIdObject.name,
-		images: photoArrPath(rimByIdObject.images),
-		rimVariations: configResp,
-	};
+	return result;
 }
 
-export function newResultMerger(array: Rim[]) {
-	let finalRes: MainPgReturnRimDTO[] = [];
-	for (let i = 0; i < array.length; i++) {
-		if (array[i].rimConfigs && array[i].rimConfigs?.length) {
-			finalRes.push({
-				rimId: idConvert(array[i].rimId),
-				name: array[i].pageName,
-				image: photoPath(array[i].miniImg),
-				diameter: array[i].rimConfigs?.map(el => el.diameter),
-				price: array[i].rimConfigs?.map(el => priceToUAH(el.price)),
-			});
-		}
-	}
-	return finalRes;
-}
-
-export function dbRimRespSorter(array: ArrayBeforeHelperDTO[]): RimsMainSortedBrandDTO[] {
-	let result: RimsMainSortedBrandDTO[] = [];
-	for (let i = 0; i < array.length; i++) {
-		result.push({
-			rimId: idConvert(array[i].rimId),
-			name: array[i].name,
-			image: photoPath(array[i].image),
-			diameter: [array[i].diameter],
-			price: [priceToUAH(array[i].price)],
+export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO) {
+	const { width, diameter, mountingHoles } = config;
+	if (width && diameter && !mountingHoles) {
+		const finalArray: RimInfoFromDBDTO[] = [];
+		array.map(el => {
+			if (el.rimConfigs?.diameter === diameter && el.rimConfigs?.width === width) {
+				finalArray.push(el);
+			}
 		});
+		return resultMerger(finalArray.filter(rim => rim));
 	}
-	return result.filter(rim => rim.rimId !== null && rim.price[0] !== null);
+	if (!width && diameter && mountingHoles) {
+		const finalArray: RimInfoFromDBDTO[] = [];
+		array.map(el => {
+			if (el.rimConfigs?.diameter === diameter && el.rimConfigs?.boltPattern === mountingHoles) {
+				finalArray.push(el);
+			}
+		});
+		return resultMerger(finalArray.filter(rim => rim));
+	}
+	if (width && !diameter && mountingHoles) {
+		const finalArray: RimInfoFromDBDTO[] = [];
+		array.map(el => {
+			if (el.rimConfigs?.width === width && el.rimConfigs?.boltPattern === mountingHoles) {
+				finalArray.push(el);
+			}
+		});
+		return resultMerger(finalArray.filter(rim => rim));
+	}
+	if (width && !diameter && !mountingHoles) {
+		const finalArray: RimInfoFromDBDTO[] = [];
+		array.map(el => {
+			if (el.rimConfigs?.width === width) {
+				finalArray.push(el);
+			}
+		});
+		return resultMerger(finalArray.filter(rim => rim));
+	}
+	if (!width && diameter && !mountingHoles) {
+		const finalArray: RimInfoFromDBDTO[] = [];
+		array.map(el => {
+			if (el.rimConfigs?.diameter === diameter) {
+				finalArray.push(el);
+			}
+		});
+		return resultMerger(finalArray.filter(rim => rim));
+	}
+	if (!width && !diameter && mountingHoles) {
+		const finalArray: RimInfoFromDBDTO[] = [];
+		array.map(el => {
+			if (el.rimConfigs?.boltPattern === mountingHoles) {
+				finalArray.push(el);
+			}
+		});
+		return resultMerger(finalArray.filter(rim => rim));
+	}
+	const finalArray: RimInfoFromDBDTO[] = [];
+	array.map(el => {
+		if (el.rimConfigs?.diameter === diameter && el.rimConfigs?.width === width && el.rimConfigs?.boltPattern === mountingHoles) {
+			finalArray.push(el);
+		}
+	});
+	return resultMerger(finalArray.filter(rim => rim));
 }
 
-export function configResultMerger(array: ArrayBeforeHelperDTO[]) {
-	const sortedArr = dbRimRespSorter(array);
-	const mergedRes = sortedArr.reduce((previous: RimsMainSortedBrandDTO[], next: RimsMainSortedBrandDTO) => {
+export function resultMerger(array: RimInfoFromDBDTO[]) {
+	const sortedArr = respSorter(array);
+	var mergedObj = sortedArr.reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
 		const match = previous.find(el => el.rimId === next.rimId);
 		if (!match) {
 			previous.push(next);
 		}
 		if (match) {
-			match.diameter[match.diameter.length] = next.diameter[0];
-			match.price[match.price.length] = next.price[0];
+			match.config[match.config.length] = next.config[0];
 		}
 		return previous;
 	}, []);
-	return mergedRes;
+	return mergedObj;
 }
-// If we will use old DB tables
 
-// export function resultMerger(array: RimsFromDBDTO[]) {
-// 	const sortedArr = dbRimRespSorter(array);
-// 	const mergedRes = sortedArr.reduce((previous: RimsMainSortedBrandDTO[], next: RimsMainSortedBrandDTO) => {
-// 		const match = previous.find(el => el.rimId === next.rimId);
-// 		if (!match) {
-// 			previous.push(next);
-// 		}
-// 		if (match) {
-// 			match.diameter[match.diameter.length] = next.diameter[0];
-// 			match.price[match.price.length] = next.price[0];
-// 		}
-// 		return previous;
-// 	}, []);
-// 	return mergedRes;
-// }
-
-// export function dbRimRespSorter(array: RimsFromDBDTO[]): RimsMainSortedBrandDTO[] {
-// 	let result: RimsMainSortedBrandDTO[] = [];
-// 	for (let i = 0; i < array.length; i++) {
-// 		if (array[i].rimSuffixName) {
-// 			result.push({
-// 				rimId: idConvert(array[i].rimId),
-// 				name: nameConnector(array[i].rimBrand, array[i].rimName, array[i].rimSuffixName),
-// 				image: photoPath(array[i].image),
-// 				diameter: [array[i].diameter],
-// 				price: [priceToUAH(array[i].price)],
-// 			});
-// 		}
-// 		result.push({
-// 			rimId: idConvert(array[i].rimId),
-// 			name: nameConnector(array[i].rimBrand, array[i].rimName, array[i].rimAttrs?.name_suffix),
-// 			image: photoPath(array[i].image),
-// 			diameter: [array[i].diameter],
-// 			price: [priceToUAH(array[i].price)],
-// 		});
-// 	}
-// 	return result.filter(rim => rim.rimId !== null && rim.price[0] !== null);
-// }
-
-// export function dbSortConfigRimById(array: RimByIdConfigFromDBDTO[]): RimByIdDTO {
-// 	const [{ rimBrand, rimName, images, rimAttrs }] = array;
-// 	let rimVariations: RimVariationsDTO[] = [];
-// 	array.map(el => {
-// 		if (el.rimWidth && el.rimDiameter && el.mountingHoles) {
-// 			rimVariations.push({
-// 				width: el.rimWidth,
-// 				diameter: el.rimDiameter,
-// 				mountingHoles: el.mountingHoles,
-// 				price: priceToUAH(el.priceUSD),
-// 			});
-// 		}
-// 	});
-// 	return {
-// 		name: nameConnector(rimBrand, rimName, rimAttrs?.name_suffix),
-// 		images: photoArrPath(images),
-// 		rimVariations,
-// 	};
-// }
-
-// export function dbSortOfferRimById(array: RimByIdOfferFromDBDTO[]): RimByIdDTO {
-// 	const [{ rimBrand, rimName, images, rimAttrs }] = array;
-// 	let rimVariations: RimVariationsDTO[] = [];
-// 	array.map(el => {
-// 		if (el.rimAtr) {
-// 			rimVariations.push({
-// 				width: el.rimAtr.width,
-// 				diameter: el.rimAtr.diameter,
-// 				mountingHoles: el.rimAtr.boltPattern,
-// 				price: priceToUAH(el.rimAtr.priceInUsd),
-// 			});
-// 		}
-// 	});
-// 	return {
-// 		name: nameConnector(rimBrand, rimName, rimAttrs?.name_suffix),
-// 		images: photoArrPath(images),
-// 		rimVariations,
-// 	};
-// }
+export function getConfigParams(array: ConfigSorterDTO[]) {
+	let width: string[] = [];
+	let diameter: string[] = [];
+	let pcd: string[] = [];
+	array.map(el => {
+		if (!diameter.includes(el.rimConfigs.diameter)) {
+			diameter.push(el.rimConfigs.diameter);
+		}
+		if (!width.includes(el.rimConfigs.width)) {
+			width.push(el.rimConfigs.width);
+		}
+		if (!pcd.includes(el.rimConfigs.boltPattern)) {
+			pcd.push(el.rimConfigs.boltPattern);
+		}
+	});
+	return {
+		diameter: diameter.sort((a, b) => Number(a) - Number(b)),
+		width: width.sort((a, b) => Number(a) - Number(b)),
+		mountHoles: pcd.sort(),
+	};
+}

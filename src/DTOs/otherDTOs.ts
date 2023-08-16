@@ -34,7 +34,13 @@ export interface RimIdReqDTO {
 }
 
 export interface RimByConfigDTO {
-	body: { diameter: string; width: string; mountingHoles: string };
+	body: { mountingHoles: string; diameter: string; width: string };
+}
+
+export interface ConfigDTO {
+	mountingHoles: string;
+	diameter: string;
+	width: string;
 }
 
 export interface OrderConfigDTO {

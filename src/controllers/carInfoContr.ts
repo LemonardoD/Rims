@@ -27,7 +27,7 @@ class CarInfo extends CarInfoMid {
 	};
 
 	searchRimsByCar = async (req: Request, res: ResCarSearchDTO) => {
-		return this.response(200, await RimRepo.newRimsByCar(res.locals), res);
+		return this.response(200, await RimRepo.rimsByCar(res.locals), res);
 	};
 
 	carNews = async (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
