@@ -5,9 +5,9 @@ import { ConfigDTO } from "../DTOs/otherDTOs";
 import { getUsdExchange } from "../database/repositories/exchangeRepo";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
+const rate = await getUsdExchange();
 
-export async function priceToUAH(usd: number) {
-	const rate = await getUsdExchange();
+export function priceToUAH(usd: number) {
 	return Math.floor(usd * rate);
 }
 
@@ -41,7 +41,7 @@ export async function respSorter(array: RimInfoFromDBDTO[]): Promise<SortedRimIn
 	for (let i = 0; i < array.length; i++) {
 		let newConfig = array[i].rimConfigs;
 		if (newConfig) {
-			newConfig.price = await priceToUAH(array[i].price as number);
+			newConfig.price = priceToUAH(array[i].price as number);
 			if (array[i].images) {
 				result.push({
 					rimId: idConvert(array[i].rimId),

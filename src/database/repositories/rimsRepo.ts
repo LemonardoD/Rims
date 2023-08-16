@@ -186,7 +186,7 @@ class Rims {
 						dbEl.rimConfigs.width === `${reqEl.width}.0`)
 				) {
 					let newConfig = dbEl.rimConfigs;
-					newConfig.price = await priceToUAH(dbEl.price);
+					newConfig.price = priceToUAH(dbEl.price);
 					rimRespArr.push({
 						rimId: idConvert(dbEl.rimId),
 						brand: dbEl.brand,
@@ -232,7 +232,7 @@ class Rims {
 						dbEl.rimConfigs.width === `${reqEl.width}.0`)
 				) {
 					let newConfig = dbEl.rimConfigs;
-					newConfig.price = await priceToUAH(dbEl.price);
+					newConfig.price = priceToUAH(dbEl.price);
 					rimRespArr.push({
 						rimId: idConvert(dbEl.rimId),
 						brand: dbEl.brand,
