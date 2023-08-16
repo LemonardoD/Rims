@@ -2,11 +2,12 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO } from "../DTOs/dbDTos";
 import { ConfigDTO } from "../DTOs/otherDTOs";
+import { changeRate } from "../services/convertRate";
 
-export const { EXCHANGE_RATE, PHOTO_PATH } = <{ EXCHANGE_RATE: string; PHOTO_PATH: string }>process.env;
+export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
 
 export function priceToUAH(usd: number) {
-	return Math.floor(usd * Number(EXCHANGE_RATE));
+	return Math.floor(usd * changeRate);
 }
 
 export function photoArrPath(imgs: string[] | null | undefined) {

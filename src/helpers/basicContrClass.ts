@@ -1,7 +1,7 @@
 import { RequestHandler, Response } from "express";
 
 export class Controller {
-	response(statusCode: number, message: string | object | null, res: Response) {
+	response(statusCode: number, message: object, res: Response) {
 		return res.status(statusCode).json({
 			message,
 		});

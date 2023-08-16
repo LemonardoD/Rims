@@ -49,7 +49,7 @@ class CarBrands {
 			.leftJoin(carModels, and(eq(carModels.carBrandId, carBrands.id), eq(carModels.carModel, model)));
 		const response = modelInfo?.years?.map(el => el.value);
 		if (response === undefined) {
-			return null;
+			return [];
 		}
 		return response;
 	}

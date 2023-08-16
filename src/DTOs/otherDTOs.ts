@@ -82,3 +82,10 @@ export interface FeedsDTO {
 	items: { [key: string]: string }[];
 	title?: string;
 }
+
+export interface monoCurrencyDTO {
+	currencyCodeA: number;
+	currencyCodeB: number;
+	rateBuy: number;
+	rateSell: number;
+}

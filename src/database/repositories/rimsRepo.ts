@@ -71,7 +71,7 @@ class Rims {
 				})
 				.from(rims)
 				.where(eq(rims.rimId, reqRimID))
-				.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+				.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId)))
 				.leftJoin(images, eq(images.rimId, rims.rimId))
 				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId)),
 		);
@@ -115,7 +115,8 @@ class Rims {
 			})
 			.from(rims)
 			.where(or(ilike(rims.brand, `%${name}%`), ilike(rims.rimName, `%${name}%`), ilike(rims.rimNameSuffix, `%${name}%`)))
-			.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+			.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId)))
+			//.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
 			.leftJoin(images, eq(images.rimId, rims.rimId))
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
 		if (result.length) {
@@ -176,7 +177,14 @@ class Rims {
 		let rimRespArr: any[] = [];
 		result.forEach(dbEl => {
 			config.rims.forEach(reqEl => {
-				if (dbEl.rimConfigs?.diameter === reqEl.diameter && dbEl.rimConfigs.width === reqEl.width) {
+				if (
+					(dbEl.rimConfigs?.boltPattern === config.pcd &&
+						dbEl.rimConfigs?.diameter === reqEl.diameter &&
+						dbEl.rimConfigs.width === reqEl.width) ||
+					(dbEl.rimConfigs?.boltPattern === config.pcd &&
+						dbEl.rimConfigs?.diameter === reqEl.diameter &&
+						dbEl.rimConfigs.width === `${reqEl.width}.0`)
+				) {
 					let newConfig = dbEl.rimConfigs;
 					newConfig.price = priceToUAH(dbEl.price);
 					rimRespArr.push({
