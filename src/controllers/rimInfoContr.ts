@@ -8,7 +8,6 @@ class RimInfo extends RimsInfoMid {
 	rimsByBrands = async (req: RimBrandsReqDTO, res: Response) => {
 		const { rimBrand } = req.body;
 		if (rimBrand === "all") {
-			console.log(await RimRepo.getAllRims());
 			return this.response(200, await RimRepo.getAllRims(), res);
 		}
 		return this.response(200, await RimRepo.getRimsByBrand(rimBrand), res);
@@ -20,7 +19,6 @@ class RimInfo extends RimsInfoMid {
 
 	rimById = async (req: RimIdReqDTO, res: Response) => {
 		const id = Number(req.body.id);
-		await RimRepo.updateVisits(id);
 		return this.response(200, await RimRepo.getRimById(id), res);
 	};
 
@@ -32,7 +30,7 @@ class RimInfo extends RimsInfoMid {
 		const { searchText } = req.body;
 		const brand = searchAlike(searchText);
 		if (brand) {
-			return this.response(200, await RimRepo.getRimsByBrand(brand), res);
+			return this.response(200, await RimRepo.getRimsByName(brand), res);
 		}
 		return this.response(200, await RimRepo.getRimsByName(searchText), res);
 	};

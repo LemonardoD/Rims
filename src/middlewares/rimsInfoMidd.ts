@@ -7,7 +7,7 @@ import RimsRepo from "../database/repositories/rimsRepo";
 export class RimsInfoMid extends Controller {
 	rimsBrandVal = async (req: RimBrandsReqDTO, res: Response, next: NextFunction) => {
 		const { rimBrand } = req.body;
-		if (!(await RimsRepo.IfRimBrandExist(rimBrand)) && rimBrand !== "all") {
+		if (!(await RimsRepo.ifRimBrandExist(rimBrand)) && rimBrand !== "all") {
 			throw new CustomError("We don't have that rims brand.", 406);
 		}
 		next();
@@ -15,7 +15,7 @@ export class RimsInfoMid extends Controller {
 
 	rimIdVal = async (req: RimIdReqDTO, res: Response, next: NextFunction) => {
 		const { id } = req.body;
-		if (!(await RimsRepo.IfRimExist(Number(id)))) {
+		if (!(await RimsRepo.ifRimExist(Number(id)))) {
 			throw new CustomError("We don't have that rims with that id.", 404);
 		}
 		next();

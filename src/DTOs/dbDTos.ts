@@ -49,6 +49,12 @@ export interface SrchRimByConfCarDTO {
 	rims: [{ width: string; diameter: string }];
 }
 
+export interface CarYearsDTO {
+	value: number;
+	configs: [{ pcd: string; rims: [{ width: string; diameter: string }] }];
+	engines: string[];
+}
+
 export interface CarModelsDTO {
-	years: null | { value: number; configs: [{ pcd: string; rims: [{ width: string; diameter: string }] }]; engines: string[] }[];
+	years: CarYearsDTO[];
 }

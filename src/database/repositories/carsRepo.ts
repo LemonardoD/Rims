@@ -7,54 +7,51 @@ import { SearchByCarDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 class CarBrands {
 	async getAllCarBrands() {
 		const brands = await db.select({ carBrand: carBrands.carBrand }).from(carBrands);
-		let finalBrandArr: string[] = [];
-		brands.forEach(element => finalBrandArr.push(element.carBrand));
-		return finalBrandArr;
+		return brands.map(el => el.carBrand);
 	}
 
-	async IfCarBrandExist(brand: string) {
-		const result = await db.select().from(carBrands).where(eq(carBrands.carBrand, brand));
-		if (result.length) {
+	async ifCarBrandExist(brand: string) {
+		const respDB = await db.select().from(carBrands).where(eq(carBrands.carBrand, brand));
+		if (respDB.length) {
 			return true;
 		}
 		return false;
 	}
 
-	async IfCarModelExist(model: string) {
-		const result = await db.select().from(carModels).where(eq(carModels.carModel, model));
-		if (result.length) {
+	async ifCarModelExist(brand: string, model: string) {
+		const [{ car_model }] = await db
+			.select()
+			.from(carBrands)
+			.where(eq(carBrands.carBrand, brand))
+			.leftJoin(carModels, eq(carModels.carModel, model));
+		if (car_model) {
 			return true;
 		}
 		return false;
 	}
 
-	async getCarModelsByBrand(brand: string): Promise<(string | null)[]> {
+	async getCarModelsByBrand(brand: string) {
 		const result = await db
 			.select({
 				model: carModels.carModel,
 			})
-			.from(carBrands)
-			.where(eq(carBrands.carBrand, brand))
-			.leftJoin(carModels, eq(carModels.carBrandId, carBrands.id));
+			.from(carModels)
+			.where(eq(carModels.carBrandId, carBrands.id))
+			.leftJoin(carBrands, eq(carBrands.carBrand, brand));
 		return result.map(el => el.model);
 	}
 
-	async getCarYearsByModel(brand: string, model: string) {
+	async getCarYearsByModel(model: string) {
 		const [{ modelInfo }] = await db
 			.select({
 				modelInfo: carModels.modelInfo,
 			})
-			.from(carBrands)
-			.where(eq(carBrands.carBrand, brand))
-			.leftJoin(carModels, and(eq(carModels.carBrandId, carBrands.id), eq(carModels.carModel, model)));
-		const response = modelInfo?.years?.map(el => el.value);
-		if (response === undefined) {
-			return [];
-		}
-		return response;
+			.from(carModels)
+			.where(eq(carModels.carModel, model));
+		return modelInfo.years.map(el => el.value);
 	}
 
-	async carInfoForRim(info: SearchByCarDTO): Promise<SrchRimByConfCarDTO> {
+	async getCarRimConfig(info: SearchByCarDTO): Promise<SrchRimByConfCarDTO> {
 		const { brand, model, year } = info;
 		const [{ modelInfo }] = await db
 			.select({
@@ -65,7 +62,7 @@ class CarBrands {
 			.leftJoin(carModels, and(eq(carModels.carBrandId, carBrands.id), eq(carModels.carModel, model)));
 		let respArr: [SrchRimByConfCarDTO][] = [];
 		if (modelInfo) {
-			modelInfo?.years?.forEach(el => {
+			modelInfo?.years.forEach(el => {
 				if (el.value === year) respArr.push(el.configs);
 			});
 		}

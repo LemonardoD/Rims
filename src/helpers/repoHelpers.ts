@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO } from "../DTOs/dbDTos";
+import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO, SrchRimByConfCarDTO } from "../DTOs/dbDTos";
 import { ConfigDTO } from "../DTOs/otherDTOs";
 import { getUsdExchange } from "../database/repositories/exchangeRepo";
 
@@ -36,7 +36,7 @@ export function idConvert(number: number | bigint | null) {
 	return number?.toString() as string;
 }
 
-export async function respSorter(array: RimInfoFromDBDTO[]): Promise<SortedRimInfoDTO[]> {
+export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 	let result: SortedRimInfoDTO[] = [];
 	for (let i = 0; i < array.length; i++) {
 		let newConfig = array[i].rimConfigs;
@@ -130,9 +130,9 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 	return resultMerger(finalArray.filter(rim => rim));
 }
 
-export async function resultMerger(array: RimInfoFromDBDTO[]) {
+export function resultMerger(array: RimInfoFromDBDTO[]) {
 	const sortedArr = respSorter(array);
-	var mergedObj = (await sortedArr).reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
+	var mergedObj = sortedArr.reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
 		const match = previous.find(el => el.rimId === next.rimId);
 		if (!match) {
 			previous.push(next);
@@ -143,6 +143,30 @@ export async function resultMerger(array: RimInfoFromDBDTO[]) {
 		return previous;
 	}, []);
 	return mergedObj;
+}
+
+export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfCarDTO) {
+	let rimRespArr: SortedRimInfoDTO[] = [];
+	array.forEach(dbEl => {
+		config.rims.forEach(async reqEl => {
+			if (
+				dbEl.rimConfigs?.boltPattern === config.pcd &&
+				dbEl.rimConfigs?.diameter === reqEl.diameter &&
+				(dbEl.rimConfigs.width === `${reqEl.width}.0` || dbEl.rimConfigs.width === reqEl.width)
+			) {
+				let newConfig = dbEl.rimConfigs;
+				newConfig.price = priceToUAH(dbEl.price!);
+				rimRespArr.push({
+					rimId: idConvert(dbEl.rimId),
+					brand: dbEl.brand,
+					name: nameConn(dbEl.name, dbEl.nameSuff),
+					image: photoPath(dbEl.image),
+					config: [newConfig],
+				});
+			}
+		});
+	});
+	return rimRespArr;
 }
 
 export function getConfigParams(array: ConfigSorterDTO[]) {

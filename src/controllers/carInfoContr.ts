@@ -23,24 +23,22 @@ class CarInfo extends CarInfoMid {
 	};
 
 	carYears = async (req: CarBrandAndModelReqDTO, res: ResCarSearchDTO) => {
-		const { brand, model } = req.params;
-		return this.response(200, await CarRepo.getCarYearsByModel(brand, model), res);
+		const { model } = req.params;
+		return this.response(200, await CarRepo.getCarYearsByModel(model), res);
 	};
 
 	carConfig = async (req: CarBrModYrReqDTO, res: ResCarSearchDTO) => {
 		const { brand, model } = req.params;
 		const year = Number(req.params.year);
-		return this.response(200, await CarRepo.carInfoForRim({ brand, model, year }), res);
+		return this.response(200, await CarRepo.getCarRimConfig({ brand, model, year }), res);
 	};
 
 	searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => {
-		if (!req.body.rimBrand || req.body.rimBrand === "all") {
-			return this.response(200, await RimRepo.allRimsByCar(res.locals), res);
-		}
-		return this.response(200, await RimRepo.specificRimsByCar(res.locals, req.body.rimBrand), res);
+		const { rimBrand } = req.body;
+		return this.response(200, await RimRepo.rimsByCar(res.locals, rimBrand), res);
 	};
 
-	carNews = async (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
+	carNews = (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
 		const offset = Number(req.params.offset);
 		if (!news) {
 			return this.response(503, [], res);

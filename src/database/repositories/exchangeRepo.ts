@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm";
 import { exchange } from "../schemas/exchangeSchema";
 
 export async function getUsdExchange() {
-	const result = await db.select().from(exchange).where(eq(exchange.currency, "usd"));
-	return result[0].rate;
+	const [{ rate }] = await db.select().from(exchange).where(eq(exchange.currency, "usd"));
+	return rate;
 }
 
 export async function updateUsdExchange(changeRate: number) {

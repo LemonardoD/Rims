@@ -4,7 +4,7 @@ import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/other
 import EmSender from "../services/emailSender";
 
 class WorkWithCustomer extends CusInfoMid {
-	order = async (req: OrderReqDTO, res: Response) => {
+	orderRims = async (req: OrderReqDTO, res: Response) => {
 		const { name, phone, email, orderConfig } = req.body;
 		await EmSender.sendEmailToCusOrder(email);
 		await EmSender.sendEmailToAdminOrder(phone, name, orderConfig);
@@ -12,7 +12,8 @@ class WorkWithCustomer extends CusInfoMid {
 	};
 
 	orderAPhoneCall = async (req: OrderCallReqDTO, res: Response) => {
-		await EmSender.sendEmailToAdminPhCall(req.body.phone);
+		const { phone } = req.body;
+		await EmSender.sendEmailToAdminPhCall(phone);
 		return this.response(200, { message: "Phone call is processing." }, res);
 	};
 
