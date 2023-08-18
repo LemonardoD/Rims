@@ -1,5 +1,5 @@
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
 import { OrderConfigDTO } from "../DTOs/otherDTOs";
 dotenv.config();
 

@@ -1,12 +1,12 @@
-import { db } from "../db";
 import { eq, ilike, gt, and, or, desc } from "drizzle-orm";
-import { getConfigParams, resultMerger, resultMergerConfig, rimByCarMerger } from "../../helpers/repoHelpers";
-import { SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
-import { vendors } from "../schemas/vendorSchema";
-import { rims } from "../schemas/rimsSchema";
+import { db } from "../db";
 import { images } from "../schemas/imagesSchema";
+import { getConfigParams, resultMerger, resultMergerConfig, rimByCarMerger } from "../../helpers/repoHelpers";
+import { rims } from "../schemas/rimsSchema";
 import { rimConfigs } from "../schemas/rimConfigsSchema";
+import { vendors } from "../schemas/vendorSchema";
 import { ConfigDTO } from "../../DTOs/otherDTOs";
+import { SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 
 class Rims {
 	async getAllRims() {
@@ -113,10 +113,7 @@ class Rims {
 			//.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
 			.leftJoin(images, eq(images.rimId, rims.rimId))
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
-		if (result.length) {
-			return resultMerger(result);
-		}
-		return [];
+		return resultMerger(result);
 	}
 
 	async getRimConfigs() {

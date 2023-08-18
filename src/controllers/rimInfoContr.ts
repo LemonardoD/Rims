@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
+import RimRepo from "../database/repositories/rimsRepo";
 import { RimsInfoMid } from "../middlewares/rimsInfoMidd";
 import { RimBrandsReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
-import RimRepo from "../database/repositories/rimsRepo";
 import { searchAlike } from "../helpers/searchNaming";
 
 class RimInfo extends RimsInfoMid {

@@ -1,5 +1,6 @@
 import { integer, varchar, bigint, pgTable, serial, jsonb } from "drizzle-orm/pg-core";
 import { InferModel } from "drizzle-orm";
+import { rims } from "./rimsSchema";
 
 export type Img = InferModel<typeof images>;
 export type NewImg = InferModel<typeof images, "insert">;
@@ -9,5 +10,7 @@ export const images = pgTable("images", {
 	miniImg: varchar("miniImg", { length: 255 }).notNull(),
 	arrImg: jsonb("arrImg").$type<string[]>().notNull(),
 	quality: integer("quality").notNull(),
-	rimId: bigint("rimId", <{ mode: "number" | "bigint" }>{}).notNull(),
+	rimId: bigint("rimId", <{ mode: "number" | "bigint" }>{})
+		.notNull()
+		.references(() => rims.rimId),
 });

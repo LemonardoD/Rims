@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { Controller } from "../helpers/basicContrClass";
-import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
 import { CustomError } from "../helpers/errThrower";
+import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
 
 export class CusInfoMid extends Controller {
 	CusVal = async (req: OrderReqDTO, res: Response, next: NextFunction) => {

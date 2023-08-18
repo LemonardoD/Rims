@@ -1,7 +1,7 @@
 import { Response } from "express";
+import EmSender from "../services/emailSender";
 import { CusInfoMid } from "../middlewares/workWithCusMidd";
 import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
-import EmSender from "../services/emailSender";
 
 class WorkWithCustomer extends CusInfoMid {
 	orderRims = async (req: OrderReqDTO, res: Response) => {

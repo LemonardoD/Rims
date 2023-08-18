@@ -2,11 +2,11 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import * as dotenv from "dotenv";
-dotenv.config();
 import carRtr from "./routers/carsRoutes";
 import rimsRtr from "./routers/rimsRouter";
 import searchRtr from "./routers/searchRouter";
 import usOrders from "./routers/usOrdersRouter";
+dotenv.config();
 
 const app = express();
 

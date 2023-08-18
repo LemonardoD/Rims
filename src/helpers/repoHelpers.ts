@@ -1,8 +1,8 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO, SrchRimByConfCarDTO } from "../DTOs/dbDTos";
 import { ConfigDTO } from "../DTOs/otherDTOs";
 import { getUsdExchange } from "../database/repositories/exchangeRepo";
+import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO, SrchRimByConfCarDTO } from "../DTOs/dbDTos";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
 const rate = await getUsdExchange();
@@ -123,7 +123,11 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 	}
 	const finalArray: RimInfoFromDBDTO[] = [];
 	array.map(el => {
-		if (el.rimConfigs?.diameter === diameter && el.rimConfigs?.width === width && el.rimConfigs?.boltPattern === mountingHoles) {
+		if (
+			el.rimConfigs?.diameter === diameter &&
+			(el.rimConfigs.width === `${width}.0` || el.rimConfigs.width === width) &&
+			el.rimConfigs.boltPattern === mountingHoles
+		) {
 			finalArray.push(el);
 		}
 	});
@@ -151,7 +155,7 @@ export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfC
 		config.rims.forEach(async reqEl => {
 			if (
 				dbEl.rimConfigs?.boltPattern === config.pcd &&
-				dbEl.rimConfigs?.diameter === reqEl.diameter &&
+				dbEl.rimConfigs.diameter === reqEl.diameter &&
 				(dbEl.rimConfigs.width === `${reqEl.width}.0` || dbEl.rimConfigs.width === reqEl.width)
 			) {
 				let newConfig = dbEl.rimConfigs;

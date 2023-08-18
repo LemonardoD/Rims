@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import CarRepo from "../database/repositories/carsRepo";
+import RimRepo from "../database/repositories/rimsRepo";
+import { news } from "../services/feed";
 import { CarInfoMid } from "../middlewares/carInfoMidd";
 import {
 	CarBrModYrReqDTO,
@@ -8,9 +11,6 @@ import {
 	ResCarSearchDTO,
 	SearchByCarReqDTO,
 } from "../DTOs/otherDTOs";
-import CarRepo from "../database/repositories/carsRepo";
-import RimRepo from "../database/repositories/rimsRepo";
-import { news } from "../services/feed";
 
 class CarInfo extends CarInfoMid {
 	allCarBrands = async (req: Request, res: Response) => {
