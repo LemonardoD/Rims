@@ -25,7 +25,8 @@ class Rims {
 				.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
 				.leftJoin(rims, eq(rims.rimId, vendors.rimId))
 				.leftJoin(images, eq(images.rimId, rims.rimId))
-				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId)),
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
+				.orderBy(desc(images.quality), desc(vendors.unitsLeft)),
 		);
 	}
 
@@ -45,7 +46,8 @@ class Rims {
 				.where(ilike(rims.brand, reqRinBrand))
 				.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
 				.leftJoin(images, eq(images.rimId, rims.rimId))
-				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId)),
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
+				.orderBy(desc(images.quality), desc(vendors.unitsLeft)),
 		);
 	}
 

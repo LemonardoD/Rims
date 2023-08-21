@@ -31,14 +31,16 @@ class CarBrands {
 	}
 
 	async getCarModelsByBrand(brand: string) {
-		const result = await db
-			.select({
-				model: carModels.carModel,
-			})
-			.from(carModels)
-			.where(eq(carModels.carBrandId, carBrands.id))
-			.leftJoin(carBrands, eq(carBrands.carBrand, brand));
-		return result.map(el => el.model);
+		const result = (
+			await db
+				.select({
+					model: carModels.carModel,
+				})
+				.from(carModels)
+				.where(eq(carModels.carBrandId, carBrands.id))
+				.leftJoin(carBrands, eq(carBrands.carBrand, brand))
+		).map(el => el.model);
+		return result.sort();
 	}
 
 	async getCarYearsByModel(model: string) {
