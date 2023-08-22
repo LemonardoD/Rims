@@ -159,8 +159,8 @@ export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfC
 	let rimRespArr: SortedRimByCarInfoDTO[] = [];
 	let uniqDiameters: string[] = [];
 	array.forEach(dbEl => {
-		uniqDiameters.push(dbEl.rimConfigs?.diameter as string);
 		config.rims.forEach(async reqEl => {
+			uniqDiameters.push(reqEl.diameter);
 			if (
 				dbEl.rimConfigs?.boltPattern === config.pcd &&
 				dbEl.rimConfigs.diameter === reqEl.diameter &&
