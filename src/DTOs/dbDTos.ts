@@ -43,10 +43,6 @@ export interface RimConfigInfoDTO {
 	type: string;
 }
 
-export interface ConfigSorterDTO {
-	rimConfigs: ConfigsDBDTO;
-}
-
 export interface SearchByCarDTO {
 	brand: string;
 	model: string;

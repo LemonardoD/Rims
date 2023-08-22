@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { ConfigDTO } from "../DTOs/otherDTOs";
 import { getUsdExchange } from "../database/repositories/exchangeRepo";
-import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO, SrchRimByConfCarDTO, SortedRimByCarInfoDTO } from "../DTOs/dbDTos";
+import { RimInfoFromDBDTO, SortedRimInfoDTO, SrchRimByConfCarDTO, SortedRimByCarInfoDTO } from "../DTOs/dbDTos";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
 const rate = await getUsdExchange();
@@ -87,62 +87,53 @@ export function resultMerger(array: RimInfoFromDBDTO[]) {
 }
 
 export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO) {
+	const finalArray: RimInfoFromDBDTO[] = [];
 	const { width, diameter, mountingHoles } = config;
 	if (width && diameter && !mountingHoles) {
-		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
-			if (el.rimConfigs?.diameter === diameter && el.rimConfigs.width === width) {
+			if (el.rimConfigs?.diameter === diameter && (el.rimConfigs.width === `${width}.0` || el.rimConfigs.width === width)) {
 				finalArray.push(el);
 			}
 		});
-		return resultMerger(finalArray);
 	}
 	if (!width && diameter && mountingHoles) {
-		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
 			if (el.rimConfigs?.diameter === diameter && el.rimConfigs.boltPattern === mountingHoles) {
 				finalArray.push(el);
 			}
 		});
-		return resultMerger(finalArray.filter(rim => rim));
 	}
 	if (width && !diameter && mountingHoles) {
-		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
-			if (el.rimConfigs?.width === width && el.rimConfigs.boltPattern === mountingHoles) {
+			if (
+				(el.rimConfigs?.width === `${width}.0` || el.rimConfigs?.width === width) &&
+				el.rimConfigs.boltPattern === mountingHoles
+			) {
 				finalArray.push(el);
 			}
 		});
-		return resultMerger(finalArray.filter(rim => rim));
 	}
 	if (width && !diameter && !mountingHoles) {
-		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
-			if (el.rimConfigs?.width === width) {
+			if (el.rimConfigs?.width === `${width}.0` || el.rimConfigs?.width === width) {
 				finalArray.push(el);
 			}
 		});
-		return resultMerger(finalArray.filter(rim => rim));
 	}
 	if (!width && diameter && !mountingHoles) {
-		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
 			if (el.rimConfigs?.diameter === diameter) {
 				finalArray.push(el);
 			}
 		});
-		return resultMerger(finalArray.filter(rim => rim));
 	}
 	if (!width && !diameter && mountingHoles) {
-		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
 			if (el.rimConfigs?.boltPattern === mountingHoles) {
 				finalArray.push(el);
 			}
 		});
-		return resultMerger(finalArray.filter(rim => rim));
 	}
-	const finalArray: RimInfoFromDBDTO[] = [];
 	array.map(el => {
 		if (
 			el.rimConfigs?.diameter === diameter &&
@@ -152,34 +143,23 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 			finalArray.push(el);
 		}
 	});
-	return resultMerger(finalArray.filter(rim => rim));
+	return resultMerger(finalArray);
 }
 
 export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfCarDTO) {
-	let rimRespArr: SortedRimByCarInfoDTO[] = [];
-	let uniqDiameters: string[] = [];
+	let rimRespArr: RimInfoFromDBDTO[] = [];
 	array.forEach(dbEl => {
 		config.rims.forEach(async reqEl => {
-			uniqDiameters.push(reqEl.diameter);
 			if (
 				dbEl.rimConfigs?.boltPattern === config.pcd &&
 				dbEl.rimConfigs.diameter === reqEl.diameter &&
 				(dbEl.rimConfigs.width === `${reqEl.width}.0` || dbEl.rimConfigs.width === reqEl.width)
 			) {
-				let newConfig = dbEl.rimConfigs;
-				newConfig.price = priceToUAH(dbEl.price!);
-				rimRespArr.push({
-					rimId: idConvert(dbEl.rimId),
-					brand: dbEl.brand,
-					name: nameConn(dbEl.name, dbEl.nameSuff),
-					image: photoPath(dbEl.image),
-					config: [newConfig],
-				});
+				rimRespArr.push(dbEl);
 			}
 		});
 	});
-	if (rimRespArr.length) return { rimList: rimRespArr, diameters: [...new Set(uniqDiameters)].sort() };
-	return { rimList: [], diameters: [] };
+	return resultMerger(rimRespArr);
 }
 
 // export function getConfigParams(array: ConfigSorterDTO[]) {
