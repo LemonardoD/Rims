@@ -15,7 +15,16 @@ export interface SortedRimInfoDTO {
 	image?: string;
 	images?: string[];
 	config: ConfigsDBDTO[];
-	price?: number;
+	diameters: string[];
+	minPrice: number[];
+}
+
+export interface SortedRimByCarInfoDTO {
+	rimId: string;
+	brand: string | null;
+	name: string;
+	image: string;
+	config: ConfigsDBDTO[];
 }
 export interface ConfigsDBDTO {
 	diameter: string;

@@ -46,8 +46,12 @@ class EmailSender {
 			from: EMAIL,
 			to: ADMINS_EMAIL_FOR_ORDERS,
 			subject: Subject.AdminOrder,
-			text: `${Text.AdminOrder} His phone: ${customerPhone}, his name is: ${customerName}. Ordered ${orderConfig.rimId} with parameters diameter:${orderConfig.diameter},  
-			width:${orderConfig.width} & pcd:${orderConfig.mountingHoles}`,
+			text: `${Text.AdminOrder} His phone: ${customerPhone}, his name is: ${customerName}. Ordered ${
+				orderConfig.rimId
+			} with parameters diameter:${orderConfig.diameter},  
+			width:${orderConfig.width}, pcd:${orderConfig.boltPattern}, cb:${orderConfig.centralBore}, offset:${
+				orderConfig.offset
+			}. Total for 4 rim:${orderConfig.price * 4}`,
 		};
 		return transporter.sendMail(mailOptions, async function (err: Error | null) {
 			if (err) {

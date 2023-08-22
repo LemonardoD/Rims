@@ -5,7 +5,7 @@ import RimInfo from "../controllers/rimInfoContr";
 const rimsRtr = Router();
 rimsRtr.use(cookieParser());
 
-rimsRtr.get("/rims-configs", RimInfo.tryCatch(RimInfo.rimConfigs));
+// rimsRtr.get("/rims-configs", RimInfo.tryCatch(RimInfo.rimConfigs));
 rimsRtr.get("/rims-popular", RimInfo.tryCatch(RimInfo.rimsPopular));
 
 rimsRtr.post("/rim-by-id", RimInfo.tryCatch(RimInfo.rimIdVal), RimInfo.tryCatch(RimInfo.rimById));

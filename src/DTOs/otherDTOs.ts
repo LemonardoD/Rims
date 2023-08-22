@@ -18,7 +18,7 @@ export interface CarBrModYrReqDTO extends CarBrandAndModelReqDTO {
 }
 
 export interface CarNewsReqDTO {
-	params: { offset: string };
+	params: { page: string };
 }
 
 export interface SearchByCarReqDTO {
@@ -44,9 +44,12 @@ export interface ConfigDTO {
 }
 
 export interface OrderConfigDTO {
-	mountingHoles: string;
-	diameter: string;
 	width: string;
+	offset: number;
+	diameter: string;
+	boltPattern: string;
+	centralBore: number;
+	price: number;
 	rimId: string;
 }
 

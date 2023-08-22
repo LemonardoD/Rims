@@ -39,11 +39,11 @@ class CarInfo extends CarInfoMid {
 	};
 
 	carNews = (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
-		const offset = Number(req.params.offset);
+		const offset = Number(req.params.page) * 20;
 		if (!news) {
 			return this.response(503, [], res);
 		}
-		return this.response(200, news.slice(offset, offset + 20), res);
+		return this.response(200, news.slice(offset - 20, offset), res);
 	};
 }
 

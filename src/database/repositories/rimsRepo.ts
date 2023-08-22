@@ -1,7 +1,7 @@
 import { eq, ilike, gt, and, or, desc } from "drizzle-orm";
 import { db } from "../db";
 import { images } from "../schemas/imagesSchema";
-import { getConfigParams, resultMerger, resultMergerConfig, rimByCarMerger } from "../../helpers/repoHelpers";
+import { resultMerger, resultMergerConfig, rimByCarMerger } from "../../helpers/repoHelpers";
 import { rims } from "../schemas/rimsSchema";
 import { rimConfigs } from "../schemas/rimConfigsSchema";
 import { vendors } from "../schemas/vendorSchema";
@@ -112,16 +112,16 @@ class Rims {
 			.from(rims)
 			.where(or(ilike(rims.brand, `%${name}%`), ilike(rims.rimName, `%${name}%`), ilike(rims.rimNameSuffix, `%${name}%`)))
 			.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId)))
-			//.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+			//.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0))) if we not show units with zero price
 			.leftJoin(images, eq(images.rimId, rims.rimId))
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
 		return resultMerger(result);
 	}
 
-	async getRimConfigs() {
-		const result = await db.select({ rimConfigs: rimConfigs.configurations }).from(rimConfigs);
-		return getConfigParams(result);
-	}
+	// async getRimConfigs() {
+	// 	const result = await db.select({ rimConfigs: rimConfigs.configurations }).from(rimConfigs);
+	// 	return getConfigParams(result);
+	// }
 
 	async ifRimBrandExist(brand: string) {
 		const result = await db.select().from(rims).where(eq(rims.brand, brand));

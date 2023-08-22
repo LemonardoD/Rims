@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { ConfigDTO } from "../DTOs/otherDTOs";
 import { getUsdExchange } from "../database/repositories/exchangeRepo";
-import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO, SrchRimByConfCarDTO } from "../DTOs/dbDTos";
+import { RimInfoFromDBDTO, SortedRimInfoDTO, ConfigSorterDTO, SrchRimByConfCarDTO, SortedRimByCarInfoDTO } from "../DTOs/dbDTos";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
 const rate = await getUsdExchange();
@@ -39,30 +39,48 @@ export function idConvert(number: number | bigint | null) {
 export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 	let result: SortedRimInfoDTO[] = [];
 	for (let i = 0; i < array.length; i++) {
+		const price = priceToUAH(array[i].price as number);
 		let newConfig = array[i].rimConfigs;
 		if (newConfig) {
-			newConfig.price = priceToUAH(array[i].price as number);
+			newConfig.price = price;
+			let objElement: SortedRimInfoDTO = {
+				rimId: idConvert(array[i].rimId),
+				brand: array[i].brand,
+				name: nameConn(array[i].name, array[i].nameSuff),
+				config: [newConfig],
+				minPrice: [price],
+				diameters: [newConfig.diameter],
+			};
 			if (array[i].images) {
-				result.push({
-					rimId: idConvert(array[i].rimId),
-					brand: array[i].brand,
-					name: nameConn(array[i].name, array[i].nameSuff),
-					images: photoArrPath(array[i].images),
-					config: [newConfig],
-				});
+				objElement.images = photoArrPath(array[i].images);
 			}
 			if (array[i].image) {
-				result.push({
-					rimId: idConvert(array[i].rimId),
-					brand: array[i].brand,
-					name: nameConn(array[i].name, array[i].nameSuff),
-					image: photoPath(array[i].image),
-					config: [newConfig],
-				});
+				objElement.image = photoPath(array[i].image);
 			}
+			result.push(objElement);
 		}
 	}
 	return result;
+}
+
+export function resultMerger(array: RimInfoFromDBDTO[]) {
+	const sortedArr = respSorter(array);
+	const mergedObj = sortedArr.reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
+		const match = previous.find(el => el.rimId === next.rimId);
+		if (!match) {
+			previous.push(next);
+		}
+		if (match) {
+			if (match.minPrice[0] > next.minPrice[0]) {
+				match.minPrice[0] = next.minPrice[0];
+			}
+			match.config[match.config.length] = next.config[0];
+			match.diameters[match.diameters.length] = next.diameters[0];
+			match.diameters = [...new Set(match.diameters)].sort();
+		}
+		return previous;
+	}, []);
+	return mergedObj;
 }
 
 export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO) {
@@ -70,16 +88,16 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 	if (width && diameter && !mountingHoles) {
 		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
-			if (el.rimConfigs?.diameter === diameter && el.rimConfigs?.width === width) {
+			if (el.rimConfigs?.diameter === diameter && el.rimConfigs.width === width) {
 				finalArray.push(el);
 			}
 		});
-		return resultMerger(finalArray.filter(rim => rim));
+		return resultMerger(finalArray);
 	}
 	if (!width && diameter && mountingHoles) {
 		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
-			if (el.rimConfigs?.diameter === diameter && el.rimConfigs?.boltPattern === mountingHoles) {
+			if (el.rimConfigs?.diameter === diameter && el.rimConfigs.boltPattern === mountingHoles) {
 				finalArray.push(el);
 			}
 		});
@@ -88,7 +106,7 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 	if (width && !diameter && mountingHoles) {
 		const finalArray: RimInfoFromDBDTO[] = [];
 		array.map(el => {
-			if (el.rimConfigs?.width === width && el.rimConfigs?.boltPattern === mountingHoles) {
+			if (el.rimConfigs?.width === width && el.rimConfigs.boltPattern === mountingHoles) {
 				finalArray.push(el);
 			}
 		});
@@ -134,23 +152,8 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 	return resultMerger(finalArray.filter(rim => rim));
 }
 
-export function resultMerger(array: RimInfoFromDBDTO[]) {
-	const sortedArr = respSorter(array);
-	var mergedObj = sortedArr.reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
-		const match = previous.find(el => el.rimId === next.rimId);
-		if (!match) {
-			previous.push(next);
-		}
-		if (match) {
-			match.config[match.config.length] = next.config[0];
-		}
-		return previous;
-	}, []);
-	return mergedObj;
-}
-
 export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfCarDTO) {
-	let rimRespArr: SortedRimInfoDTO[] = [];
+	let rimRespArr: SortedRimByCarInfoDTO[] = [];
 	array.forEach(dbEl => {
 		config.rims.forEach(async reqEl => {
 			if (
@@ -173,24 +176,24 @@ export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfC
 	return rimRespArr;
 }
 
-export function getConfigParams(array: ConfigSorterDTO[]) {
-	let width: string[] = [];
-	let diameter: string[] = [];
-	let pcd: string[] = [];
-	array.map(el => {
-		if (!diameter.includes(el.rimConfigs.diameter)) {
-			diameter.push(el.rimConfigs.diameter);
-		}
-		if (!width.includes(el.rimConfigs.width)) {
-			width.push(el.rimConfigs.width);
-		}
-		if (!pcd.includes(el.rimConfigs.boltPattern)) {
-			pcd.push(el.rimConfigs.boltPattern);
-		}
-	});
-	return {
-		diameter: diameter.sort((a, b) => Number(a) - Number(b)),
-		width: width.sort((a, b) => Number(a) - Number(b)),
-		mountHoles: pcd.sort(),
-	};
-}
+// export function getConfigParams(array: ConfigSorterDTO[]) {
+// 	let width: string[] = [];
+// 	let diameter: string[] = [];
+// 	let pcd: string[] = [];
+// 	array.map(el => {
+// 		if (!diameter.includes(el.rimConfigs.diameter)) {
+// 			diameter.push(el.rimConfigs.diameter);
+// 		}
+// 		if (!width.includes(el.rimConfigs.width)) {
+// 			width.push(el.rimConfigs.width);
+// 		}
+// 		if (!pcd.includes(el.rimConfigs.boltPattern)) {
+// 			pcd.push(el.rimConfigs.boltPattern);
+// 		}
+// 	});
+// 	return {
+// 		diameter: diameter.sort((a, b) => Number(a) - Number(b)),
+// 		width: width.sort((a, b) => Number(a) - Number(b)),
+// 		mountHoles: pcd.sort(),
+// 	};
+// }
