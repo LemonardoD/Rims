@@ -157,7 +157,9 @@ export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO)
 
 export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfCarDTO) {
 	let rimRespArr: SortedRimByCarInfoDTO[] = [];
+	let uniqDiameters: string[] = [];
 	array.forEach(dbEl => {
+		uniqDiameters.push(dbEl.rimConfigs?.diameter as string);
 		config.rims.forEach(async reqEl => {
 			if (
 				dbEl.rimConfigs?.boltPattern === config.pcd &&
@@ -176,7 +178,8 @@ export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfC
 			}
 		});
 	});
-	return rimRespArr;
+	if (rimRespArr.length) return { rimList: rimRespArr, diameters: [...new Set(uniqDiameters)].sort() };
+	return { rimList: [], diameters: [] };
 }
 
 // export function getConfigParams(array: ConfigSorterDTO[]) {
