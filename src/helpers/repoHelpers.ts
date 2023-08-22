@@ -65,22 +65,25 @@ export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 
 export function resultMerger(array: RimInfoFromDBDTO[]) {
 	const sortedArr = respSorter(array);
+	let uniqDiameters: string[] = [];
 	const mergedObj = sortedArr.reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
 		const match = previous.find(el => el.rimId === next.rimId);
 		if (!match) {
+			uniqDiameters.push(next.config[0].diameter);
 			previous.push(next);
 		}
 		if (match) {
 			if (match.minPrice[0] > next.minPrice[0]) {
 				match.minPrice[0] = next.minPrice[0];
 			}
+			uniqDiameters.push(next.config[0].diameter);
 			match.config[match.config.length] = next.config[0];
 			match.diameters[match.diameters.length] = next.diameters[0];
 			match.diameters = [...new Set(match.diameters)].sort();
 		}
 		return previous;
 	}, []);
-	return mergedObj;
+	return { rimList: mergedObj, diameters: [...new Set(uniqDiameters)].sort() };
 }
 
 export function resultMergerConfig(array: RimInfoFromDBDTO[], config: ConfigDTO) {

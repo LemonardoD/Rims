@@ -73,8 +73,8 @@ class Rims {
 			.update(rims)
 			.set({ visits: oldPageVisits + 1 })
 			.where(eq(rims.rimId, rimId));
-		const [mergedResult] = resultMerger(result);
-		return mergedResult;
+		const { rimList } = resultMerger(result);
+		return rimList[0];
 	}
 
 	async getPopularRims() {
@@ -95,7 +95,8 @@ class Rims {
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
 			.orderBy(desc(images.quality), desc(vendors.unitsLeft))
 			.limit(20);
-		return resultMerger(result).slice(0, 8);
+		const { rimList } = resultMerger(result);
+		return rimList.slice(0, 8);
 	}
 
 	async getRimsByName(name: string) {
