@@ -41,8 +41,7 @@ export async function fetchRssFeed() {
 	}
 }
 
-// export const news = await fetchRssFeed();
-export const news = [];
+export const news = await fetchRssFeed();
 
 // cron.schedule("0 */6 * * *", async () => { // did'n work with render(work only in payed version), but needed 4 app runs every 6h
 // 	news = await fetchRssFeed();
