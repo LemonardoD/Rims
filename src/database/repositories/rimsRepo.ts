@@ -1,7 +1,7 @@
 import { eq, ilike, gt, and, or, desc } from "drizzle-orm";
 import { db } from "../db";
 import { images } from "../schemas/imagesSchema";
-import { resultMerger, resultMergerConfig, rimByCarMerger } from "../../helpers/repoHelpers";
+import { resultMerger, resultMergerConfig, rimByCarMerger, rimByIdMerger, rimByNameMerger } from "../../helpers/repoHelpers";
 import { rims } from "../schemas/rimsSchema";
 import { rimConfigs } from "../schemas/rimConfigsSchema";
 import { vendors } from "../schemas/vendorSchema";
@@ -73,29 +73,29 @@ class Rims {
 			.update(rims)
 			.set({ visits: oldPageVisits + 1 })
 			.where(eq(rims.rimId, rimId));
-		const { rimList } = resultMerger(result);
-		return rimList[0];
+		return rimByIdMerger(result);
 	}
 
 	async getPopularRims() {
-		const result = await db
-			.select({
-				rimId: rims.rimId,
-				brand: rims.brand,
-				name: rims.rimName,
-				nameSuff: rims.rimNameSuffix,
-				rimConfigs: rimConfigs.configurations,
-				price: vendors.price,
-				image: images.miniImg,
-			})
-			.from(vendors)
-			.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
-			.leftJoin(rims, eq(rims.rimId, vendors.rimId))
-			.leftJoin(images, eq(images.rimId, vendors.rimId))
-			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
-			.orderBy(desc(images.quality), desc(vendors.unitsLeft))
-			.limit(20);
-		const { rimList } = resultMerger(result);
+		const { rimList } = resultMerger(
+			await db
+				.select({
+					rimId: rims.rimId,
+					brand: rims.brand,
+					name: rims.rimName,
+					nameSuff: rims.rimNameSuffix,
+					rimConfigs: rimConfigs.configurations,
+					price: vendors.price,
+					image: images.miniImg,
+				})
+				.from(vendors)
+				.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+				.leftJoin(rims, eq(rims.rimId, vendors.rimId))
+				.leftJoin(images, eq(images.rimId, vendors.rimId))
+				.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
+				.orderBy(desc(images.quality), desc(vendors.unitsLeft))
+				.limit(20),
+		);
 		return rimList.slice(0, 8);
 	}
 
@@ -116,28 +116,7 @@ class Rims {
 			//.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0))) if we not show units with zero price
 			.leftJoin(images, eq(images.rimId, rims.rimId))
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
-		return resultMerger(result);
-	}
-
-	// async getRimConfigs() {
-	// 	const result = await db.select({ rimConfigs: rimConfigs.configurations }).from(rimConfigs);
-	// 	return getConfigParams(result);
-	// }
-
-	async ifRimBrandExist(brand: string) {
-		const result = await db.select().from(rims).where(eq(rims.brand, brand));
-		if (result.length) {
-			return true;
-		}
-		return false;
-	}
-
-	async ifRimExist(id: number) {
-		const result = await db.select().from(rims).where(eq(rims.rimId, id));
-		if (result.length) {
-			return true;
-		}
-		return false;
+		return rimByNameMerger(result);
 	}
 
 	async rimsByCar(config: SrchRimByConfCarDTO, brand: string) {
@@ -201,6 +180,23 @@ class Rims {
 			config,
 		);
 	}
+
+	async ifRimBrandExist(brand: string) {
+		const result = await db.select().from(rims).where(eq(rims.brand, brand));
+		if (result.length) {
+			return true;
+		}
+		return false;
+	}
+
+	async ifRimExist(id: number) {
+		const result = await db.select().from(rims).where(eq(rims.rimId, id));
+		if (result.length) {
+			return true;
+		}
+		return false;
+	}
+
 	//async getById(id: number) {
 	// 	const [response] = await resultMerger(
 	// 		await db.transaction(async tx => {

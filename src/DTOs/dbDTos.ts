@@ -8,24 +8,27 @@ export interface RimInfoFromDBDTO {
 	rimConfigs: ConfigsDBDTO | null;
 	price: number | null;
 }
-export interface SortedRimInfoDTO {
+
+export interface RimInfoByIdDTO {
 	rimId: string;
 	brand: string | null;
 	name: string;
-	image?: string;
-	images?: string[];
-	config: ConfigsDBDTO[];
-	diameters: string[];
-	minPrice: number[];
+	images: string[];
+	config?: ConfigsDBDTO[];
+	diameters?: string[];
+	minPrice?: number[];
 }
 
-export interface SortedRimByCarInfoDTO {
+export interface SortedRimInfoDTO {
 	rimId: string;
 	brand: string | null;
 	name: string;
 	image: string;
 	config: ConfigsDBDTO[];
+	diameters: string[];
+	minPrice: number[];
 }
+
 export interface ConfigsDBDTO {
 	diameter: string;
 	width: string;
