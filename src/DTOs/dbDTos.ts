@@ -38,14 +38,6 @@ export interface ConfigsDBDTO {
 	price: number;
 }
 
-export interface RimConfigInfoDTO {
-	rimId: number | bigint;
-	configId: number;
-	configurations: ConfigsDBDTO;
-	color: string;
-	type: string;
-}
-
 export interface SearchByCarDTO {
 	brand: string;
 	model: string;
