@@ -9,21 +9,12 @@ export interface RimInfoFromDBDTO {
 	price: number | null;
 }
 
-export interface RimInfoByIdDTO {
-	rimId: string;
-	brand: string | null;
-	name: string;
-	images: string[];
-	config?: ConfigsDBDTO[];
-	diameters?: string[];
-	minPrice?: number[];
-}
-
 export interface SortedRimInfoDTO {
 	rimId: string;
 	brand: string | null;
 	name: string;
-	image: string;
+	image?: string;
+	images?: string[];
 	config: ConfigsDBDTO[];
 	diameters: string[];
 	minPrice: number[];

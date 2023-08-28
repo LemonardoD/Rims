@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { ConfigDTO } from "../DTOs/otherDTOs";
 import { getUsdExchange } from "../database/repositories/exchangeRepo";
-import { RimInfoByIdDTO, RimInfoFromDBDTO, SortedRimInfoDTO, SrchRimByConfCarDTO } from "../DTOs/dbDTos";
+import { RimInfoFromDBDTO, SortedRimInfoDTO, SrchRimByConfCarDTO } from "../DTOs/dbDTos";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
 const rate = await getUsdExchange();
@@ -74,7 +74,7 @@ export function resultMerger(array: RimInfoFromDBDTO[]) {
 		}
 		return previous;
 	}, []);
-	return { rimList: mergedObj, diameters: [...new Set(uniqDiameters)] };
+	return { rimList: mergedObj, diameters: [...new Set(uniqDiameters)].sort() };
 }
 
 export function rimByNameMerger(array: RimInfoFromDBDTO[]) {
@@ -102,28 +102,43 @@ export function rimByNameMerger(array: RimInfoFromDBDTO[]) {
 	});
 }
 
-export function rimByIdMerger(array: RimInfoFromDBDTO[]): RimInfoByIdDTO {
-	const [{ rimConfigs, price, rimId, nameSuff, name, brand, images }] = array;
-	let newConfig = rimConfigs;
-	if (newConfig) {
-		const uahPrice = priceToUAH(price as number);
-		newConfig.price = uahPrice;
-		return {
-			rimId: idConvert(rimId),
-			brand: brand,
-			name: nameConn(name, nameSuff),
-			config: [newConfig],
-			minPrice: [uahPrice],
-			diameters: [newConfig.diameter],
-			images: photoArrPath(images),
-		};
+export function rimByIdMerger(array: RimInfoFromDBDTO[]) {
+	let result: SortedRimInfoDTO[] = [];
+	for (let i = 0; i < array.length; i++) {
+		const uahPrice = priceToUAH(array[i].price as number);
+		let newConfig = array[i].rimConfigs;
+		if (newConfig) {
+			let objElement: SortedRimInfoDTO = {
+				rimId: idConvert(array[i].rimId),
+				brand: array[i].brand,
+				name: nameConn(array[i].name, array[i].nameSuff),
+				config: [newConfig],
+				minPrice: [uahPrice],
+				diameters: [newConfig.diameter],
+				images: photoArrPath(array[i].images),
+			};
+			result.push(objElement);
+		}
 	}
-	return {
-		rimId: idConvert(rimId),
-		brand: brand,
-		name: nameConn(name, nameSuff),
-		images: photoArrPath(images),
-	};
+	if (result.length === 1) {
+		return result[0];
+	}
+	const mergedObj = result.reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
+		const match = previous.find(el => el.rimId === next.rimId);
+		if (!match) {
+			previous.push(next);
+		}
+		if (match) {
+			if (match.minPrice[0] > next.minPrice[0]) {
+				match.minPrice[0] = next.minPrice[0];
+			}
+			match.config[match.config.length] = next.config[0];
+			match.diameters[match.diameters.length] = next.diameters[0];
+			match.diameters = [...new Set(match.diameters)].sort();
+		}
+		return previous;
+	}, []);
+	return mergedObj;
 }
 
 export function rimByCarMerger(array: RimInfoFromDBDTO[], config: SrchRimByConfCarDTO) {
