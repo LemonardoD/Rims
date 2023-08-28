@@ -74,7 +74,7 @@ export function resultMerger(array: RimInfoFromDBDTO[]) {
 		}
 		return previous;
 	}, []);
-	return { rimList: mergedObj, diameters: uniqDiameters };
+	return { rimList: mergedObj, diameters: [...new Set(uniqDiameters)] };
 }
 
 export function rimByNameMerger(array: RimInfoFromDBDTO[]) {

@@ -25,8 +25,6 @@ class RimInfo extends RimsInfoMid {
 	rimsByName = async (req: SearchReqDTO, res: Response) => {
 		const { searchText } = req.body;
 		const brand = searchAlike(searchText);
-		console.log(searchText);
-		console.log(brand);
 		if (brand) {
 			return this.response(200, await RimRepo.getRimsByName(brand), res);
 		}
