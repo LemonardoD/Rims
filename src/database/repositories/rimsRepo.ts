@@ -1,16 +1,20 @@
 import { eq, ilike, gt, and, or, desc } from "drizzle-orm";
 import { db } from "../db";
 import { images } from "../schemas/imagesSchema";
-import { resultMerger, resultMergerConfig, rimByCarMerger, rimByIdMerger, rimByNameMerger } from "../../helpers/repoHelpers";
 import { rims } from "../schemas/rimsSchema";
 import { rimConfigs } from "../schemas/rimConfigsSchema";
 import { vendors } from "../schemas/vendorSchema";
 import { ConfigDTO } from "../../DTOs/otherDTOs";
 import { SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
+import { resultProcessor } from "../../helpers/DBRespProcessors/basicProcessor";
+import { rimByIdProcessor } from "../../helpers/DBRespProcessors/rimByIdProcessor";
+import { rimByCarProcessor } from "../../helpers/DBRespProcessors/rimByCarProcessor";
+import { rimByNameProcessor } from "../../helpers/DBRespProcessors/rimByNameProcessor";
+import { resultConfigProcessor } from "../../helpers/DBRespProcessors/rimByConfigProcessor";
 
 class Rims {
 	async getAllRims() {
-		return resultMerger(
+		return resultProcessor(
 			await db
 				.select({
 					rimId: rims.rimId,
@@ -31,7 +35,7 @@ class Rims {
 	}
 
 	async getRimsByBrand(reqRinBrand: string) {
-		return resultMerger(
+		return resultProcessor(
 			await db
 				.select({
 					rimId: rims.rimId,
@@ -73,11 +77,11 @@ class Rims {
 			.update(rims)
 			.set({ visits: oldPageVisits + 1 })
 			.where(eq(rims.rimId, rimId));
-		return rimByIdMerger(result);
+		return rimByIdProcessor(result);
 	}
 
 	async getPopularRims() {
-		const { rimList } = resultMerger(
+		const { rimList } = resultProcessor(
 			await db
 				.select({
 					rimId: rims.rimId,
@@ -116,12 +120,12 @@ class Rims {
 			//.leftJoin(vendors, and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0))) if we not show units with zero price
 			.leftJoin(images, eq(images.rimId, rims.rimId))
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId));
-		return rimByNameMerger(result);
+		return rimByNameProcessor(result);
 	}
 
 	async rimsByCar(config: SrchRimByConfCarDTO, brand: string) {
 		if (brand === "all") {
-			return rimByCarMerger(
+			return rimByCarProcessor(
 				await db
 					.select({
 						rimId: rims.rimId,
@@ -140,7 +144,7 @@ class Rims {
 				config,
 			);
 		}
-		return rimByCarMerger(
+		return rimByCarProcessor(
 			await db
 				.select({
 					rimId: rims.rimId,
@@ -161,7 +165,7 @@ class Rims {
 	}
 
 	async RimsByAllConfig(config: ConfigDTO) {
-		return resultMergerConfig(
+		return resultConfigProcessor(
 			await db
 				.select({
 					rimId: rims.rimId,
@@ -198,7 +202,7 @@ class Rims {
 	}
 
 	//async getById(id: number) {
-	// 	const [response] = await resultMerger(
+	// 	const [response] = await resultProcessor(
 	// 		await db.transaction(async tx => {
 	// 			const rimInfo = await tx
 	// 				.select({

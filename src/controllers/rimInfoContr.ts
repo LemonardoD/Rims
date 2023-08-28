@@ -2,7 +2,7 @@ import { Response, Request } from "express";
 import RimRepo from "../database/repositories/rimsRepo";
 import { RimsInfoMid } from "../middlewares/rimsInfoMidd";
 import { RimBrandsReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
-import { searchAlike } from "../helpers/searchNaming";
+import { searchAlike } from "../helpers/srchByNameAlike";
 
 class RimInfo extends RimsInfoMid {
 	rimsByBrands = async (req: RimBrandsReqDTO, res: Response) => {
