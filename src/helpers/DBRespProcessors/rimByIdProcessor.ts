@@ -25,7 +25,7 @@ function respByIdSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 }
 
 export function rimByIdProcessor(array: RimInfoFromDBDTO[]) {
-	if (array.length === 1) {
+	if (array.length === 1 && array[0].rimConfigs === null) {
 		return {
 			rimId: idConvert(array[0].rimId),
 			brand: array[0].brand,
