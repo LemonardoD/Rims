@@ -1,7 +1,16 @@
 // import Parser from "rss-parser";
-// import { FeedArrayDTO, FeedsDTO } from "../DTOs/otherDTOs";
 // import cron from "node-cron";
+//  interface FeedArrayDTO {
+// 	pubDate: Date;
+// 	link: string;
+// 	title: string;
+// 	sourceName: string | undefined;
+// }
 
+// interface FeedsDTO {
+// 	items: { [key: string]: string }[];
+// 	title?: string;
+// }
 // const parser = new Parser({
 // 	headers: {
 // 		"User-Agent":

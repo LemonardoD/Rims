@@ -15,17 +15,13 @@ export class RimsInfoMid extends Controller {
 
 	rimIdVal = async (req: RimIdReqDTO, res: Response, next: NextFunction) => {
 		const { id } = req.body;
-		if (!(await RimsRepo.ifRimExist(Number(id)))) {
-			throw new CustomError("We don't have that rims with that id.", 404);
-		}
+		if (!(await RimsRepo.ifRimExist(Number(id)))) throw new CustomError("We don't have that rims with that id.", 404);
 		next();
 	};
 
 	rimNameVal = async (req: SearchReqDTO, res: Response, next: NextFunction) => {
 		const { searchText } = req.body;
-		if (!searchText) {
-			throw new CustomError("SearchText, required!", 406);
-		}
+		if (!searchText) throw new CustomError("SearchText, required!", 406);
 		next();
 	};
 
@@ -34,7 +30,6 @@ export class RimsInfoMid extends Controller {
 		if (!mountingHoles && !width && !diameter) {
 			throw new CustomError("Body with, diameter or width or mountingHoles, required!", 406);
 		}
-
 		next();
 	};
 }

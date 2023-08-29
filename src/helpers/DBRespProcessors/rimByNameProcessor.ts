@@ -1,6 +1,6 @@
 import { RimInfoFromDBDTO, SortedRimInfoDTO } from "../../DTOs/dbDTos";
 import { idConvert, nameConn, photoPath, priceToUAH } from "../repoHelpers";
-import { resultProcessor } from "./basicProcessor";
+import { rimConfigSorter } from "./basicProcessor";
 
 function rimByNameSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 	let result: SortedRimInfoDTO[] = [];
@@ -43,6 +43,7 @@ export function rimByNameProcessor(array: RimInfoFromDBDTO[]) {
 				match.minPrice[0] = next.minPrice[0];
 			}
 			match.config[match.config.length] = next.config[0];
+			match.config = match.config.sort(rimConfigSorter);
 			match.diameters[match.diameters.length] = next.diameters[0];
 			match.diameters = [...new Set(match.diameters)].sort();
 		}

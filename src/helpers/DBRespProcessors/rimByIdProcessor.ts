@@ -1,5 +1,6 @@
 import { RimInfoFromDBDTO, SortedRimInfoDTO } from "../../DTOs/dbDTos";
 import { idConvert, nameConn, photoArrPath, priceToUAH } from "../repoHelpers";
+import { rimConfigSorter } from "./basicProcessor";
 
 function respByIdSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 	let result: SortedRimInfoDTO[] = [];
@@ -38,6 +39,7 @@ export function rimByIdProcessor(array: RimInfoFromDBDTO[]) {
 	const mergedObj = respByIdSorter(array).reduce((previous: SortedRimInfoDTO, next: SortedRimInfoDTO) => {
 		if (previous.minPrice[0] > next.minPrice[0]) previous.minPrice[0] = next.minPrice[0];
 		previous.config[previous.config.length] = next.config[0];
+		previous.config = previous.config.sort(rimConfigSorter);
 		previous.diameters[previous.diameters.length] = next.diameters[0];
 		previous.diameters = [...new Set(previous.diameters)].sort();
 		return previous;

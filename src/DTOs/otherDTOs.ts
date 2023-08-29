@@ -74,18 +74,6 @@ export interface SearchReqDTO {
 	body: { searchText: string };
 }
 
-export interface FeedArrayDTO {
-	pubDate: Date;
-	link: string;
-	title: string;
-	sourceName: string | undefined;
-}
-
-export interface FeedsDTO {
-	items: { [key: string]: string }[];
-	title?: string;
-}
-
 export interface monoCurrencyDTO {
 	currencyCodeA: number;
 	currencyCodeB: number;

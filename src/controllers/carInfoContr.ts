@@ -1,16 +1,8 @@
 import { Request, Response } from "express";
 import CarRepo from "../database/repositories/carsRepo";
 import RimRepo from "../database/repositories/rimsRepo";
-import { news } from "../services/feed";
 import { CarInfoMid } from "../middlewares/carInfoMidd";
-import {
-	CarBrModYrReqDTO,
-	CarBrandAndModelReqDTO,
-	CarBrandReqDTO,
-	CarNewsReqDTO,
-	ResCarSearchDTO,
-	SearchByCarReqDTO,
-} from "../DTOs/otherDTOs";
+import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, CarBrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
 
 class CarInfo extends CarInfoMid {
 	allCarBrands = async (req: Request, res: Response) => {
@@ -38,13 +30,11 @@ class CarInfo extends CarInfoMid {
 		return this.response(200, await RimRepo.rimsByCar(res.locals, rimBrand), res);
 	};
 
-	carNews = (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
-		const offset = Number(req.params.page) * 20;
-		if (!news) {
-			return this.response(503, [], res);
-		}
-		return this.response(200, news.slice(offset - 20, offset), res);
-	};
+	// carNews = (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
+	// 	const offset = Number(req.params.page) * 20;
+	// 	if (!news) return this.response(503, [], res);
+	// 	return this.response(200, news.slice(offset - 20, offset), res);
+	// };
 }
 
 export default new CarInfo();
