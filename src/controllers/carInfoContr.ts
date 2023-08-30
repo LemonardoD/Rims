@@ -29,12 +29,6 @@ class CarInfo extends CarInfoMid {
 		const { rimBrand } = req.body;
 		return this.response(200, await RimRepo.rimsByCar(res.locals, rimBrand), res);
 	};
-
-	// carNews = (req: CarNewsReqDTO, res: ResCarSearchDTO) => {
-	// 	const offset = Number(req.params.page) * 20;
-	// 	if (!news) return this.response(503, [], res);
-	// 	return this.response(200, news.slice(offset - 20, offset), res);
-	// };
 }
 
 export default new CarInfo();
