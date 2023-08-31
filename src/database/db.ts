@@ -7,5 +7,5 @@ const { DRIZZLE_DATABASE_URL } = <{ DRIZZLE_DATABASE_URL: string }>process.env;
 
 neonConfig.fetchConnectionCache = true;
 
-const sql = neon(DRIZZLE_DATABASE_URL);
-export const db = drizzle(sql);
+const pg = neon(DRIZZLE_DATABASE_URL);
+export const db = drizzle(pg);

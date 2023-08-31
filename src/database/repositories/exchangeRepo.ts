@@ -3,7 +3,7 @@ import { db } from "../db";
 import { exchange } from "../schemas/exchangeSchema";
 
 export async function getUsdExchange() {
-	const [{ rate }] = await db.select().from(exchange).where(eq(exchange.currency, "usd"));
+	const [{ rate }] = await db.select({ rate: exchange.rate }).from(exchange).where(eq(exchange.currency, "usd"));
 	return rate;
 }
 

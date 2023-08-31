@@ -5,7 +5,7 @@ export function rimConfigSorter(el1: ConfigsDBDTO, el2: ConfigsDBDTO) {
 	return +el1.diameter - +el2.diameter + +el1.width - +el2.width;
 }
 
-export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
+export function respSorter(array: RimInfoFromDBDTO[]) {
 	let result: SortedRimInfoDTO[] = [];
 	for (let i = 0; i < array.length; i++) {
 		const price = priceToUAH(array[i].price as number);
@@ -14,7 +14,7 @@ export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 			newConfig.price = price;
 			let objElement: SortedRimInfoDTO = {
 				rimId: idConvert(array[i].rimId),
-				brand: array[i].brand,
+				brand: array[i].brand as string,
 				name: nameConn(array[i].name, array[i].nameSuff),
 				config: [newConfig],
 				minPrice: [price],
@@ -26,7 +26,6 @@ export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
 	}
 	return result;
 }
-
 export function resultProcessor(array: RimInfoFromDBDTO[]) {
 	let uniqDiameters: string[] = [];
 	const mergedObj = respSorter(array).reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {

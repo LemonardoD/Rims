@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import { RimBrandsReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
-import { CustomError } from "../helpers/errThrower";
+import { CustomError } from "../helpers/errorClass";
 import { Controller } from "../helpers/basicContrClass";
 import RimsRepo from "../database/repositories/rimsRepo";
 
@@ -14,8 +14,10 @@ export class RimsInfoMid extends Controller {
 	};
 
 	rimIdVal = async (req: RimIdReqDTO, res: Response, next: NextFunction) => {
-		const { id } = req.body;
-		if (!(await RimsRepo.ifRimExist(Number(id)))) throw new CustomError("We don't have that rims with that id.", 404);
+		const id = Number(req.body.id);
+		if (!(await RimsRepo.ifRimExist(id))) {
+			throw new CustomError("We don't have that rims with that id.", 404);
+		}
 		next();
 	};
 

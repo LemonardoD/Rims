@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { SrchRimByConfCarDTO } from "./dbDTos";
+import { SortedRimInfoDTO, SrchRimByConfCarDTO } from "./dbDTos";
 
 export interface ResCarSearchDTO extends Response {
 	locals: SrchRimByConfCarDTO;
@@ -48,11 +48,14 @@ export interface OrderConfigDTO {
 	offset: number;
 	diameter: string;
 	boltPattern: string;
-	centralBore: number;
+	centralBore: number | null;
 	price: number;
 	rimId: string;
 }
-
+export interface RimByIdSortedDTO {
+	rim: SortedRimInfoDTO;
+	oldPageVisits: number;
+}
 export interface OrderReqDTO {
 	body: {
 		name: string;

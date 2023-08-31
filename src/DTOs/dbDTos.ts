@@ -3,15 +3,25 @@ export interface RimInfoFromDBDTO {
 	brand: string | null;
 	name: string | null;
 	nameSuff: string | null;
-	image?: string | null;
-	images?: string[] | null;
+	image: string | null;
 	rimConfigs: ConfigsDBDTO | null;
 	price: number | null;
 }
 
+export interface RimByIdInfoFromDBDTO {
+	rimId: number | bigint | null;
+	brand: string | null;
+	name: string | null;
+	nameSuff: string | null;
+	images: string[] | null;
+	rimConfigs: ConfigsDBDTO | null;
+	price: number | null;
+	oldPageVisits: number;
+}
+
 export interface SortedRimInfoDTO {
 	rimId: string;
-	brand: string | null;
+	brand: string;
 	name: string;
 	image?: string;
 	images?: string[];

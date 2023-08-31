@@ -1,46 +1,35 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, placeholder } from "drizzle-orm";
 import { db } from "../db";
 import { carBrands } from "../schemas/carBrandsSchema";
 import { carModels } from "../schemas/carModelsSchema";
 import { SearchByCarDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
 
 class CarBrands {
-	async getAllCarBrands() {
-		const brands = await db.select({ carBrand: carBrands.carBrand }).from(carBrands);
-		return brands.map(el => el.carBrand);
+	getAllCarBrands() {
+		return db.select({ brand: carBrands.carBrand }).from(carBrands).prepare("car_brands");
 	}
 
 	async ifCarBrandExist(brand: string) {
-		const respDB = await db.select().from(carBrands).where(eq(carBrands.carBrand, brand));
-		if (respDB.length) {
-			return true;
-		}
-		return false;
+		return !!(await db.select().from(carBrands).where(eq(carBrands.carBrand, brand))).length;
 	}
-
 	async ifCarModelExist(brand: string, model: string) {
-		const [{ car_model }] = await db
+		return !!(await db
 			.select()
 			.from(carBrands)
 			.where(eq(carBrands.carBrand, brand))
-			.leftJoin(carModels, eq(carModels.carModel, model));
-		if (car_model) {
-			return true;
-		}
-		return false;
+			.leftJoin(carModels, eq(carModels.carModel, model)));
 	}
 
-	async getCarModelsByBrand(brand: string) {
-		const result = (
-			await db
-				.select({
-					model: carModels.carModel,
-				})
-				.from(carModels)
-				.where(eq(carModels.carBrandId, carBrands.id))
-				.leftJoin(carBrands, eq(carBrands.carBrand, brand))
-		).map(el => el.model);
-		return result.sort();
+	getCarModelsByBrand() {
+		return db
+			.select({
+				model: carModels.carModel,
+			})
+			.from(carModels)
+			.where(eq(carModels.carBrandId, carBrands.id))
+			.groupBy(carModels.carModel)
+			.leftJoin(carBrands, eq(carBrands.carBrand, placeholder("brand")))
+			.prepare("car_models");
 	}
 
 	async getCarYearsByModel(model: string) {

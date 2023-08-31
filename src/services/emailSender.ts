@@ -35,9 +35,7 @@ class EmailSender {
 			text: Text.Customer,
 		};
 		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) {
-				throw err;
-			}
+			if (err) throw err;
 		});
 	};
 
@@ -54,9 +52,7 @@ class EmailSender {
 			}. Total for 4 rim:${orderConfig.price * 4}`,
 		};
 		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) {
-				throw err;
-			}
+			if (err) throw err;
 		});
 	};
 
@@ -68,9 +64,7 @@ class EmailSender {
 			text: `${Text.AdminPhCall} His phone: ${customerPhone}.`,
 		};
 		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) {
-				throw err;
-			}
+			if (err) throw err;
 		});
 	};
 
@@ -82,9 +76,7 @@ class EmailSender {
 			text: `${Text.AdminQuestion + customerQuestion}. His phone: ${customerPhone}.`,
 		};
 		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) {
-				throw err;
-			}
+			if (err) throw err;
 		});
 	};
 
@@ -96,9 +88,7 @@ class EmailSender {
 			text: `${Text.CustomerQuestion}`,
 		};
 		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) {
-				throw err;
-			}
+			if (err) throw err;
 		});
 	};
 }

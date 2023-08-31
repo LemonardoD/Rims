@@ -1,5 +1,20 @@
 const searchAlikeArr = {
-	kosei: ["kosei", "kasei", "косей", "касей", "косэй", "касэй", "косеи", "касеи", "косеі", "касеі"],
+	kosei: [
+		"kosei",
+		"kasei",
+		"косей",
+		"касей",
+		"косэй",
+		"касэй",
+		"косеи",
+		"касеи",
+		"косеі",
+		"коцеі",
+		"коцей",
+		"косеї",
+		"касеі",
+		"касей",
+	],
 	inziaone: [
 		"inziaone",
 		"інзі ан",
@@ -15,9 +30,22 @@ const searchAlikeArr = {
 		"inzi aone",
 		"enzo aone",
 		"enzo aone",
+		"інзіан",
+		"інзіван",
+		"інзіаонэ",
+		"инзиан",
+		"инзиван",
+		"инзиаонэ",
+		"инзиаоне",
+		"энзиооне",
+		"энзиоонэ",
+		"inziaone",
+		"inziaone",
+		"enzoaone",
+		"enzoaone",
 	],
-	marcello: ["marcello", "marcelo", "marchello", "марчело", "марчелло", "маркело"],
-	mkw: ["mkv", "mkw", "мкв"],
+	marcello: ["marcello", "marcelo", "marchello", "марчело", "марчелло", "маркело", "маркелло", "марселло", "марсело"],
+	mkw: ["mkv", "mkw", "мкв", "мвк", "mcv", "mwc"],
 	replica: ["replika", "репліка", "рэплика", "реплика", "replik", "replic"],
 };
 
@@ -30,8 +58,6 @@ export function searchAlike(searchStr: string) {
 			}
 		});
 	}
-	if (response.length) {
-		return response;
-	}
+	if (response.length) return response;
 	return null;
 }

@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import { Controller } from "../helpers/basicContrClass";
-import { CustomError } from "../helpers/errThrower";
+import { CustomError } from "../helpers/errorClass";
 import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
 
 export class CusInfoMid extends Controller {

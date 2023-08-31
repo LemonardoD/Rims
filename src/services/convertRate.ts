@@ -20,20 +20,18 @@ async function getUsdRate() {
 		let rate = 0;
 		const request = await getMonoInfo();
 		request.data.map((currency: monoCurrencyDTO) => {
-			if (currency.currencyCodeA === Number(CURRENCY_CODE)) {
-				rate = currency.rateBuy;
-			}
+			if (currency.currencyCodeA === Number(CURRENCY_CODE)) rate = currency.rateBuy;
 		});
 		return rate;
 	} catch (err) {
-		console.log(err);
+		throw err;
 	}
 }
 
 // cron.schedule("0 0 0 * * *", async () => {
 // 	// did'n work with render(work only in payed version), but needed 4 app runs once a day
 // 	const changeRate = await getUsdRate();
-// 	if (changeRate) {
+// 	if (!!changeRate) {
 // 		await updateUsdExchange(changeRate);
 // 	}
 // });

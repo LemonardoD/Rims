@@ -3,39 +3,28 @@ import { idConvert, nameConn, photoPath, priceToUAH } from "../repoHelpers";
 import { rimConfigSorter } from "./basicProcessor";
 
 function rimByNameSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
-	let result: SortedRimInfoDTO[] = [];
-	for (let i = 0; i < array.length; i++) {
-		const uahPrice = priceToUAH(array[i].price as number);
-		let newConfig = array[i].rimConfigs;
+	return array.map(el => {
+		let objElement: SortedRimInfoDTO = {
+			rimId: idConvert(el.rimId),
+			brand: el.brand as string,
+			name: nameConn(el.name, el.nameSuff),
+			config: [],
+			minPrice: [],
+			diameters: [],
+			image: photoPath(el.image),
+		};
+		const uahPrice = priceToUAH(el.price as number);
+		let newConfig = el.rimConfigs;
 		if (newConfig) {
 			newConfig.price = uahPrice;
-			let objElement: SortedRimInfoDTO = {
-				rimId: idConvert(array[i].rimId),
-				brand: array[i].brand,
-				name: nameConn(array[i].name, array[i].nameSuff),
-				config: [newConfig],
-				minPrice: [uahPrice],
-				diameters: [newConfig.diameter],
-				image: photoPath(array[i].image),
-			};
-			result.push(objElement);
+			(objElement.config = [newConfig]), (objElement.minPrice = [uahPrice]), (objElement.diameters = [newConfig.diameter]);
 		}
-		if (!newConfig) {
-			result.push({
-				rimId: idConvert(array[i].rimId),
-				brand: array[i].brand,
-				name: nameConn(array[i].name, array[i].nameSuff),
-				config: [],
-				minPrice: [],
-				diameters: [],
-				image: photoPath(array[i].image),
-			});
-		}
-	}
-	return result;
+		return objElement;
+	});
 }
-export function rimByNameProcessor(array: RimInfoFromDBDTO[]) {
-	const mergedObj = rimByNameSorter(array).reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
+
+export function rimByNameProcessor(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
+	return rimByNameSorter(array).reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
 		const match = previous.find(el => el.rimId === next.rimId);
 		if (!match) previous.push(next);
 		if (match) {
@@ -49,5 +38,4 @@ export function rimByNameProcessor(array: RimInfoFromDBDTO[]) {
 		}
 		return previous;
 	}, []);
-	return mergedObj;
 }
