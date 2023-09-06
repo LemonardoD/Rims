@@ -1,5 +1,5 @@
-import { eq, ilike, gt, and, or, desc, placeholder } from "drizzle-orm";
-import { db } from "../db";
+import { eq, ilike, gt, and, or, desc, placeholder, sql } from "drizzle-orm";
+import { db } from "../../../configurations/dbConfiguration";
 import { images } from "../schemas/imagesSchema";
 import { rims } from "../schemas/rimsSchema";
 import { rimConfigs } from "../schemas/rimConfigsSchema";
@@ -25,7 +25,37 @@ class Rims {
 			.orderBy(desc(images.quality), desc(vendors.unitsLeft))
 			.prepare("all_rims");
 	}
-
+	getRimsByConfig(diameter: string, width: string, mountingHoles: string) {
+		return db
+			.select({
+				rimId: rims.rimId,
+				brand: rims.brand,
+				name: rims.rimName,
+				nameSuff: rims.rimNameSuffix,
+				image: images.miniImg,
+				rimConfigs: rimConfigs.configurations,
+				price: vendors.price,
+			})
+			.from(vendors)
+			.where(
+				or(
+					sql`${rimConfigs.configurations}  @> '{"diameter": "${sql.raw(diameter)}"}' and 
+			${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}"}' and 
+			${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
+			${vendors.rimId} = ${rims.rimId} and
+			${vendors.unitsLeft} > 0`,
+					sql`${rimConfigs.configurations}  @> '{"diameter": "${sql.raw(diameter)}"}' and 
+			${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}.0"}' and 
+			${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
+			${vendors.rimId} = ${rims.rimId} and
+			${vendors.unitsLeft} > 0`,
+				),
+			)
+			.leftJoin(rims, eq(rims.rimId, vendors.rimId))
+			.leftJoin(images, eq(images.rimId, rims.rimId))
+			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
+			.prepare("by_config_rims");
+	}
 	getRimsByBrand() {
 		return db
 			.select({
@@ -53,7 +83,6 @@ class Rims {
 				brand: rims.brand,
 				name: rims.rimName,
 				nameSuff: rims.rimNameSuffix,
-				oldPageVisits: rims.visits,
 				images: images.arrImg,
 				rimConfigs: rimConfigs.configurations,
 				price: vendors.price,
@@ -123,8 +152,12 @@ class Rims {
 		return !!(await db.select().from(rims).where(eq(rims.rimId, id))).length;
 	}
 
-	async updateRimVisits(reqRimID: number, newVisits: number) {
-		return await db.update(rims).set({ visits: newVisits }).where(eq(rims.rimId, reqRimID));
+	updateRimVisits() {
+		return db
+			.update(rims)
+			.set({ visits: sql`${rims.visits} + 1` })
+			.where(eq(rims.rimId, placeholder("reqRimID")))
+			.prepare("update_visits");
 	}
 }
 export default new Rims();

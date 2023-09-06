@@ -1,6 +1,6 @@
 import { bigint, jsonb, varchar, pgTable } from "drizzle-orm/pg-core";
-import { CarModelsDTO } from "../../DTOs/dbDTos";
 import { carBrands } from "./carBrandsSchema";
+import { CarModelsDTO } from "../../DTOs/dbDTos";
 
 export const carModels = pgTable("car_model", {
 	id: bigint("id", <{ mode: "number" | "bigint" }>{}).notNull(),

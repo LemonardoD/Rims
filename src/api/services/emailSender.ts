@@ -1,16 +1,9 @@
 import dotenv from "dotenv";
-import nodemailer from "nodemailer";
 import { OrderConfigDTO } from "../DTOs/otherDTOs";
+import { transporter } from "../../configurations/emailSenderConfig";
 dotenv.config();
 
-const { ADMINS_EMAIL_FOR_ORDERS, EMAIL, EMAIL_PASSWORD } = process.env;
-const transporter = nodemailer.createTransport({
-	service: "gmail",
-	auth: {
-		user: EMAIL,
-		pass: EMAIL_PASSWORD,
-	},
-});
+const { ADMINS_EMAIL_FOR_ORDERS, EMAIL } = process.env;
 
 enum Subject {
 	Customer = "Order from Ukrdisk",
@@ -23,7 +16,7 @@ enum Text {
 	CustomerQuestion = "We get your question, it may takes few hours till we contact with you. And we will satisfy your interest.",
 	AdminOrder = "Here is customer info, please, contact him and talk through details! ",
 	AdminPhCall = "Customer requested a phone call, please, contact him.",
-	AdminQuestion = "Customer need some help, this is his question, please study the question and contact him. ",
+	AdminQuestion = "Customer need some help, this is his question, please study the question and contact him.",
 }
 
 class EmailSender {

@@ -29,8 +29,8 @@ export class RimsInfoMid extends Controller {
 
 	rimConfigVal = async (req: RimByConfigDTO, res: Response, next: NextFunction) => {
 		const { mountingHoles, width, diameter } = req.body;
-		if (!mountingHoles && !width && !diameter) {
-			throw new CustomError("Body with, diameter or width or mountingHoles, required!", 406);
+		if (!mountingHoles || !width || !diameter) {
+			throw new CustomError("Body with, diameter,  width and mountingHoles, required!", 406);
 		}
 		next();
 	};

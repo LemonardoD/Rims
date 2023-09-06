@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
-dotenv.config();
 import { getUsdExchange } from "../database/repositories/exchangeRepo";
+dotenv.config();
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
 const rate = await getUsdExchange();

@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { db } from "../db";
+import { db } from "../../../configurations/dbConfiguration";
 import { exchange } from "../schemas/exchangeSchema";
 
 export async function getUsdExchange() {

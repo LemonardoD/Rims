@@ -28,7 +28,7 @@ export function respSorter(array: RimInfoFromDBDTO[]) {
 }
 export function resultProcessor(array: RimInfoFromDBDTO[]) {
 	let uniqDiameters: string[] = [];
-	const mergedObj = respSorter(array).reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
+	const mergedObj: SortedRimInfoDTO[] = respSorter(array).reduce((previous: SortedRimInfoDTO[], next: SortedRimInfoDTO) => {
 		const match = previous.find(el => el.rimId === next.rimId);
 		if (!match) {
 			uniqDiameters.push(next.config[0].diameter);

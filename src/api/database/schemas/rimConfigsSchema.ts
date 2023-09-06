@@ -1,7 +1,7 @@
 import { varchar, bigint, pgTable, serial, jsonb } from "drizzle-orm/pg-core";
 import { InferModel } from "drizzle-orm";
-import { ConfigsDBDTO } from "../../DTOs/dbDTos";
 import { rims } from "./rimsSchema";
+import { ConfigsDBDTO } from "../../DTOs/dbDTos";
 
 export type RimConfigs = InferModel<typeof rimConfigs>;
 export type NewRimConfigs = InferModel<typeof rimConfigs, "insert">;

@@ -6,7 +6,6 @@ import { searchAlike } from "../helpers/srchByNameAlike";
 import { resultProcessor } from "../helpers/DBRespProcessors/basicProcessor";
 import { rimByIdProcessor } from "../helpers/DBRespProcessors/rimByIdProcessor";
 import { rimByNameProcessor } from "../helpers/DBRespProcessors/rimByNameProcessor";
-import { resultConfigProcessor } from "../helpers/DBRespProcessors/rimByConfigProcessor";
 
 class RimInfo extends RimsInfoMid {
 	rimsByBrands = async (req: RimBrandsReqDTO, res: Response) => {
@@ -21,8 +20,8 @@ class RimInfo extends RimsInfoMid {
 
 	rimById = async (req: RimIdReqDTO, res: Response) => {
 		const id = Number(req.body.id);
-		const { rim, oldPageVisits } = rimByIdProcessor(await RimRepo.getRimById().execute({ reqRimID: id }));
-		await RimRepo.updateRimVisits(id, oldPageVisits + 1);
+		const rim = rimByIdProcessor(await RimRepo.getRimById().execute({ reqRimID: id }));
+		await RimRepo.updateRimVisits().execute({ reqRimID: id });
 		return this.response(200, rim, res);
 	};
 
@@ -39,8 +38,10 @@ class RimInfo extends RimsInfoMid {
 	};
 
 	rimByConfig = async (req: RimByConfigDTO, res: Response) => {
-		const rims = await RimRepo.getAllRims().execute();
-		return this.response(200, resultConfigProcessor(rims, req.body), res);
+		const { diameter, width, mountingHoles } = req.body;
+		const rims = await RimRepo.getRimsByConfig(diameter, width, mountingHoles).execute();
+		return this.response(200, resultProcessor(rims), res);
+		// return this.response(200, resultConfigProcessor(rims, req.body), res);
 	};
 }
 

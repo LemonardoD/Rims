@@ -1,9 +1,8 @@
-import { RimByIdInfoFromDBDTO, SortedRimInfoDTO } from "../../DTOs/dbDTos";
-import { RimByIdSortedDTO } from "../../DTOs/otherDTOs";
+import { RimInfoFromDBDTO, SortedRimInfoDTO } from "../../DTOs/dbDTos";
 import { idConvert, nameConn, photoArrPath, priceToUAH } from "../repoHelpers";
 import { rimConfigSorter } from "./basicProcessor";
 
-function respByIdSorter(array: RimByIdInfoFromDBDTO[]) {
+function respByIdSorter(array: RimInfoFromDBDTO[]) {
 	const rim = array.map(el => {
 		let objElement: SortedRimInfoDTO = {
 			rimId: idConvert(el.rimId),
@@ -25,13 +24,12 @@ function respByIdSorter(array: RimByIdInfoFromDBDTO[]) {
 	return rim;
 }
 
-export function rimByIdProcessor(arrayDB: RimByIdInfoFromDBDTO[]): RimByIdSortedDTO {
+export function rimByIdProcessor(arrayDB: RimInfoFromDBDTO[]): SortedRimInfoDTO {
 	const rimAfterSort = respByIdSorter(arrayDB);
-	const [{ oldPageVisits }] = arrayDB;
 	if (!rimAfterSort[0].config) {
-		return { rim: rimAfterSort[0], oldPageVisits };
+		return rimAfterSort[0];
 	}
-	const rim = rimAfterSort.reduce((previous: SortedRimInfoDTO, next: SortedRimInfoDTO) => {
+	return rimAfterSort.reduce((previous: SortedRimInfoDTO, next: SortedRimInfoDTO) => {
 		if (previous.minPrice[0] > next.minPrice[0]) previous.minPrice[0] = next.minPrice[0];
 		previous.config[previous.config.length] = next.config[0];
 		previous.config = previous.config.sort(rimConfigSorter);
@@ -39,5 +37,4 @@ export function rimByIdProcessor(arrayDB: RimByIdInfoFromDBDTO[]): RimByIdSorted
 		previous.diameters = [...new Set(previous.diameters)].sort();
 		return previous;
 	});
-	return { rim, oldPageVisits };
 }
