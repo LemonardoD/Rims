@@ -33,14 +33,13 @@ class CarInfo extends CarInfoMid {
 		const year = Number(req.params.year);
 		return this.response(200, await CarRepo.getCarRimConfig({ brand, model, year }), res);
 	};
-
 	searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => {
 		const { rimBrand } = req.body;
 		if (rimBrand === "all") {
 			const rims = await RimRepo.getAllRims().execute();
 			return this.response(200, rimByCarProcessor(rims, res.locals), res);
 		}
-		const rims = await RimRepo.getRimsByBrand().execute({ brand: rimBrand });
+		const rims = await RimRepo.getRimsByBrand().execute({ reqRinBrand: rimBrand });
 		return this.response(200, rimByCarProcessor(rims, res.locals), res);
 	};
 }
