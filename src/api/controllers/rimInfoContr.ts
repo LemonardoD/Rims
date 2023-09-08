@@ -39,9 +39,8 @@ class RimInfo extends RimsInfoMid {
 
 	rimByConfig = async (req: RimByConfigDTO, res: Response) => {
 		const { diameter, width, mountingHoles } = req.body;
-		const rims = await RimRepo.getRimsByConfig(diameter, width, mountingHoles).execute();
+		const rims = await RimRepo.getRimsByConfig(diameter, width, mountingHoles, "all").execute();
 		return this.response(200, resultProcessor(rims), res);
-		// return this.response(200, resultConfigProcessor(rims, req.body), res);
 	};
 }
 

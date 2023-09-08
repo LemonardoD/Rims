@@ -1,8 +1,8 @@
 import { Response } from "express";
-import { SrchRimByConfCarDTO } from "./dbDTos";
+import { CarConfigsDTO } from "./dbDTos";
 
 export interface ResCarSearchDTO extends Response {
-	locals: SrchRimByConfCarDTO;
+	locals: CarConfigsDTO;
 }
 
 export interface CarBrandReqDTO {

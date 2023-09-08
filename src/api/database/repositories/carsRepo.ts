@@ -2,7 +2,7 @@ import { eq, placeholder, sql } from "drizzle-orm";
 import { db } from "../../../configurations/dbConfiguration";
 import { carBrands } from "../schemas/carBrandsSchema";
 import { carModels } from "../schemas/carModelsSchema";
-import { CarYearsDTO, SearchByCarDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
+import { CarYearsDTO, SearchByCarDTO, CarConfigsDTO } from "../../DTOs/dbDTos";
 
 class CarBrands {
 	getAllCarBrands() {
@@ -47,24 +47,24 @@ class CarBrands {
 		return modelInfo.map(el => el.value);
 	}
 
-	// async ifCarYearExist(model: string, year: number) {
+	// async ifCarYearExist(model: string, year: number) { // if exist or check input year on arr of years
 	// 	const { rows } = await db.execute(sql`SELECT item_object->'configs' AS CONFIG FROM(SELECT arr.item_object
 	// 		FROM ${carModels}, jsonb_array_elements(${carModels.modelInfo} -> 'years') with ordinality arr(item_object)
 	// 		WHERE ${carModels.carModel}=${model}) AS years WHERE  item_object->'value' = ${year}`);
 	// 	return !rows[0].config.length;
 	// }
 
-	// async getCarRimConfig(info: SearchByCarDTO) {
+	// async getCarRimConfig(info: SearchByCarDTO) {   // how be better?
 	// 	const { model, year } = info;
 	// 	const { rows } = await db.execute(sql`SELECT item_object->'configs' AS CONFIG FROM(SELECT arr.item_object
 	// 		FROM ${carModels},
 	// 		jsonb_array_elements(${carModels.modelInfo} -> 'years') with ordinality arr(item_object)
-	// 		WHERE ${carModels.carModel}=${model}) AS years WHERE  item_object->'value' = ${year}`);
-	// 	const [{ config }] = rows as unknown as { config: CarConfigsDTO[] }[];
+	// 		WHERE ${carModels.carModel}=${model}) AS years WHERE  item_object->'value' = ${year}`)!;
+	// 	const [{ config }] = rows as { config: CarConfigsDTO[] }[];
 	// 	const { pcd, rims } = config[0];
 	// 	return { pcd, rims };
 	// }
-	async getCarRimConfig(info: SearchByCarDTO): Promise<SrchRimByConfCarDTO> {
+	async getCarRimConfig(info: SearchByCarDTO): Promise<CarConfigsDTO> {
 		const { model, year } = info;
 		const [{ modelInfo }] = await db
 			.select({
@@ -72,7 +72,7 @@ class CarBrands {
 			})
 			.from(carModels)
 			.where(eq(carModels.carModel, model));
-		let respArr: [SrchRimByConfCarDTO][] = [];
+		let respArr: [CarConfigsDTO][] = [];
 		modelInfo.forEach(el => {
 			if (el.value === year) respArr.push(el.configs);
 		});

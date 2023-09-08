@@ -6,16 +6,16 @@ function respByIdSorter(array: RimInfoFromDBDTO[]) {
 	const rim = array.map(el => {
 		let objElement: SortedRimInfoDTO = {
 			rimId: idConvert(el.rimId),
-			brand: el.brand as string,
+			brand: el.brand!,
 			name: nameConn(el.name, el.nameSuff),
 			config: [],
 			minPrice: [],
 			diameters: [],
-			images: photoArrPath(el.images),
+			images: photoArrPath(el.images!),
 		};
-		const uahPrice = priceToUAH(el.price as number);
 		let newConfig = el.rimConfigs;
 		if (newConfig) {
+			const uahPrice = priceToUAH(el.price!);
 			newConfig.price = uahPrice;
 			(objElement.config = [newConfig]), (objElement.minPrice = [uahPrice]), (objElement.diameters = [newConfig.diameter]);
 		}

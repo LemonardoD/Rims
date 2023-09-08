@@ -9,14 +9,11 @@ export function priceToUAH(usd: number) {
 	return Math.floor(usd * rate);
 }
 
-export function photoArrPath(imgs: string[] | null | undefined) {
-	if (imgs) {
-		return imgs.map(el => `${PHOTO_PATH + el}`);
-	}
-	return [];
+export function photoArrPath(imgs: string[]) {
+	return imgs.map(el => `${PHOTO_PATH + el}`);
 }
 
-export function photoPath(img: string | null | undefined) {
+export function photoPath(img: string) {
 	return `${PHOTO_PATH + img}`;
 }
 

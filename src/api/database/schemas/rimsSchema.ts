@@ -4,7 +4,7 @@ import { InferModel } from "drizzle-orm";
 export type Rim = InferModel<typeof rims>;
 export type NewRim = InferModel<typeof rims, "insert">;
 
-export const rims = pgTable("Newrims", {
+export const rims = pgTable("rims", {
 	rimId: bigint("rimId", <{ mode: "number" | "bigint" }>{})
 		.notNull()
 		.primaryKey(),

@@ -19,7 +19,7 @@ export function respSorter(array: RimInfoFromDBDTO[]) {
 				config: [newConfig],
 				minPrice: [price],
 				diameters: [newConfig.diameter],
-				image: photoPath(array[i].image),
+				image: photoPath(array[i].image!),
 			};
 			result.push(objElement);
 		}

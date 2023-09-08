@@ -1,7 +1,7 @@
-import { RimInfoFromDBDTO, SrchRimByConfCarDTO } from "../../DTOs/dbDTos";
+import { RimInfoFromDBDTO, CarConfigsDTO } from "../../DTOs/dbDTos";
 import { resultProcessor } from "./basicProcessor";
 
-export function rimByCarProcessor(array: RimInfoFromDBDTO[], config: SrchRimByConfCarDTO) {
+export function rimByCarProcessor(array: RimInfoFromDBDTO[], config: CarConfigsDTO) {
 	let finalArray: RimInfoFromDBDTO[] = [];
 	array.forEach(dbEl => {
 		config.rims.forEach(async reqEl => {

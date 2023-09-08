@@ -4,6 +4,7 @@ import RimRepo from "../database/repositories/rimsRepo";
 import { CarInfoMid } from "../middlewares/carInfoMidd";
 import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, CarBrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
 import { rimByCarProcessor } from "../helpers/DBRespProcessors/rimByCarProcessor";
+import { resultProcessor } from "../helpers/DBRespProcessors/basicProcessor";
 
 class CarInfo extends CarInfoMid {
 	allCarBrands = async (req: Request, res: Response) => {
@@ -33,6 +34,29 @@ class CarInfo extends CarInfoMid {
 		const year = Number(req.params.year);
 		return this.response(200, await CarRepo.getCarRimConfig({ brand, model, year }), res);
 	};
+
+	// searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => { // witch ll be better
+	// 	const { rimBrand } = req.body;
+	// 	const { pcd, rims } = res.locals;
+	// 	function flatter(list: any) {
+	// 		return list.reduce((prev: any, next: any) => {
+	// 			return prev.concat(next);
+	// 		}, []);
+	// 	}
+	// 	if (rimBrand === "all") {
+	// 		let result = [];
+	// 		for await (let el of rims) {
+	// 			result.push(await RimRepo.getRimsByConfig(el.diameter, el.width, pcd, "all").execute());
+	// 		}
+	// 		return this.response(200, resultProcessor(flatter(result)), res);
+	// 	}
+	// 	let result = [];
+	// 	for await (let el of rims) {
+	// 		result.push(await RimRepo.getRimsByConfig(el.diameter, el.width, pcd, rimBrand).execute());
+	// 	}
+	// 	return this.response(200, resultProcessor(flatter(result)), res);
+	// };
+
 	searchRimsByCar = async (req: SearchByCarReqDTO, res: ResCarSearchDTO) => {
 		const { rimBrand } = req.body;
 		if (rimBrand === "all") {

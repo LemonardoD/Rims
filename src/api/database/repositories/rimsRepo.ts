@@ -25,7 +25,8 @@ class Rims {
 			.orderBy(desc(images.quality), desc(vendors.unitsLeft))
 			.prepare("all_rims");
 	}
-	getRimsByConfig(diameter: string, width: string, mountingHoles: string) {
+
+	getRimsByConfig(diameter: string, width: string, mountingHoles: string, brands: string) {
 		return db
 			.select({
 				rimId: rims.rimId,
@@ -38,24 +39,27 @@ class Rims {
 			})
 			.from(vendors)
 			.where(
-				or(
-					sql`${rimConfigs.configurations}  @> '{"diameter": "${sql.raw(diameter)}"}' and 
-			${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}"}' and 
-			${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
-			${vendors.rimId} = ${rims.rimId} and
-			${vendors.unitsLeft} > 0`,
-					sql`${rimConfigs.configurations}  @> '{"diameter": "${sql.raw(diameter)}"}' and 
-			${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}.0"}' and 
-			${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
-			${vendors.rimId} = ${rims.rimId} and
-			${vendors.unitsLeft} > 0`,
-				),
+				brands === "all"
+					? sql`${rimConfigs.configurations}  @> '{"diameter": "${sql.raw(diameter)}"}' and 
+					(${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}.0"}' or 
+					${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}"}') and 
+					${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
+					${vendors.rimId} = ${rims.rimId} and 
+					${vendors.unitsLeft} > 0 `
+					: sql`${rimConfigs.configurations}  @> '{"diameter": "${sql.raw(diameter)}"}' and 
+					(${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}.0"}' or 
+					${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}"}') and 
+					${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
+					${vendors.rimId} = ${rims.rimId} and 
+					${vendors.unitsLeft} > 0 and
+					${rims.brand} = "${sql.raw(brands)}"})`,
 			)
 			.leftJoin(rims, eq(rims.rimId, vendors.rimId))
 			.leftJoin(images, eq(images.rimId, rims.rimId))
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
 			.prepare("by_config_rims");
 	}
+
 	getRimsByBrand() {
 		return db
 			.select({
@@ -145,7 +149,7 @@ class Rims {
 	}
 
 	async ifRimBrandExist(brand: string) {
-		return !!(await db.select().from(rims).where(eq(rims.brand, brand))).length;
+		return !!(await db.select().from(rims).where(eq(rims.brand, brand))).length; // ask how better or car exist
 	}
 
 	async ifRimExist(id: number) {

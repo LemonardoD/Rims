@@ -35,11 +35,6 @@ export interface SearchByCarDTO {
 	year: number;
 }
 
-export interface SrchRimByConfCarDTO {
-	pcd: string;
-	rims: [{ width: string; diameter: string }];
-}
-
 export interface CarYearsDTO {
 	value: number;
 	configs: [{ pcd: string; rims: [{ width: string; diameter: string }] }];
