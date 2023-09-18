@@ -115,9 +115,10 @@ class Rims {
 			.leftJoin(rims, eq(rims.rimId, vendors.rimId))
 			.leftJoin(images, eq(images.rimId, vendors.rimId))
 			.leftJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
-			.orderBy(desc(images.quality), desc(vendors.unitsLeft))
-			.limit(15)
-			.prepare("by_popular_rims");
+			.groupBy(rims.rimId, rimConfigs.configId, images.miniImg, vendors.price, images.quality)
+			.orderBy(desc(images.quality), desc(sql`sum(${vendors.unitsLeft})`))
+			.limit(24)
+			.prepare("popular_rims");
 	}
 
 	getRimsByName() {
