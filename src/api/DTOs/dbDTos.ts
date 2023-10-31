@@ -1,24 +1,40 @@
+import { PreparedQuery, PreparedQueryConfig } from "drizzle-orm/pg-core";
+
 export interface RimInfoFromDBDTO {
-	rimId: number | bigint | null;
-	brand: string | null;
-	name: string | null;
+	rimId: number | bigint;
+	brand: string;
+	name: string;
 	nameSuff: string | null;
-	image?: string | null;
-	images?: string[] | null;
-	rimConfigs: ConfigsDBDTO | null;
-	price: number | null;
+	image: string;
+	rimConfigs: ConfigsDBDTO;
+	price: number;
 }
 
 export interface SortedRimInfoDTO {
 	rimId: string;
 	brand: string;
 	name: string;
-	image?: string;
-	images?: string[];
+	image: string;
 	config: ConfigsDBDTO[];
 	diameters: string[];
 	minPrice: number[];
 }
+
+export type OmitedRimInfoFromDBDTO = Omit<RimInfoFromDBDTO, "image"> & { images: string[] };
+
+export type OmitedSortedRimInfoDTO = Omit<SortedRimInfoDTO, "image"> & { images: string[] };
+
+export type PrepQuer = PreparedQuery<
+	PreparedQueryConfig & {
+		execute: RimInfoFromDBDTO[];
+	}
+>;
+
+export type PrepByIdQuer = PreparedQuery<
+	PreparedQueryConfig & {
+		execute: OmitedRimInfoFromDBDTO[];
+	}
+>;
 
 export interface ConfigsDBDTO {
 	diameter: string;
@@ -32,17 +48,23 @@ export interface ConfigsDBDTO {
 export interface SearchByCarDTO {
 	brand: string;
 	model: string;
-	year: number;
+	year: string;
+}
+
+export interface RimParamDTO {
+	width: string;
+	diameter: string;
+}
+
+export interface CarConfigsDTO {
+	pcd: string;
+	rims: [RimParamDTO];
+	engines: string[];
 }
 
 export interface CarYearsDTO {
 	value: number;
-	configs: [{ pcd: string; rims: [{ width: string; diameter: string }] }];
-	engines: string[];
-}
-export interface CarConfigsDTO {
-	pcd: string;
-	rims: [{ width: string; diameter: string }];
+	configs: [CarConfigsDTO];
 }
 
 export interface CarModelsDTO {

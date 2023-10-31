@@ -1,10 +1,10 @@
 import { varchar, bigint, pgTable, serial, jsonb } from "drizzle-orm/pg-core";
-import { InferModel } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { rims } from "./rimsSchema";
 import { ConfigsDBDTO } from "../../DTOs/dbDTos";
 
-export type RimConfigs = InferModel<typeof rimConfigs>;
-export type NewRimConfigs = InferModel<typeof rimConfigs, "insert">;
+export type RimConfigs = InferSelectModel<typeof rimConfigs>;
+export type NewRimConfigs = InferInsertModel<typeof rimConfigs>;
 
 export const rimConfigs = pgTable("configs", {
 	configId: serial("configId").notNull().primaryKey(),

@@ -1,30 +1,20 @@
-import { ConfigsDBDTO, RimInfoFromDBDTO, SortedRimInfoDTO } from "../../DTOs/dbDTos";
-import { idConvert, nameConn, photoPath, priceToUAH } from "../repoHelpers";
+import { RimInfoFromDBDTO, SortedRimInfoDTO } from "../../DTOs/dbDTos";
+import { idConvert, nameConn, photoPath, priceToUAH, rimsSort } from "../repoHelpers";
 
-export function rimConfigSorter(el1: ConfigsDBDTO, el2: ConfigsDBDTO) {
-	return +el1.diameter - +el2.diameter + +el1.width - +el2.width;
-}
-
-export function respSorter(array: RimInfoFromDBDTO[]) {
-	let result: SortedRimInfoDTO[] = [];
-	for (let i = 0; i < array.length; i++) {
-		const price = priceToUAH(array[i].price as number);
-		let newConfig = array[i].rimConfigs;
-		if (newConfig) {
-			newConfig.price = price;
-			let objElement: SortedRimInfoDTO = {
-				rimId: idConvert(array[i].rimId),
-				brand: array[i].brand as string,
-				name: nameConn(array[i].name, array[i].nameSuff),
-				config: [newConfig],
-				minPrice: [price],
-				diameters: [newConfig.diameter],
-				image: photoPath(array[i].image!),
-			};
-			result.push(objElement);
-		}
-	}
-	return result;
+export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {
+	return array.map(el => {
+		const uahPrice = priceToUAH(el.price!);
+		el.rimConfigs.price = uahPrice;
+		return {
+			rimId: idConvert(el.rimId),
+			brand: el.brand,
+			name: nameConn(el.name, el.nameSuff),
+			config: [el.rimConfigs],
+			minPrice: [uahPrice],
+			diameters: [el.rimConfigs.diameter],
+			image: photoPath(el.image),
+		};
+	});
 }
 export function resultProcessor(array: RimInfoFromDBDTO[]) {
 	let uniqDiameters: string[] = [];
@@ -40,7 +30,7 @@ export function resultProcessor(array: RimInfoFromDBDTO[]) {
 			}
 			uniqDiameters.push(next.config[0].diameter);
 			match.config[match.config.length] = next.config[0];
-			match.config = match.config.sort(rimConfigSorter);
+			match.config = match.config.sort(rimsSort);
 			match.diameters[match.diameters.length] = next.diameters[0];
 			match.diameters = [...new Set(match.diameters)].sort();
 		}

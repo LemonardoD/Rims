@@ -1,20 +1,25 @@
 import { Response } from "express";
 import { CarConfigsDTO } from "./dbDTos";
+import { Subject } from "../services/emailSender";
 
 export interface ResCarSearchDTO extends Response {
 	locals: CarConfigsDTO;
 }
 
-export interface CarBrandReqDTO {
+export interface BrandReqDTO {
 	params: { brand: string };
 }
 
-export interface CarBrandAndModelReqDTO extends CarBrandReqDTO {
-	params: { brand: string; model: string };
-}
+export type CarBrandAndModelReqDTO = BrandReqDTO & {
+	params: { model: string };
+};
 
-export interface CarBrModYrReqDTO extends CarBrandAndModelReqDTO {
-	params: { brand: string; model: string; year: string };
+export type CarBrModYrReqDTO = CarBrandAndModelReqDTO & {
+	params: { year: string };
+};
+
+export interface RimIdReqDTO {
+	params: { id: string };
 }
 
 export interface CarNewsReqDTO {
@@ -25,22 +30,14 @@ export interface SearchByCarReqDTO {
 	body: { brand: string; model: string; year: number; rimBrand: string };
 }
 
-export interface RimBrandsReqDTO {
-	body: { rimBrand: string };
-}
-
-export interface RimIdReqDTO {
-	body: { id: string };
-}
-
-export interface RimByConfigDTO {
-	body: { mountingHoles: string; diameter: string; width: string };
-}
-
 export interface ConfigDTO {
 	mountingHoles: string;
 	diameter: string;
 	width: string;
+}
+
+export interface RimByConfigDTO {
+	body: ConfigDTO;
 }
 
 export interface OrderConfigDTO {
@@ -52,6 +49,7 @@ export interface OrderConfigDTO {
 	price: number;
 	rimId: string;
 }
+
 export interface OrderReqDTO {
 	body: {
 		name: string;
@@ -65,12 +63,12 @@ export interface OrderCallReqDTO {
 	body: { phone: string };
 }
 
-export interface OrderQuestionReqDTO {
-	body: { question: string; phone: string; email?: string };
-}
+export type OrderQuestionReqDTO = OrderCallReqDTO & {
+	body: { question: string; email?: string };
+};
 
 export interface SearchReqDTO {
-	body: { searchText: string };
+	params: { searchText: string };
 }
 
 export interface monoCurrencyDTO {
@@ -78,4 +76,11 @@ export interface monoCurrencyDTO {
 	currencyCodeB: number;
 	rateBuy: number;
 	rateSell: number;
+}
+
+export interface EmailOptionsDTO {
+	from: string | undefined;
+	to: string;
+	subject: Subject;
+	text: string;
 }

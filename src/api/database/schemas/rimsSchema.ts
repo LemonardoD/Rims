@@ -1,8 +1,8 @@
 import { integer, varchar, bigint, pgTable } from "drizzle-orm/pg-core";
-import { InferModel } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-export type Rim = InferModel<typeof rims>;
-export type NewRim = InferModel<typeof rims, "insert">;
+export type Rim = InferSelectModel<typeof rims>;
+export type NewRim = InferInsertModel<typeof rims>;
 
 export const rims = pgTable("rims", {
 	rimId: bigint("rimId", <{ mode: "number" | "bigint" }>{})

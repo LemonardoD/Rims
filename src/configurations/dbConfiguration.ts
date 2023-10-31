@@ -1,11 +1,8 @@
-import { neon, neonConfig } from "@neondatabase/serverless";
+import "dotenv/config";
 import { drizzle } from "drizzle-orm/neon-http";
-import * as dotenv from "dotenv";
-dotenv.config();
+import { neon, neonConfig } from "@neondatabase/serverless";
 
 const { DRIZZLE_DATABASE_URL } = <{ DRIZZLE_DATABASE_URL: string }>process.env;
 
 neonConfig.fetchConnectionCache = true;
-
-const pg = neon(DRIZZLE_DATABASE_URL);
-export const db = drizzle(pg);
+export const database = drizzle(neon(DRIZZLE_DATABASE_URL));

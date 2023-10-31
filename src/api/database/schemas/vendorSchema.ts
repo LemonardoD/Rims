@@ -1,10 +1,10 @@
 import { varchar, bigint, pgTable, serial, integer } from "drizzle-orm/pg-core";
-import { InferModel } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { rims } from "./rimsSchema";
 import { rimConfigs } from "./rimConfigsSchema";
 
-export type Vendors = InferModel<typeof vendors>;
-export type NewVendor = InferModel<typeof vendors, "insert">;
+export type Vendors = InferSelectModel<typeof vendors>;
+export type NewVendor = InferInsertModel<typeof vendors>;
 
 export const vendors = pgTable("vendors", {
 	vendorId: serial("vendorId").notNull().primaryKey(),

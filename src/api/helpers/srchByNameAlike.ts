@@ -1,4 +1,17 @@
-const searchAlikeArr = {
+export function searchAlike(searchStr: string) {
+	let response: string = "";
+	for (let [key, values] of Object.entries(searchAlikeArrs)) {
+		values.map(arrEl => {
+			if (arrEl.slice(0, searchStr.length) === searchStr) {
+				response = key;
+			}
+		});
+	}
+	if (response.length) return response;
+	return null;
+}
+
+const searchAlikeArrs = {
 	kosei: [
 		"kosei",
 		"kasei",
@@ -48,16 +61,3 @@ const searchAlikeArr = {
 	mkw: ["mkv", "mkw", "мкв", "мвк", "mcv", "mwc"],
 	replica: ["replika", "репліка", "рэплика", "реплика", "replik", "replic"],
 };
-
-export function searchAlike(searchStr: string) {
-	let response: string = "";
-	for (let [key, values] of Object.entries(searchAlikeArr)) {
-		values.map(arrEl => {
-			if (arrEl.slice(0, searchStr.length) === searchStr) {
-				response = key;
-			}
-		});
-	}
-	if (response.length) return response;
-	return null;
-}

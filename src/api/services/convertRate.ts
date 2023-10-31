@@ -1,9 +1,8 @@
+import "dotenv/config";
 import axios from "axios";
 import cron from "node-cron";
-import dotenv from "dotenv";
 import { monoCurrencyDTO } from "../DTOs/otherDTOs";
 import { updateUsdExchange } from "../database/repositories/exchangeRepo";
-dotenv.config();
 
 const { CURRENCY_CODE } = process.env;
 

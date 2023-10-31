@@ -1,9 +1,9 @@
-import * as dotenv from "dotenv";
-import { getUsdExchange } from "../database/repositories/exchangeRepo";
-dotenv.config();
+import "dotenv/config";
+import { usdExchRate } from "../database/repositories/exchangeRepo";
+import { RimParamDTO } from "../DTOs/dbDTos";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
-const rate = await getUsdExchange();
+const rate = await usdExchRate();
 
 export function priceToUAH(usd: number) {
 	return Math.floor(usd * rate);
@@ -17,13 +17,14 @@ export function photoPath(img: string) {
 	return `${PHOTO_PATH + img}`;
 }
 
-export function nameConn(str1: string | null, str2: string | null) {
-	if (str1 && str2) {
-		return `${str1} ${str2}`;
-	}
-	return `${str1}`;
+export function nameConn(str1: string, str2: string | null) {
+	return str1 && str2 ? `${str1} ${str2}` : `${str1}`;
 }
 
-export function idConvert(number: number | bigint | null) {
-	return `${number}`;
+export function idConvert(number: bigint | number) {
+	return number.toString();
+}
+
+export function rimsSort(rim1: RimParamDTO, rim2: RimParamDTO) {
+	return +rim1.width - +rim2.width || +rim1.diameter - +rim2.diameter;
 }

@@ -1,3 +1,4 @@
 node_modules
-migrations-folder
+migrations_folder
 .gitignore
+.env

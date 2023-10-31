@@ -1,11 +1,15 @@
 import { Router } from "express";
 import RimInfo from "../controllers/rimInfoContr";
+import Handler from "../helpers/handler";
+import rimsMidd from "../middlewares/rimsInfoMidd";
 
 const rimsRtr = Router();
 
-rimsRtr.get("/rims-popular", RimInfo.tryCatch(RimInfo.rimsPopular));
+rimsRtr.param("id", Handler.tryCatch(rimsMidd.rimIdVal));
+rimsRtr.param("brand", Handler.tryCatch(rimsMidd.rimsBrandVal));
 
-rimsRtr.post("/rim-by-id", RimInfo.tryCatch(RimInfo.rimIdVal), RimInfo.tryCatch(RimInfo.rimById));
-rimsRtr.post("/rims-by-brand", RimInfo.tryCatch(RimInfo.rimsBrandVal), RimInfo.tryCatch(RimInfo.rimsByBrands));
+rimsRtr.get("/popular", Handler.tryCatch(RimInfo.rimsPopular));
+rimsRtr.get("/by-id/:id", Handler.tryCatch(RimInfo.rimById));
+rimsRtr.get("/by-brand/:brand", Handler.tryCatch(RimInfo.rimsByBrands));
 
 export default rimsRtr;

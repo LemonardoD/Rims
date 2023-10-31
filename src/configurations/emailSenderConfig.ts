@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import nodemailer from "nodemailer";
-dotenv.config();
 
 const { EMAIL, EMAIL_PASSWORD } = process.env;
+
 export const transporter = nodemailer.createTransport({
 	service: "gmail",
 	auth: {

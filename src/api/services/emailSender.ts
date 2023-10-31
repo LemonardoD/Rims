@@ -1,11 +1,12 @@
-import dotenv from "dotenv";
-import { OrderConfigDTO } from "../DTOs/otherDTOs";
+import "dotenv/config";
+import { EmailOptionsDTO, OrderConfigDTO } from "../DTOs/otherDTOs";
 import { transporter } from "../../configurations/emailSenderConfig";
-dotenv.config();
+import Handler from "../helpers/handler";
+import nodemailer, { SentMessageInfo } from "nodemailer";
 
-const { ADMINS_EMAIL_FOR_ORDERS, EMAIL } = process.env;
+const { ADMINS_EMAIL_FOR_ORDERS, EMAIL } = <{ ADMINS_EMAIL_FOR_ORDERS: string; EMAIL: string }>process.env;
 
-enum Subject {
+export enum Subject {
 	Customer = "Order from Ukrdisk",
 	AdminOrder = "You get new order!!!",
 	AdminPhCall = "You get new request for phone call!!!",
@@ -20,6 +21,15 @@ enum Text {
 }
 
 class EmailSender {
+	sender: nodemailer.Transporter<SentMessageInfo>;
+	constructor(transporter: nodemailer.Transporter<SentMessageInfo>) {
+		this.sender = transporter;
+	}
+	sendEmail = async (sender: nodemailer.Transporter<SentMessageInfo>, mailOptions: EmailOptionsDTO) => {
+		return sender.sendMail(mailOptions).catch(err => {
+			Handler.error("Something gone wrong. Can not send Email.", 500);
+		});
+	};
 	sendEmailToCusOrder = async (toWhom: string) => {
 		const mailOptions = {
 			from: EMAIL,
@@ -27,9 +37,7 @@ class EmailSender {
 			subject: Subject.Customer,
 			text: Text.Customer,
 		};
-		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) throw err;
-		});
+		return this.sendEmail(this.sender, mailOptions);
 	};
 
 	sendEmailToAdminOrder = async (customerPhone: string, customerName: string, orderConfig: OrderConfigDTO) => {
@@ -44,9 +52,7 @@ class EmailSender {
 				orderConfig.offset
 			}. Total for 4 rim:${orderConfig.price * 4}`,
 		};
-		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) throw err;
-		});
+		return this.sendEmail(this.sender, mailOptions);
 	};
 
 	sendEmailToAdminPhCall = async (customerPhone: string) => {
@@ -56,9 +62,7 @@ class EmailSender {
 			subject: Subject.AdminOrder,
 			text: `${Text.AdminPhCall} His phone: ${customerPhone}.`,
 		};
-		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) throw err;
-		});
+		return this.sendEmail(this.sender, mailOptions);
 	};
 
 	sendEmailToAdminAnswerQuestion = async (customerPhone: string, customerQuestion: string) => {
@@ -68,9 +72,7 @@ class EmailSender {
 			subject: Subject.AdminOrder,
 			text: `${Text.AdminQuestion + customerQuestion}. His phone: ${customerPhone}.`,
 		};
-		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) throw err;
-		});
+		return this.sendEmail(this.sender, mailOptions);
 	};
 
 	sendEmailToCusOrderAnswerQuestion = async (toWhom: string) => {
@@ -80,9 +82,7 @@ class EmailSender {
 			subject: Subject.Customer,
 			text: `${Text.CustomerQuestion}`,
 		};
-		return transporter.sendMail(mailOptions, async function (err: Error | null) {
-			if (err) throw err;
-		});
+		return this.sendEmail(this.sender, mailOptions);
 	};
 }
-export default new EmailSender();
+export default new EmailSender(transporter);

@@ -1,11 +1,16 @@
 import { Router } from "express";
 import CarInfo from "../controllers/carInfoContr";
 import RimInfo from "../controllers/rimInfoContr";
+import Handler from "../helpers/handler";
+import rimsMidd from "../middlewares/rimsInfoMidd";
+import CarMidd from "../middlewares/carInfoMidd";
 
 const searchRtr = Router();
 
-searchRtr.post("/search-by-config", RimInfo.tryCatch(RimInfo.rimConfigVal), RimInfo.tryCatch(RimInfo.rimByConfig));
-searchRtr.post("/search-by-naming", RimInfo.tryCatch(RimInfo.rimNameVal), RimInfo.tryCatch(RimInfo.rimsByName));
-searchRtr.post("/search-by-car", CarInfo.tryCatch(CarInfo.rimByCarVal), CarInfo.tryCatch(CarInfo.searchRimsByCar));
+searchRtr.param("searchText", Handler.tryCatch(rimsMidd.rimNameVal));
+searchRtr.get("/by-naming/:searchText", Handler.tryCatch(RimInfo.rimsByName));
+
+searchRtr.post("/by-config", Handler.tryCatch(rimsMidd.rimConfigVal), Handler.tryCatch(RimInfo.rimByConfig));
+searchRtr.post("/by-car", Handler.tryCatch(CarMidd.rimByCarVal), Handler.tryCatch(CarInfo.searchRimsByCar));
 
 export default searchRtr;
