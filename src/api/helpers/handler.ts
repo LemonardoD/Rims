@@ -1,6 +1,9 @@
 import { NextFunction, RequestHandler, Response, Request } from "express";
 import "dotenv/config";
 
+const { CACHE_MAX_AGE } = <{ CACHE_MAX_AGE: string }>process.env;
+const cacheAge = Number(CACHE_MAX_AGE);
+
 export class CustomError extends Error {
 	statusCode: number;
 	constructor(message: string, code: number) {
@@ -18,12 +21,13 @@ class Handler {
 
 	setCache(req: Request, res: Response, next: NextFunction) {
 		if (req.method === "GET") {
-			res.set("Cache-control", `public, max-age=${Number(process.env.CACHE_MAX_AGE)}`);
+			res.set("Cache-control", `public, max-age=${cacheAge}`);
+			next();
 		}
 		if (req.method != "GET") {
 			res.set("Cache-control", "no-store");
+			next();
 		}
-		return next();
 	}
 
 	invalidPath(req: Request, res: Response, next: NextFunction) {

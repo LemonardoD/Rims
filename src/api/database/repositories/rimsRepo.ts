@@ -25,7 +25,7 @@ class Rims {
 				price: vendors.price,
 			})
 			.from(vendors)
-			.where(and(eq(vendors.rimId, rims.rimId), gt(vendors.unitsLeft, 0)))
+			.where(gt(vendors.unitsLeft, 0))
 			.innerJoin(rims, eq(rims.rimId, vendors.rimId))
 			.innerJoin(images, eq(images.rimId, rims.rimId))
 			.innerJoin(rimConfigs, eq(rimConfigs.configId, vendors.rimConfigId))
@@ -52,7 +52,7 @@ class Rims {
 				${rimConfigs.configurations}  @> '{"width": "${sql.raw(width)}"}') and
 				${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
 				${vendors.rimId} = ${rims.rimId} and
-				${vendors.unitsLeft} > 0 `,
+				${vendors.unitsLeft} > 0 `
 			)
 			.innerJoin(rims, eq(rims.rimId, vendors.rimId))
 			.innerJoin(images, eq(images.rimId, rims.rimId))
@@ -80,7 +80,7 @@ class Rims {
 					: sql`${rimConfigs.configurations}  @> '{"boltPattern": "${sql.raw(mountingHoles)}"}' and
 					${vendors.rimId} = ${rims.rimId} and 
 					${vendors.unitsLeft} > 0 and
-					${rims.brand} = ${brand}`,
+					${rims.brand} = ${brand}`
 			)
 			.innerJoin(rims, eq(rims.rimId, vendors.rimId))
 			.innerJoin(images, eq(images.rimId, rims.rimId))
@@ -165,8 +165,8 @@ class Rims {
 				or(
 					ilike(rims.brand, sql.placeholder("name")),
 					ilike(rims.rimName, sql.placeholder("name")),
-					ilike(rims.rimNameSuffix, sql.placeholder("name")),
-				),
+					ilike(rims.rimNameSuffix, sql.placeholder("name"))
+				)
 			)
 			.innerJoin(vendors, and(eq(vendors.rimId, rims.rimId)))
 			.innerJoin(images, eq(images.rimId, rims.rimId))

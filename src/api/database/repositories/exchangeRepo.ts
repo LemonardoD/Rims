@@ -1,12 +1,21 @@
 import { eq } from "drizzle-orm";
-import { database } from "../../../configurations/dbConfiguration";
 import { exchange } from "../schemas/exchangeSchema";
+import { database } from "../../../configurations/dbConfiguration";
+import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
-export async function usdExchRate() {
-	const [{ rate }] = await database.select({ rate: exchange.rate }).from(exchange).where(eq(exchange.currency, "usd"));
-	return rate;
+class ExchangeRate {
+	db;
+	constructor(database: NeonHttpDatabase) {
+		this.db = database;
+	}
+	usdExchRate = async () => {
+		const [{ rate }] = await this.db.select({ rate: exchange.rate }).from(exchange).where(eq(exchange.currency, "usd"));
+		return rate;
+	};
+
+	updateUsdExchange = async (changeRate: number) => {
+		return await this.db.update(exchange).set({ rate: changeRate }).where(eq(exchange.currency, "usd"));
+	};
 }
 
-export async function updateUsdExchange(changeRate: number) {
-	return await database.update(exchange).set({ rate: changeRate }).where(eq(exchange.currency, "usd"));
-}
+export default new ExchangeRate(database);

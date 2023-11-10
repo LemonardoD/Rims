@@ -1,4 +1,4 @@
-import { bigint, jsonb, varchar, pgTable } from "drizzle-orm/pg-core";
+import { bigint, jsonb, varchar, pgTable, index } from "drizzle-orm/pg-core";
 import { carBrands } from "./carBrandsSchema";
 import { CarModelsDTO } from "../../DTOs/dbDTos";
 import { InferInsertModel } from "drizzle-orm";

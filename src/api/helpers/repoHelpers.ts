@@ -1,9 +1,9 @@
 import "dotenv/config";
-import { usdExchRate } from "../database/repositories/exchangeRepo";
+import ExchangeRate from "../database/repositories/exchangeRepo";
 import { RimParamDTO } from "../DTOs/dbDTos";
 
 export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
-const rate = await usdExchRate();
+const rate = await ExchangeRate.usdExchRate();
 
 export function priceToUAH(usd: number) {
 	return Math.floor(usd * rate);
