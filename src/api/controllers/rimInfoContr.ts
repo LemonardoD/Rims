@@ -12,22 +12,22 @@ class RimInfo {
 		const { brand } = req.params;
 		if (brand === "all") {
 			const rims = resultProcessor(await RimRepo.allRims().execute());
-			return Handler.response(200, rims, res);
+			return Handler.sendResponse(200, rims, res);
 		}
 		const rims = resultProcessor(await RimRepo.rimsByBrand().execute({ reqRimBrand: brand }));
-		return Handler.response(200, rims, res);
+		return Handler.sendResponse(200, rims, res);
 	};
 
 	rimById = async (req: RimIdReqDTO, res: Response) => {
 		const id = Number(req.params.id);
 		const rim = rimByIdProcessor(await RimRepo.rimById().execute({ reqRimID: id }));
 		await RimRepo.updateRimVisits().execute({ reqRimID: id });
-		return Handler.response(200, rim, res);
+		return Handler.sendResponse(200, rim, res);
 	};
 
 	rimsPopular = async (req: Request, res: Response) => {
 		const { rimList } = resultProcessor(await RimRepo.popularRims().execute());
-		return Handler.response(200, rimList.slice(0, 8), res);
+		return Handler.sendResponse(200, rimList.slice(0, 8), res);
 	};
 
 	rimsByName = async (req: SearchReqDTO, res: Response) => {
@@ -35,15 +35,15 @@ class RimInfo {
 		const brand = searchAlike(searchText);
 		if (brand) {
 			const { rimList } = resultProcessor(await RimRepo.rimsByName().execute({ name: `%${brand}%` }));
-			return Handler.response(200, rimList, res);
+			return Handler.sendResponse(200, rimList, res);
 		}
 		const { rimList } = resultProcessor(await RimRepo.rimsByName().execute({ name: `%${searchText}%` }));
-		return Handler.response(200, rimList, res);
+		return Handler.sendResponse(200, rimList, res);
 	};
 
 	rimByConfig = async (req: RimByConfigDTO, res: Response) => {
 		const rims = await RimRepo.rimsByConfig(req.body).execute();
-		return Handler.response(200, resultProcessor(rims), res);
+		return Handler.sendResponse(200, resultProcessor(rims), res);
 	};
 }
 

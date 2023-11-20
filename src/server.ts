@@ -21,6 +21,7 @@ app.use("/rims", rimsRtr);
 app.use("/search", searchRtr);
 app.use("/order", usrOrders);
 
+app.use(Handler.errors);
 app.use(Handler.invalidPath);
 
 app.listen(Number(process.env.PORT), () => {

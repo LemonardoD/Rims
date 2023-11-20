@@ -7,7 +7,7 @@ class RimsInfoMid {
 	rimsBrandVal = async (req: BrandReqDTO, res: Response, next: NextFunction) => {
 		const { brand } = req.params;
 		if (brand !== "all" && !(await RimsRepo.ifRimBrandExist().execute({ brand: brand })).length) {
-			Handler.error("We do not have that rims brand.", 404);
+			Handler.throwError("We do not have that rims brand.", 404);
 		}
 		return next();
 	};
@@ -15,21 +15,21 @@ class RimsInfoMid {
 	rimIdVal = async (req: RimIdReqDTO, res: Response, next: NextFunction) => {
 		const id = Number(req.params.id);
 		if (!(await RimsRepo.ifRimExist().execute({ rimId: id })).length) {
-			Handler.error("We do not have that rim with that id.", 404);
+			Handler.throwError("We do not have that rim with that id.", 404);
 		}
 		return next();
 	};
 
 	rimNameVal = async (req: SearchReqDTO, res: Response, next: NextFunction) => {
 		const { searchText } = req.params;
-		if (!searchText) Handler.error("SearchText, required!", 400);
+		if (!searchText) Handler.throwError("SearchText, required!", 400);
 		return next();
 	};
 
 	rimConfigVal = async (req: RimByConfigDTO, res: Response, next: NextFunction) => {
 		const { mountingHoles, width, diameter } = req.body;
 		if (!mountingHoles || !width || !diameter) {
-			Handler.error("Body with diameter, width and mountingHoles, required!", 400);
+			Handler.throwError("Body with diameter, width and mountingHoles, required!", 400);
 		}
 		return next();
 	};

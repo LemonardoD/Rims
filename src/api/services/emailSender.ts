@@ -27,7 +27,7 @@ class EmailSender {
 	}
 	sendEmail = async (sender: nodemailer.Transporter<SentMessageInfo>, mailOptions: EmailOptionsDTO) => {
 		return sender.sendMail(mailOptions).catch(err => {
-			Handler.error("Something gone wrong. Can not send Email.", 500);
+			Handler.throwError("Something gone wrong. Can not send Email.", 500);
 		});
 	};
 	sendEmailToCusOrder = async (toWhom: string) => {

@@ -37,8 +37,8 @@ class CarBrands {
 				and(
 					eq(carModels.carModel, model),
 					sql`(${carModels.modelInfo} -> 'years' ) @> '[{"value": ${sql.raw(year)}}]'`,
-					eq(carBrands.carBrand, brand),
-				),
+					eq(carBrands.carBrand, brand)
+				)
 			);
 		return !!result.length;
 	}
