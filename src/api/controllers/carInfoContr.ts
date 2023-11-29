@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
+import Handler from "../helpers/handler";
 import CarRepo from "../database/repositories/carsRepo";
 import RimRepo from "../database/repositories/rimsRepo";
-import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, BrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
+import { NextFunction, Request, Response } from "express";
 import { rimByCarProcessor } from "../helpers/DBRespProcessors/rimByCarProcessor";
-import Handler from "../helpers/handler";
+import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, BrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
 
 class CarInfo {
-	allCarBrands = async (req: Request, res: Response) => {
+	allCarBrands = async (req: Request, res: Response, next: NextFunction) => {
 		return Handler.sendResponse(
 			200,
 			(await CarRepo.allCarBrands().execute()).map(el => el.brand),

@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
-import Handler from "../helpers/handler";
 import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
+import Handler from "../helpers/handler";
 
 class CusInfoMid {
 	CusVal = async (req: OrderReqDTO, res: Response, next: NextFunction) => {

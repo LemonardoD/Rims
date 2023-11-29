@@ -1,6 +1,5 @@
 import { Response } from "express";
 import { CarConfigsDTO } from "./dbDTos";
-import { Subject } from "../services/emailSender";
 
 export interface ResCarSearchDTO extends Response {
 	locals: CarConfigsDTO;
@@ -48,6 +47,7 @@ export interface OrderConfigDTO {
 	centralBore: number | null;
 	price: number;
 	rimId: string;
+	link: string;
 }
 
 export interface OrderReqDTO {
@@ -76,11 +76,4 @@ export interface monoCurrencyDTO {
 	currencyCodeB: number;
 	rateBuy: number;
 	rateSell: number;
-}
-
-export interface EmailOptionsDTO {
-	from: string | undefined;
-	to: string;
-	subject: Subject;
-	text: string;
 }

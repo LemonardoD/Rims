@@ -1,11 +1,10 @@
+import Handler from "../helpers/handler";
 import { Response, Request } from "express";
 import RimRepo from "../database/repositories/rimsRepo";
-import { BrandReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
 import { searchAlike } from "../helpers/srchByNameAlike";
 import { resultProcessor } from "../helpers/DBRespProcessors/basicProcessor";
 import { rimByIdProcessor } from "../helpers/DBRespProcessors/rimByIdProcessor";
-import Handler from "../helpers/handler";
-/// ASK REs.LOCALS
+import { BrandReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
 
 class RimInfo {
 	rimsByBrands = async (req: BrandReqDTO, res: Response) => {
