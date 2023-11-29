@@ -14,7 +14,9 @@ export class CustomError extends Error {
 
 class Handler {
 	sendResponse(statusCode: number, message: object, res: Response) {
-		return res.status(statusCode).json(message);
+		return res.status(statusCode).json({
+			message,
+		});
 	}
 
 	setCache(req: Request, res: Response, next: NextFunction) {
