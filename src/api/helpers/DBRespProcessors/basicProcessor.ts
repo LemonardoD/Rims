@@ -1,4 +1,4 @@
-import { RimInfoFromDBDTO, SortedRimInfoDTO } from "../../DTOs/dbDTos";
+import { RimInfoFromDBDTO, SortedRimInfoDTO } from "../../types/dbDto";
 import { idConvert, nameConn, photoPath, priceToUAH, rimsSort } from "../repoHelpers";
 
 export function respSorter(array: RimInfoFromDBDTO[]): SortedRimInfoDTO[] {

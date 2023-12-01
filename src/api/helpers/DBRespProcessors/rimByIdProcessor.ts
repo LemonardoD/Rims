@@ -1,4 +1,4 @@
-import { OmitedRimInfoFromDBDTO, OmitedSortedRimInfoDTO } from "../../DTOs/dbDTos";
+import { OmitedRimInfoFromDBDTO, OmitedSortedRimInfoDTO } from "../../types/dbDto";
 import { idConvert, nameConn, photoArrPath, priceToUAH, rimsSort } from "../repoHelpers";
 
 function respByIdSorter(array: OmitedRimInfoFromDBDTO[]): OmitedSortedRimInfoDTO[] {

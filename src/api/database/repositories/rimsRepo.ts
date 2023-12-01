@@ -4,8 +4,8 @@ import { images } from "../schemas/imagesSchema";
 import { rims } from "../schemas/rimsSchema";
 import { rimConfigs } from "../schemas/rimConfigsSchema";
 import { vendors } from "../schemas/vendorSchema";
-import { PrepQuer, PrepByIdQuer } from "../../DTOs/dbDTos";
-import { ConfigDTO } from "../../DTOs/otherDTOs";
+import { PrepQuer, PrepByIdQuer } from "../../types/dbDto";
+import { ConfigDTO } from "../../types/otherDto";
 import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
 class Rims {

@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
+import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../types/otherDto";
 import Handler from "../helpers/handler";
 
 class CusInfoMid {

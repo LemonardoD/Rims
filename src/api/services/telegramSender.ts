@@ -2,7 +2,7 @@ import "dotenv/config";
 import { Response } from "express";
 import Handler from "../helpers/handler";
 import { bot } from "../../configurations/telegramBotConfig";
-import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
+import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../types/otherDto";
 
 const { TG_CORE_GROUP_ID, TG_OFFICE_GROUP_ID } = <{ TG_CORE_GROUP_ID: string; TG_OFFICE_GROUP_ID: string }>process.env;
 

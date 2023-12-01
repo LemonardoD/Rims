@@ -3,7 +3,7 @@ import CarRepo from "../database/repositories/carsRepo";
 import RimRepo from "../database/repositories/rimsRepo";
 import { NextFunction, Request, Response } from "express";
 import { rimByCarProcessor } from "../helpers/DBRespProcessors/rimByCarProcessor";
-import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, BrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
+import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, BrandReqDTO, ResCarSearchDTO, SearchByCarReqDTO } from "../types/otherDto";
 
 class CarInfo {
 	allCarBrands = async (req: Request, res: Response, next: NextFunction) => {

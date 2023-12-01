@@ -1,12 +1,12 @@
 import "dotenv/config";
-import ExchangeRate from "../database/repositories/exchangeRepo";
-import { RimParamDTO } from "../DTOs/dbDTos";
+import { RimParamDTO } from "../types/dbDto";
 
-export const { PHOTO_PATH } = <{ PHOTO_PATH: string }>process.env;
-const rate = await ExchangeRate.usdExchRate();
+export const { PHOTO_PATH, PRICE_INDEX, VENDOR_RATE } = <{ PHOTO_PATH: string; PRICE_INDEX: string; VENDOR_RATE: string }>(
+	process.env
+);
 
 export const priceToUAH = (usd: number) => {
-	return Math.floor(usd * rate);
+	return Math.floor(usd * Number(VENDOR_RATE) * Number(PRICE_INDEX));
 };
 
 export const photoArrPath = (imgs: string[]) => {

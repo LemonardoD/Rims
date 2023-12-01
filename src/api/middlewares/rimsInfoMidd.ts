@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { BrandReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
+import { BrandReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../types/otherDto";
 import Handler from "../helpers/handler";
 import RimsRepo from "../database/repositories/rimsRepo";
 

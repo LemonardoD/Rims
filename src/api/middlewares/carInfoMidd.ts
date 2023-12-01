@@ -2,7 +2,7 @@ import Handler from "../helpers/handler";
 import CarRepo from "../database/repositories/carsRepo";
 import RimsRepo from "../database/repositories/rimsRepo";
 import { NextFunction, Response } from "express";
-import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, BrandReqDTO, SearchByCarReqDTO } from "../DTOs/otherDTOs";
+import { CarBrModYrReqDTO, CarBrandAndModelReqDTO, BrandReqDTO, SearchByCarReqDTO } from "../types/otherDto";
 
 class CarInfoMid {
 	carBrandVal = async (req: BrandReqDTO, res: Response, next: NextFunction) => {

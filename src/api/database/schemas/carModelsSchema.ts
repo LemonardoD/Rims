@@ -1,6 +1,6 @@
 import { bigint, jsonb, varchar, pgTable, index } from "drizzle-orm/pg-core";
 import { carBrands } from "./carBrandsSchema";
-import { CarModelsDTO } from "../../DTOs/dbDTos";
+import { CarModelsDTO } from "../../types/dbDto";
 import { InferInsertModel } from "drizzle-orm";
 
 export type NewModel = InferInsertModel<typeof carModels>;

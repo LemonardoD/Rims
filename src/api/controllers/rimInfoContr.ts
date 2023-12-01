@@ -4,7 +4,7 @@ import RimRepo from "../database/repositories/rimsRepo";
 import { searchAlike } from "../helpers/srchByNameAlike";
 import { resultProcessor } from "../helpers/DBRespProcessors/basicProcessor";
 import { rimByIdProcessor } from "../helpers/DBRespProcessors/rimByIdProcessor";
-import { BrandReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../DTOs/otherDTOs";
+import { BrandReqDTO, RimByConfigDTO, RimIdReqDTO, SearchReqDTO } from "../types/otherDto";
 
 class RimInfo {
 	rimsByBrands = async (req: BrandReqDTO, res: Response) => {

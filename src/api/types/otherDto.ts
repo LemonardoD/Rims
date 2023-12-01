@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { CarConfigsDTO } from "./dbDTos";
+import { CarConfigsDTO } from "./dbDto";
 
 export interface ResCarSearchDTO extends Response {
 	locals: CarConfigsDTO;

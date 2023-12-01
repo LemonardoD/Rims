@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { orderCall, orderMessage, orderQuestion } from "../services/telegramSender";
-import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../DTOs/otherDTOs";
+import { OrderCallReqDTO, OrderQuestionReqDTO, OrderReqDTO } from "../types/otherDto";
 
 class WorkWithCustomer {
 	orderRims = async (req: OrderReqDTO, res: Response) => {

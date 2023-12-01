@@ -1,4 +1,4 @@
-import { RimInfoFromDBDTO, CarConfigsDTO } from "../../DTOs/dbDTos";
+import { RimInfoFromDBDTO, CarConfigsDTO } from "../../types/dbDto";
 import { resultProcessor } from "./basicProcessor";
 
 export function rimByCarProcessor(array: RimInfoFromDBDTO[], config: CarConfigsDTO) {

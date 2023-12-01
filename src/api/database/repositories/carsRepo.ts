@@ -2,7 +2,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { database } from "../../../configurations/dbConfiguration";
 import { carBrands } from "../schemas/carBrandsSchema";
 import { carModels } from "../schemas/carModelsSchema";
-import { CarYearsDTO, SearchByCarDTO } from "../../DTOs/dbDTos";
+import { CarYearsDTO, SearchByCarDTO } from "../../types/dbDto";
 import { rimsSort } from "../../helpers/repoHelpers";
 import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
